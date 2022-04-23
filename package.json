@@ -1,0 +1,88 @@
+{
+  "name": "@ihelp-finance/server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run clientdev\"",
+    "production": "concurrently \"npm run server\" \"npm run clientprod\"",
+    "server": "better-npm-run server",
+    "clientprod": "better-npm-run clientprod",
+    "clientdev": "better-npm-run clientdev",
+    "superset": "better-npm-run superset",
+    "docsify": "better-npm-run docsify"
+  },
+  "betterScripts": {
+    "server": {
+      "command": "nodemon ./bin/server --exec node --config config/nodemon.json",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 3001
+      }
+    },
+    "clientdev": {
+      "command": "node ./bin/clientdev",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 3000
+      }
+    },
+    "clientprod": {
+      "command": "node ./bin/clientprod",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3000
+      }
+    },
+    "docsify": {
+      "command": "docsify serve -p 3002 modules/docs"
+    },
+    "superset": {
+      "command": "export LC_ALL=C.UTF-8 && export LANG=C.UTF-8 && export PYTHONPATH=$PYTHONPATH:$PWD/modules/superset/incubator-superset:$PWD/modules/superset && $PWD/modules/superset/incubator-superset/superset/bin/superset runserver",
+      "env": {}
+    }
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "~1.17.1",
+    "coinbase": "^2.0.8",
+    "commafy": "^0.0.6",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
+    "csvtojson": "^2.0.8",
+    "dateformat": "^3.0.3",
+    "debug": "^2.6.9",
+    "discord-webhook-node": "^1.1.8",
+    "express": "~4.15.2",
+    "express-http-proxy": "^1.0.3",
+    "express-socket.io": "^1.0.3",
+    "jade": "~1.11.0",
+    "jquery": "^3.2.1",
+    "morgan": "~1.8.1",
+    "mysql2": "^1.6.5",
+    "pg": "^6.2.3",
+    "pg-hstore": "^2.3.2",
+    "pg-pubsub": "^0.3.0",
+    "ps-node": "^0.1.6",
+    "react-apexcharts": "^1.3.9",
+    "react-ga": "^3.3.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.6",
+    "sequelize": "^4.0.0",
+    "serve": "^13.0.2",
+    "serve-favicon": "~2.4.2",
+    "spawn-args": "^0.2.0",
+    "underscore": "^1.13.1"
+  },
+  "devDependencies": {
+    "better-npm-run": "0.0.15",
+    "concurrently": "^6.2.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.0.1",
+    "nodemon": "^1.11.0"
+  }
+}

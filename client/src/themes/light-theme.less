@@ -1,0 +1,55 @@
+.table td,
+.table th {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: var(--black) !important;
+}
+.table th {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.headerRight a {
+  color: var(--black);
+}
+
+.active-mob-header.header {
+  background: var(--white) !important;
+}
+.mob-header {
+  background: var(--white);
+}
+.mob-header-content a {
+  color: var(--black);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    color: rgba(0,0,0,.85);
+    font-weight: 500;
+}
+
+h4:hover {
+    color: var(--light-purple);
+}
+
+.footerLink a {
+  border: 1px solid var(--black);
+  color: var(--black);
+}
+.footerLink a:hover {
+  border: 1px solid var(--light-purple);
+  color: var(--light-purple);
+}
+
+@import "~antd/lib/style/color/colorPalette.less";
+@import "~antd/dist/antd.less";
+@import "~antd/lib/style/themes/default.less";
+//@import "./globals.css";
+
+// These are shared variables that can be extracted to their own file
+// @primary-color: #00adb5;
+@border-radius-base: 4px;
+
+.highlight {
+  background-color: #f9f9f9;
+}

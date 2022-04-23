@@ -1,0 +1,160 @@
+.dashboardHeader main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.dashboardHeader img {
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 1rem;
+  margin: 0 1.5rem 0 0;
+}
+.dashboardHeader h6 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+.dgGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 50% 1fr;
+  grid-template-rows: auto;
+  grid-gap: 10rem;
+}
+.dgGrid > main {
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 1.5rem;
+}
+.dashboardGraphParent {
+  height: 35rem;
+}
+.dgGrid > main h6 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  padding: 1.5rem 2.5rem;
+}
+.dashboardOtherGraphs > main {
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+}
+.dashboardOtherGraphs > main h6 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+}
+.dashboardOtherGraphs > main h5 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--light-purple);
+}
+.dashboardOtherGraphs > main h4 {
+  font-size: 1.35rem;
+  font-weight: 500;
+  opacity: 0.75;
+  color: var(--black);
+}
+.dashboardSmallInfoGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  margin: 1.5rem 0 0 0;
+  grid-gap: 1.5rem;
+}
+.dashboardSmallInfoGrid main {
+  width: 100%;
+  background-color: var(--white);
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+}
+.dashboardSmallInfoGrid main h6 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+.dashboardSmallInfoGrid main h5 {
+  font-size: 1.75rem;
+  color: var(--light-purple);
+  font-weight: 600;
+}
+.dashboardSmallInfoGrid main:nth-child(3) {
+  grid-column: -1/1;
+}
+.faqContainer {
+  width: 50%;
+}
+.faqBox {
+  width: 100%;
+  border-bottom: 1px solid var(--black);
+  padding: 1.5rem 0;
+}
+.faqQ {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--black);
+  font-size: 2.25rem;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.faqQ:hover {
+  color: var(--light-purple);
+}
+.faqQ p {
+  font-weight: 500;
+}
+.faqQ svg {
+  transition: 0.35s;
+}
+.faqA {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--black);
+  margin: 1.5rem 0 0 0;
+  display: none;
+}
+@media screen and (max-width: 1000px) {
+  .dgGrid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-gap: 5rem;
+  }
+  .faqContainer {
+    width: 100%;
+  }
+  .dashboardGraphParent {
+    height: 25rem;
+  }
+}
+@media screen and (max-width: 800px) {
+  .dashboardGraphParent {
+    height: 20rem;
+  }
+  .faqQ {
+    font-size: 1.75rem;
+  }
+  .faqBox {
+    padding: 1rem 0;
+  }
+  .dashboardSmallInfoGrid main h6 {
+    font-size: 1.5rem;
+  }
+  .dashboardSmallInfoGrid main h5 {
+    font-size: 1.5rem;
+  }
+  .dashboardOtherGraphs > main h6 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  .dashboardOtherGraphs > main h5 {
+    font-size: 1.5rem;
+  }
+  .dgGrid > main h6 {
+    font-size: 1.5rem;
+  }
+}

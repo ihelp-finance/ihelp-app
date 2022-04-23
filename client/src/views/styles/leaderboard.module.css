@@ -1,0 +1,58 @@
+.leaderboardGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 10rem;
+}
+.lggCell h1 {
+  font-size: 2.25rem;
+  color: var(--black);
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+}
+.lggCell > main {
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto;
+  grid-gap: 2.5rem;
+}
+.helpersBtngrid {
+  grid-template-columns: 1fr 1fr;
+}
+.charitiesBtngrid {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.leaderboardGraphBox {
+  width: 100%;
+  height: 45rem;
+  background-color: var(--white);
+  padding: 0.5rem;
+  border-radius: 1.5rem;
+  margin: 2.5rem 0 0 0;
+}
+@media screen and (max-width: 1200px) {
+  .leaderboardGrid {
+    grid-gap: 5rem;
+  }
+}
+@media screen and (max-width: 1000px) {
+  .leaderboardGrid {
+    grid-gap: 5rem;
+    grid-template-columns: 1fr;
+  }
+}
+@media screen and (max-width: 800px) {
+  .lggCell > main {
+    grid-gap: 0;
+  }
+  .helpersBtngrid {
+    grid-template-columns: 1fr;
+  }
+  .charitiesBtngrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .leaderboardGraphBox {
+    height: 35rem;
+  }
+}

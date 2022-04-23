@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: upkeep-run
+  namespace: ihelp-app-avax
+spec:
+  restartPolicy: Never
+  containers:
+  - name: upkeep-run
+    image: node:12
+    volumeMounts:
+    - mountPath: /core/ihelp
+      name: ihelp-files
+    workingDir: /core/ihelp/ihelp-dev-avax/packages/hardhat/scripts
+    command: ["./runUpkeep.sh"]
+  volumes:
+  - name: ihelp-files
+    persistentVolumeClaim:
+      claimName: ihelp-app-avax-pvc

@@ -1,0 +1,110 @@
+.donationName {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.donationName img {
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 1rem;
+  margin: 0 1.5rem 0 0;
+}
+.donationName h6 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+.contributeTop main {
+  margin: 5rem 0 0 0;
+}
+.contributeTop main h5 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+.contributeTop main p {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+.contributeSliderContainer {
+  width: 100%;
+}
+.contributeSliderContainer video {
+  width: 100%;
+  height: 20rem;
+  object-fit: cover;
+  border-radius: 1.5rem;
+  margin: 0 0 3.5rem 0;
+}
+.cgContent {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 2.5rem;
+}
+.cgContent main {
+  padding: 1.25rem;
+  background-color: var(--white);
+  border-radius: 0.75rem;
+}
+.cgContent main h6 {
+  font-size: 1.5rem;
+  color: var(--black);
+  font-weight: 600;
+  margin: 0 0 0 0.5rem 0;
+}
+.cgContent main h5 {
+  color: var(--light-purple);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.cdGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 15rem;
+}
+.cdGrid h6 {
+  font-size: 1.75rem;
+  color: var(--black);
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+}
+.cdgGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 2.5rem;
+}
+@media screen and (max-width: 800px) {
+  .cgContent {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-gap: 1.5rem;
+  }
+  .cgContent main:nth-child(3) {
+    grid-column: -1/1;
+  }
+  .cdGrid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 1.5rem;
+  }
+  .cdgGrid {
+    grid-template-columns: 1fr;
+    grid-gap: 1.5rem;
+  }
+  .contributeSliderContainer video {
+    height: 20rem;
+  }
+  .donationName h6 {
+    font-size: 2rem;
+  }
+  .donationName img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 1rem;
+    margin: 0 1.5rem 0 0;
+  }
+}

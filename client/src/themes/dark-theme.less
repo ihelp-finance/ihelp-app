@@ -1,0 +1,65 @@
+.table td,
+.table th {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--white) !important;
+}
+.table th {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.headerRight a {
+  color: var(--white);
+}
+
+.active-mob-header.header {
+  background: var(--dark-solid) !important;
+}
+.mob-header {
+  background: var(--dark-solid);
+}
+.mob-header-content a {
+  color: var(--white);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    color: rgba(255,255,255,.85);
+    font-weight: 500;
+}
+
+h4:hover {
+    color: var(--light-purple);
+}
+
+.footerLink a {
+  border: 1px solid var(--white);
+  color: var(--white);
+}
+.footerLink a:hover {
+  border: 1px solid var(--light-purple);
+  color: var(--light-purple);
+}
+
+@import "~antd/lib/style/color/colorPalette.less";
+@import "~antd/dist/antd.less";
+@import "~antd/lib/style/themes/dark.less";
+
+// These are shared variables that can be extracted to their own file
+@primary-color: #2caad9;
+@border-radius-base: 4px;
+
+@component-background: #212121;
+@body-background: #212121;
+@popover-background: #212121;
+@border-color-base: #6f6c6c;
+@border-color-split: #424242;
+@table-header-sort-active-bg: #424242;
+@card-skeleton-bg: #424242;
+@skeleton-color: #424242;
+@table-header-sort-active-bg: #424242;
+
+
+.highlight {
+  background-color: #3f3f3f;
+}

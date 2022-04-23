@@ -1,0 +1,48 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+client/node_modules
+
+# testing
+coverage
+
+# production
+client/build
+
+# misc
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+nginx/access.log
+nginx/error.log
+nginx/ssl/*
+nginx/.htpasswd
+
+.DS_Store
+
+*.pyc
+
+*.tar.gz
+
+*.lock
+package-lock.json 
+
+modules/superset/*.tgz
+modules/superset/incubator-superset
+modules/postgresql/data/*
+modules/postgresql/pgadmin/*
+
+client/public/downloads/*
+
+modules/postprocess/token.json
+
+.htpasswd
+
+yarn.lock
+
+*.env
+
+*.log

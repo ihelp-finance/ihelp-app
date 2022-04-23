@@ -1,0 +1,59 @@
+
+kubectl create -f deploy.yaml         
+
+kubectl replace --force -f deploy.yaml
+
+kubectl apply -f deploy.yaml
+
+
+kubectl delete all --all -n "ihelp-app-avax"
+
+kubectl create -f runCollect.yaml
+kubectl create -f runUpkeep.yaml
+
+kubectl replace --force -f runUpkeep.yaml
+kubectl replace --force -f runCollect.yaml
+kubectl replace --force -f runTokenRefresh.yaml
+
+kubectl delete pod collect-run -n ihelp-app
+kubectl delete pod upkeep-run -n ihelp-app-avax
+
+
+kubectl exec -it pods/refresh-run -n ihelp-app-avax -- bash
+
+
+
+
+kubectl delete services ihelp
+kubectl delete deployments client
+
+kubectl delete all --all
+kubectl delete all --all -n "ingress-nginx"
+kubectl get services -o=wide -n testapp
+
+
+
+kubectl delete pod collect-test -n ihelp
+
+
+
+kubectl create job --from=cronjobs/ihelp-collect test -n ihelp
+kubectl delete job test -n ihelp
+
+kubectl logs -f services/ihelp-client -n ihelp
+kubectl logs -f services/ihelp-server -n ihelp
+kubectl logs -f deploy/ihelp-collect -n ihelp
+
+kubectl scale deployment/ihelp-client --replicas=1 -n "ihelp"
+
+kubectl create -f test.yaml  
+kubectl replace --force -f test.yaml 
+
+kubectl get services -o=wide -n testapp
+
+kubectl delete all --all -n "testapp"
+
+kubectl get services -o=wide -n ihelp
+kubectl get deploy -o=wide -n ihelp
+
+kubectl delete all --all -n "testapp"`
