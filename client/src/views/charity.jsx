@@ -662,9 +662,9 @@ const ContributeNew = (props) => {
   
   let depositEnabled = false;
   // DEPOSIT ALWAYS DISABLED SINCE WE ARE REDEPLOYING
-  // if (daiBalance > 0 || usdcBalance > 0) {
-  //   depositEnabled = true;
-  // }
+  if (daiBalance > 0 || usdcBalance > 0) {
+    depositEnabled = true;
+  }
   
   let withdrawEnabled = false;
   if (daiCharityBalance > 0 || usdcCharityBalance > 0) {
