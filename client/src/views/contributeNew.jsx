@@ -120,9 +120,9 @@ const ContributeNew = (props) => {
         const categories = [];
         const categoriesCount = [];
         d.map((c)=>{
-          if (categoriesCount.indexOf(c['Charity Category']) == -1) {
-            categories.push({text:c['Charity Category'],value:c['Charity Category']})
-            categoriesCount.push(c['Charity Category'])
+          if (categoriesCount.indexOf(c['Charity GENERAL Category (One Cell)']) == -1) {
+            categories.push({text:c['Charity GENERAL Category (One Cell)'],value:c['Charity GENERAL Category (One Cell)']})
+            categoriesCount.push(c['Charity GENERAL Category (One Cell)'])
           }
         })
         
@@ -164,13 +164,13 @@ const ContributeNew = (props) => {
     },
     {
       title: 'Category',
-      dataIndex: 'Charity Category',
+      dataIndex: 'Charity GENERAL Category (One Cell)',
       key: 'category',
-      sorter: (a, b) => a['Charity Category'].localeCompare(b['Charity Category']),
+      sorter: (a, b) => a['Charity GENERAL Category (One Cell)'].localeCompare(b['Charity GENERAL Category (One Cell)']),
       sortDirections: ['ascend','descend'],
-      width: '10%',
+      width: '25%',
       filters: allCategories,
-      onFilter: (value, c) => c['Charity Category'] == value,
+      onFilter: (value, c) => c['Charity GENERAL Category (One Cell)'] == value,
     },
     {
       title: 'Description',
@@ -227,7 +227,7 @@ const ContributeNew = (props) => {
     
     allCharities.map((c)=>{
       
-      const key = [c['Organization Name'],c['Charity Category'],c['Brief Description & History']].join(',');
+      const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
       
       if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
         filtered.push(c);

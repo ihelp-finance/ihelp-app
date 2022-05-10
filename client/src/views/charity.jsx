@@ -714,10 +714,10 @@ const ContributeNew = (props) => {
               <main>
                 <h6>{charityInfo['Organization Name']}</h6>
                 <p>
-                  <span style={{fontStyle:'italic'}}>Primary Uses of Donated Funds:<br/><span style={{fontWeight:'bold'}}>{charityInfo['Primary Uses of Donated Funds']}</span></span>
+                  <span style={{fontStyle:'italic'}}>Brief Description:<br/><span style={{fontWeight:'bold'}}>{charityInfo['Short Description for Front of Card']}</span></span>
                   <br /><a href={charityInfo['Organization Website']} target="_blank">{charityInfo['Organization Website']}</a>
                   <br /> <br />
-                  Charity Category: {charityInfo['Charity Category']}<br />
+                  Charity Category: {charityInfo['Charity GENERAL Category (One Cell)']}<br />
                   Country of Incorporation: {charityInfo['Country of Incorporation']}<br />
                   Organization Type: {charityInfo['Organization Type']}<br />
                   Tax ID Number: {charityInfo['Tax ID Number']}<br />
@@ -817,15 +817,15 @@ const ContributeNew = (props) => {
             
             <div className={st.charityMessages}>
               <main>
-                <h2>Brief Description & History</h2>
+                <h2>Description & History</h2>
                 <h6>
                   {charityInfo['Brief Description & History']}
                 </h6>
               </main>
               <main>
-                <h2>Main Countries of Operation</h2>
+                <h2>Main Areas of Operation</h2>
                 <h6>
-                  {charityInfo['Main Countries of Operation']}
+                  {charityInfo['Main Areas of Operation']}
                 </h6>
               </main>
               <main>

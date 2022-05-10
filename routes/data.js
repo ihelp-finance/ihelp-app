@@ -61,8 +61,10 @@ const getCharityStats = (req, contractAddress) => {
 }
 
 const getCharityInformation = (req, moveOn, skipCharityStats) => {
-  var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
-  var g_id = "313945428"
+  //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
+  //var g_id = "313945428"
+  var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+  var g_id = "727836194"
   var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
   request(url, function(error, response, body) {
 
@@ -154,8 +156,10 @@ router.get('/charities/:id', (req, res) => {
 
   const charity_id = req.params.id;
 
-  var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
-  var g_id = "313945428"
+  // var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
+  // var g_id = "313945428"
+  var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+  var g_id = "727836194"
   var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
   request(url, function(error, response, body) {
 
@@ -304,8 +308,10 @@ router.get('/stats', (req, res) => {
 
       response['totalHelpers'] = d;
 
-      var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
-      var g_id = "313945428"
+      // var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
+      // var g_id = "313945428"
+      var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+      var g_id = "727836194"
       var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
       request(url, function(error, ress, body) {
 
@@ -944,8 +950,10 @@ router.get('/login', (req, res) => {
 
   const getCharityInfo = () => {
 
-    var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
-    var g_id = "313945428"
+    // var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
+    // var g_id = "313945428"
+    var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+    var g_id = "727836194"
     var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
     request(url, function(error, re, body) {
 
