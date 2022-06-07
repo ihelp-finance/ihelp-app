@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import st from "./styles/charity.module.css";
+import {GeneralInformation, Data, Messages, Videos} from "./tabs";
 import {
   MdSearch,
   MdMenu,
@@ -671,12 +672,67 @@ const ContributeNew = (props) => {
     withdrawEnabled = true;
   }
   
+  const [currentTab, setCurrentTab] = useState('tab1');
+    const tabList = [
+        {
+            name: 'tab1',
+            label: 'General Information',
+            content: (
+                <GeneralInformation charityInfo={charityInfo} />
+            )
+        },
+        {
+            name: 'tab2',
+            label: 'Data',
+            content: (
+                <Data charityInfo={charityInfo} />
+            )
+        },
+        {
+            name: 'tab3',
+            label: 'Messages',
+            content: (
+                <Messages charityInfo={charityInfo} />
+            )
+        },
+        {
+            name: 'tab4',
+            label: 'Videos',
+            content: (
+                <Videos charityInfo={charityInfo} />
+            )
+        }
+    ];
+    
+    const [infoItems, setInfoItems] = useState([
+    {
+        priceK:'$184k',
+        priceMM:'$2.3MM',
+        name:'Total Revenue',
+    },
+    {
+        priceK:'$184k',
+        priceMM:'$2.3MM',
+        name:'Total Expenses',
+    },
+    {
+        priceK:'$184k',
+        priceMM:'$2.3MM',
+        name:'Net Income',
+    },
+    {
+        priceK:'85%',
+        priceMM:'15%',
+        name:'Program expense (%)',
+    },
+])
+  
   return (
     <div id="app" className="app">
       {/*<Head>
         <title>iHelp | Charity</title>
-      </Head>*/}
-      <img src="/assets/bgc.svg" alt="Bgc" className="body-bgc" />
+      </Head>
+      <img src="/assets/bgc.svg" alt="Bgc" className="body-bgc" />*/}
       
       <Header {...props}/>
       
@@ -707,7 +763,65 @@ const ContributeNew = (props) => {
 
        {charityInfo ? (<div className={st.charity + " " + "section"}>
         <div className="box">
-          {/* Charity Top Overviw */}
+        <div className="kseItem">
+        
+        <div className="banner">
+                {
+                    infoItems.map((item,index)=>{
+                        return(
+                            <div className="infoItem" key={index}>
+                                <h3>{item.priceK}</h3>
+                                <h3>{item.priceMM}</h3>
+                                <p>{item.name}</p>
+                            </div>
+                        )
+                    })
+                }
+
+            </div>
+            
+             <div className={st.charityButtonsGrid} style={{marginTop:'-36px',marginBottom:'36px'}}>
+                <main>
+                  <h2 style={{textAlign:'center'}}>Donate Interest</h2>
+                  <div className={st.charityBtnGrd} style={{gridTemplateColumns:'repeat(2,1fr)'}}>
+                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositInterest(true)}>Deposit</button>
+                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && withdrawEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowWithdrawInterest(true)}>Withdraw</button>
+                  </div>
+                </main>
+                <main>
+                  <h2 style={{textAlign:'center'}}>Donate Principal</h2>
+                  <div className={st.charityBtnGrd}>
+                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositDirect(true)}>Direct Donate</button>
+                  </div>
+                </main>
+              </div>
+
+          <div className="tabs">
+                {
+                    tabList.map((tab, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentTab(tab.name)}
+                            className={(tab.name === currentTab) ? 'active' : ''}>
+                            {tab.label}
+                        </button>
+                    ))
+                }
+            </div>
+            {
+                tabList.map((tab, i) => {
+                    if (tab.name === currentTab) {
+                        return <div key={i}>{tab.content}</div>;
+                    } else {
+                        return null;
+                    }
+                })
+            }
+            
+            <div style={{height:'50px'}}>
+            </div>
+            
+          {/*
           <div className={st.charityOverviewGrid}>
             <div className={st.charityImageText}>
               <img src={`${charityInfo['Logo']}`} alt="" />
@@ -754,7 +868,6 @@ const ContributeNew = (props) => {
                   {usdcTotalInterestEarned ? commafy(parseFloat(utils.formatUnits(usdcTotalInterestEarned,charityDecimals['USDC'])).toFixed(2)) : "..."}
                 </Tooltip>
                 </div> : ''}
-                {/*<h6>Total Direct Donations Received: $0</h6>*/}
               </main>
               <main>
                 <h6>Your Deposits: <span className={st.darkText}><Tooltip title={'USD Fiat'} placement="right" >${commafy(myBalanceUSD.toFixed(2))}</Tooltip></span></h6>
@@ -770,29 +883,14 @@ const ContributeNew = (props) => {
                   {usdcCharityBalance ? commafy(parseFloat(utils.formatUnits(usdcCharityBalance,charityDecimals['USDC'])).toFixed(2)) : "..."}
                 </Tooltip>
                 </div> : ''}
-                {/*<h6>Your % of Charity Pool: 25%</h6>*/}
               </main>
             </div>
           </div>
+          */}
           
-           <div className={st.charityButtonsGrid} style={{marginTop:'-36px',marginBottom:'36px'}}>
-                <main>
-                  <h6>Donate Interest</h6>
-                  <div className={st.charityBtnGrd} style={{gridTemplateColumns:'repeat(2,1fr)'}}>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositInterest(true)}>Deposit</button>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && withdrawEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowWithdrawInterest(true)}>Withdraw</button>
-                  </div>
-                </main>
-                <main>
-                  <h6>Donate Principal</h6>
-                  <div className={st.charityBtnGrd}>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositDirect(true)}>Direct Donate</button>
-                  </div>
-                </main>
-              </div>
           
-
-          {/* Charity Videos and Messages Grid */}
+          
+          {/*
           <div className={st.videoMessagesGrid}>
             <div className={st.charityVideos}>
               <h1>Video Updates</h1>
@@ -800,21 +898,12 @@ const ContributeNew = (props) => {
               {charityInfo && charityInfo['Videos'] != '' ? charityInfo['Videos'].split('\n').map((d,i) => {
               return (
                 <div className={st.charityVideoBox}>
-                  {/*<video
-                    controls
-                    muted
-                    autoPlay
-                    loop
-                    src="../assets/earth.mp4"
-                    ></video>*/}
                   <iframe height={'180px'} src={d.indexOf('facebook') > -1 ? d : `https://www.youtube.com/embed/${d}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                  {/*<h6>Uploaded: October 16, 2021</h6>*/}
+                 
                 </div>
               )}) : 'no videos...'}
             </div>
-            
-  
-            
+        
             <div className={st.charityMessages}>
               <main>
                 <h2>Description & History</h2>
@@ -841,19 +930,17 @@ const ContributeNew = (props) => {
                       <span className="content" dangerouslySetInnerHTML={{__html: d}} />
                     </p>
                   </div>
-                  {/*<h6>Uploaded: November 15, 2035</h6>*/}
                 </div>
                 
                  )}) : 'no messages...'}
                  
-               
-                {/*<a className={st.seeAllMessages} href="#">
-                  See all messages <MdEast />
-                </a>*/}
               </main>
              
             </div>
-          </div>
+           
+            
+          </div> */}
+        </div>
         </div>
       </div>) : ''}
       

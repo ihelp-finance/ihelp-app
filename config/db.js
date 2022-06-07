@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 
 const forceOverwrite = false;
 
+console.log('loading db');
+
 const seq = new Sequelize(
   'ihelp',
   'postgres', 
@@ -11,7 +13,7 @@ const seq = new Sequelize(
   {
     host: 'ihelp-db',
     dialect: 'postgres',
-    logging: false,
+    logging: false, //console.log,
     freezeTableName: true,
     operatorsAliases: false
   }

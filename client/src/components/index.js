@@ -18,3 +18,4 @@ export { default as TokenBalance } from "./TokenBalance";
 export { default as Wallet } from "./Wallet";
 export { default as L2Bridge } from "./L2Bridge";
 export { default as Footer } from "./Footer";
+export { CheckboxContainer } from "./checkboxContainer";

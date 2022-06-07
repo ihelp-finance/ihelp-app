@@ -41,7 +41,7 @@ from "recharts";
 import commafy from 'commafy';
 import { utils } from "ethers";
 import moment from 'moment'
-import { Header } from "../components";
+import { Header, Footer } from "../components";
 
 const ContributeNew = (props) => {
   
@@ -308,13 +308,14 @@ const ContributeNew = (props) => {
     <div id="app" className="app">
       {/*<Head>
         <title>iHelp | Stake</title>
-      </Head>*/}
-      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />
+      </Head>
+      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />*/}
       
       <Header {...props}/>
 
       <div className={st.stake + " " + " section"}>
         <div className="box">
+         <div className="sectionHeader">Stake</div>
           <div className={st.stakeGrid}>
             <div className={st.stakeGridLeft}>
               <h5>Staking Actions</h5>
@@ -520,7 +521,7 @@ Like liquidity providing (LP), you will earn fees according to your share in the
             </div>
           </div>
         </div>
-      </div>
+      </div><Footer {...props}/>
     </div>
   );
 };

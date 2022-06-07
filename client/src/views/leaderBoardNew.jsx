@@ -292,13 +292,14 @@ const ContributeNew = (props) => {
     <div id="app" className="app">
      {/* <Head>
         <title>iHelp | Leaderboard</title>
-      </Head>*/}
-      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />
+      </Head>
+      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />*/}
       
       <Header {...props}/>
       
       <div className={st.leaderborad + " " + "section"}>
         <div className="box">
+        <div className="sectionHeader">Leaderboard</div>
           {/* Search and  Filter Box */}
           <div className={st.searchFilter}>
             <main>

@@ -9,6 +9,9 @@ For development, the server and client apps can be deployed as a single monolith
 #### Monolithic development instructions using docker:
 
 ```
+# install nvm and use node v12 for the current state of this app
+
+
 # install the requirements
 yarn install
 cd client

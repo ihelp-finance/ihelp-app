@@ -1,5 +1,5 @@
 //import Link from "next/link";
-import { BrowserRouter, Route, Link,useLocation } from "react-router-dom";
+import { BrowserRouter, Route, NavLink,Link,useLocation } from "react-router-dom";
 //import { useRouter } from "next/router";
 import React, { useEffect, useState, useCallback,useContext } from "react";
 import {
@@ -106,43 +106,34 @@ const Header = (props) => {
           </div>
         </div>
         <div className="box">
+      
           <div className="headerContent">
 
                 <Link to="/">
                   <img onClick={moveTo1}  src={currentTheme == 'dark' ? logo_wt : logo} alt="logo" />
                 </Link>
-                <div className="headerRight">
-                
-                  <Link to="/" passHref={true}>
-                    <a className={router.pathname == "/" ? "activeLink" : ""}>
-                      Contribute
-                    </a>
+        
+                <div className={"headerRight"}>
+                  <Link to="/" passHref={true} className={router.pathname == "/" ? "link activeLink" : "link"}>
+                      CONTRIBUTE
                   </Link>
-                  <Link to="/dashboard" passHref={true}>
-                    <a
+                  <Link to="/dashboard" passHref={true} className={ router.pathname == "/dashboard" ? "link activeLink" : "link" }>
+                      DASHBOARD
+                  </Link>
+                  <Link to="/stake" passHref={true} className={router.pathname == "/stake" ? "link activeLink" : "link"}>
+                      STAKE
+                    
+                  </Link>
+                  <Link to="/leaderboard" passHref={true} 
                       className={
-                        router.pathname == "/dashboard" ? "activeLink" : ""
+                        router.pathname == "/leaderboard" ? "link activeLink" : "link"
                       }
                     >
-                      My Dashboard
-                    </a>
+                      LEADERBOARD
+                    
                   </Link>
-                  <Link to="/stake" passHref={true}>
-                    <a className={router.pathname == "/stake" ? "activeLink" : ""}>
-                      Stake
-                    </a>
-                  </Link>
-                  <Link to="/leaderboard" passHref={true}>
-                    <a
-                      className={
-                        router.pathname == "/leaderboard" ? "activeLink" : ""
-                      }
-                    >
-                      Leaderboard
-                    </a>
-                  </Link>
+                 </div>
                   
-                   </div>
                   
               {/*<button className="grd-btn">Ethereum Network</button>*/}
               <div className="headerRightButton">
@@ -169,8 +160,9 @@ const Header = (props) => {
                   </span>
                   
               </div>
-        
+      
           </div>
+      
         </div>
       </div>)
 

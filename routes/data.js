@@ -234,7 +234,7 @@ router.get('/charities/:id', (req, res) => {
 });
 
 router.get('/stats', (req, res) => {
-
+  
   // return the key stats for the frontend
   const response = {
     totalInterest: 0,
@@ -255,6 +255,7 @@ router.get('/stats', (req, res) => {
       limit: 1
     })
     .then((data) => {
+
       const times = _.map(data, function(data) { return data.time; });
 
       return req.app.db.ContribByCharity.findAll({
@@ -314,7 +315,7 @@ router.get('/stats', (req, res) => {
       var g_id = "727836194"
       var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
       request(url, function(error, ress, body) {
-
+        
         if (error == null) {
           csv()
             .fromString(body)

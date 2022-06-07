@@ -24,6 +24,7 @@ import st from "../views/styles/footer.module.css";
 const Footer = (props) => {
     
     return (
+      <footer>
         <div className={st.footer}>
         <div className="box">
           <div className={st.footerContent}>
@@ -58,7 +59,7 @@ const Footer = (props) => {
             </div>
           </div>
         </div>
-      </div>)
+      </div></footer>)
 
 }
 
