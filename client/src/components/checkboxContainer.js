@@ -1,19 +1,26 @@
 import React, {useEffect, useState} from 'react'
 
-export function CheckboxContainer({data, seeMore}) {
-    const [checkbox, setCheckbox] = useState([])
+export function CheckboxContainer({data, onHandleChange, seeMore}) {
+    
+    //const [checkbox, setCheckbox] = useState([])
     const [seeMoreState, setSeeMoreState] = useState()
 
-    useEffect(() => {
-        setCheckbox(data)
-    }, [])
+    // useEffect(() => {
+    //     setCheckbox(data)
+    // }, [])
+    
     const handleChange = (e) => {
         const {name, checked} = e.target
-        console.log(name, checked)
-        let tempUser = checkbox.map(item =>
+        //console.log(name, checked)
+        
+        let tempUser = data.checkbox.map(item =>
             item.name === name ? {...item, isChecked: checked} : item)
-        setCheckbox(tempUser)
+        
+        //setCheckbox(tempUser)
         console.log(tempUser)
+        
+        onHandleChange(tempUser)
+        
     }
 
     return (
@@ -21,7 +28,7 @@ export function CheckboxContainer({data, seeMore}) {
             <div
                 className='body'
                 style={{
-                    maxHeight: seeMoreState ? 'initial' : 207,
+                    maxHeight: seeMoreState ? 'initial' : 400,
                 }}
             >
                 <p className='title'>{data.title}</p>

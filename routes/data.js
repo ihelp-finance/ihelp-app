@@ -234,7 +234,7 @@ router.get('/charities/:id', (req, res) => {
 });
 
 router.get('/stats', (req, res) => {
-  
+
   // return the key stats for the frontend
   const response = {
     totalInterest: 0,
@@ -315,7 +315,7 @@ router.get('/stats', (req, res) => {
       var g_id = "727836194"
       var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
       request(url, function(error, ress, body) {
-        
+
         if (error == null) {
           csv()
             .fromString(body)
@@ -473,29 +473,36 @@ router.get('/userstats', (req, res) => {
 
         var key = Object.keys(response['contrib_by_charity'])[i];
 
+        console.log(key)
+
         totalContributions += response['contrib_by_charity'][key];
 
         var match = charityHash[key];
+        // console.log(match)
 
-        if (response['contrib_by_charity'][key] > 0) {
-          if (Object.keys(response['contrib_by_charity_summary']).includes(match['name'])) {
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
+        if (match != undefined) {
+
+          if (response['contrib_by_charity'][key] > 0) {
+            if (Object.keys(response['contrib_by_charity_summary']).includes(match['name'])) {
+              response['contrib_by_charity_summary'][match['name']][match['currency']] = {
+                address: key,
+                contrib: response['contrib_by_charity'][key]
+              }
+              response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
             }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
-          }
-          else {
-            response['contrib_by_charity_summary'][match['name']] = {};
-            response['contrib_by_charity_summary'][match['name']]['total'] = 0;
-            response['contrib_by_charity_summary'][match['name']]['id'] = match['id'];
-            response['contrib_by_charity_summary'][match['name']]['logo'] = match['logo'];
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
+            else {
+              response['contrib_by_charity_summary'][match['name']] = {};
+              response['contrib_by_charity_summary'][match['name']]['total'] = 0;
+              response['contrib_by_charity_summary'][match['name']]['id'] = match['id'];
+              response['contrib_by_charity_summary'][match['name']]['logo'] = match['logo'];
+              response['contrib_by_charity_summary'][match['name']][match['currency']] = {
+                address: key,
+                contrib: response['contrib_by_charity'][key]
+              }
+              response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
             }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
           }
+
         }
 
         //response['contrib_by_charity_usd_summary'] 
@@ -655,13 +662,14 @@ router.get('/stakingstats', (req, res) => {
     })
     .then((data) => {
       const r = _.map(data, function(data) {
-        
+
         let reward = 0
         if (data.xhelp_total_reward != null) {
           reward = parseFloat(data.xhelp_total_reward.toFixed(6));
         }
-        return {'time':data.time, 'xhelp_total_reward':reward} });
-      
+        return { 'time': data.time, 'xhelp_total_reward': reward }
+      });
+
       response['rewardovertime'] = r;
 
       // response['contrib_by_charity'] = {};
@@ -861,9 +869,9 @@ router.get('/login', (req, res) => {
               return requestPromise(options)
 
             }
-            
+
             else if (user['binance_api'] != null && req.query.fetchWallet == 'true') {
-              
+
             }
             else {
 
@@ -922,8 +930,9 @@ router.get('/login', (req, res) => {
                   client.getAccount(fiat_account, function(err, fiat_account) {
                     //console.log(fiat_account)
                     try {
-                    response['coinbase']['usd'] = fiat_account.balance.amount;
-                    }catch(e){
+                      response['coinbase']['usd'] = fiat_account.balance.amount;
+                    }
+                    catch (e) {
                       response['coinbase']['usd'] = 'NA'
                     }
                     getCharityInfo();
@@ -938,9 +947,9 @@ router.get('/login', (req, res) => {
           });
 
         })
-        // .catch((err) => {
-        //   res.json(response)
-        // })
+      // .catch((err) => {
+      //   res.json(response)
+      // })
     }
     else {
       res.json({
@@ -1027,15 +1036,16 @@ router.get('/login', (req, res) => {
 })
 
 router.get('/contracts', (req, res) => {
-  
-  fs.readFile('contracts/hardhat_contracts.json','utf8',(e,d)=>{
+
+  fs.readFile('contracts/hardhat_contracts.json', 'utf8', (e, d) => {
     try {
       res.json(JSON.parse(d));
-    }catch(e){
+    }
+    catch (e) {
       res.send({});
     }
   })
-  
+
 })
 
 

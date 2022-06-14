@@ -121,10 +121,9 @@ const ContributeNew = (props) => {
       
       setTimeout(()=>{
          setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
-      setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
-      setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
+        setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
+        setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
       },10)
-     
 
       let url = `/api/v1/data/userstats?address=${props.address}`;
       console.log(url);

@@ -69,7 +69,7 @@ import { Table, Tag, Space,Tooltip } from 'antd';
 
 import { Header,Footer, CheckboxContainer } from "../components";
 
-  const PlaceholderLogo = () => (
+const PlaceholderLogo = () => (
 <svg width="8rem" height="8rem" viewBox="0 0 66 58" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M60.5028 6.52588L34.332 34.9145L35.049 47.9139L65.3139 20.9819C65.3139 20.755 65.3426 20.5244 65.3498 20.2938C65.5469 15.2361 63.8086 10.2985 60.5028 6.52588Z" fill="#8E40DA"/>
 <path d="M8.09663 3.57959C7.21158 4.22008 6.38053 4.935 5.6122 5.71688C5.17841 6.16337 4.76613 6.62816 4.37895 7.10393C2.54421 9.369 1.23635 12.0292 0.553711 14.8845L30.3848 40.6345L31.2309 27.7595L8.09663 3.57959Z" fill="#8830EF"/>
@@ -87,11 +87,16 @@ const ContributeNew = (props) => {
   const [totalCharities, setTotalCharities] = useState(commafy(''));
   const [totalCountries, setTotalCountries] = useState(commafy(''));
   const [totalHelpers, setTotalHelpers] = useState(commafy(''));
+  const [searchValue, setSearchValue] = useState('');
   
   const [allCategories, setAllCategories] = useState([]);
   const [allCharities, setAllCharities] = useState([]);
   const [filteredCharities, setFilteredCharities] = useState([]);
   const [filteredShownCharities, setFilteredShownCharities] = useState(8);
+  
+  
+  const [areasOfOperation, setareasOfOperation] = useState([]);
+
   
   const history = useHistory();
 
@@ -170,10 +175,15 @@ const ContributeNew = (props) => {
         const categories = [];
         const categoriesCount = [];
         d.map((c)=>{
-          if (categoriesCount.indexOf(c['Charity GENERAL Category (One Cell)']) == -1) {
-            categories.push({text:c['Charity GENERAL Category (One Cell)'],value:c['Charity GENERAL Category (One Cell)']})
-            categoriesCount.push(c['Charity GENERAL Category (One Cell)'])
-          }
+          
+              c['Charity GENERAL Category (One Cell)'].split('\n').map((cc)=>{
+                  
+                  if (categoriesCount.indexOf(cc.trim()) == -1 && cc != '') {
+                      categories.push({name:cc.trim(),isChecked:false})
+                      categoriesCount.push(cc.trim())
+                  }
+              })
+            
         })
         
         const chars = [];
@@ -182,6 +192,53 @@ const ContributeNew = (props) => {
             chars.push(c)
           }
         })
+        
+        
+        let geos = [];
+        const geoCount = [];
+        d.map((c)=>{
+          
+              c['Main Areas of Operation'].split(',').map((cc)=>{
+                  
+                  if (geoCount.indexOf(cc.trim()) == -1 && cc != '') {
+                      geos.push({name:cc.trim(),isChecked:false})
+                      geoCount.push(cc.trim())
+                  }
+              })
+            
+        })
+        
+        geos.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        categories.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        
+        function prepend(value, array) {
+  var newArray = array.slice();
+  newArray.unshift(value);
+  return newArray;
+}
+
+
+        geos = prepend({name:'Global Non-Profit',isChecked:false},geos);
+       // console.log(categories)
+        
+         const initialCharityGeneralCategory = {
+            title: 'General Charity Category',
+            checkbox: categories
+        }
+        // setcharityGeneralCategory(initialCharityGeneralCategory)
+        filteredParams['categories'] = initialCharityGeneralCategory;
+        
+        const initialCharityGeography = {
+            title: 'Main Areas of Operation',
+            checkbox: geos
+        }
+        // setcharityGeneralCategory(initialCharityGeneralCategory)
+        filteredParams['geography'] = initialCharityGeography;
+        
+        setinitialFilterState(filteredParams)
+        
+        setFilteredParams(filteredParams)
+        setActualFilterParams(filteredParams)
         
         setAllCategories(categories);
         setAllCharities(chars);
@@ -275,17 +332,27 @@ const ContributeNew = (props) => {
 
     const filtered = [];
     
+    const searchvalue = e.target.value;
+    setSearchValue(searchvalue)
+    
+    
+    // setTimeout(()=>{
+    //          processFilterSearches();
+    //      },100);
+    
+    /*
     allCharities.map((c)=>{
       
       const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
       
-      if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
+      if (key.toLowerCase().indexOf(searchvalue.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
         filtered.push(c);
       }
       
     })
     
     setFilteredCharities(filtered);
+    */
     
   }
 
@@ -361,13 +428,10 @@ const ContributeNew = (props) => {
             {name: "Alliance/Advocacy Organizations (N01) "},
         ]
     }
-    const charityGeneralCategory = {
-        title: 'Charity General Category',
-        checkbox: [
-            {name: "Environment (C)"},
-            {name: "Recreation & Sports (N) "},
-        ]
-    }
+   
+    //  const [charityGeneralCategory, setcharityGeneralCategory] = useState({title: 'General Charity Category',
+    //         checkbox: []});
+    
     const cryptosAvailableDeposit = {
         title: "Cryptos Available for Deposit",
         checkbox: [
@@ -395,9 +459,244 @@ const ContributeNew = (props) => {
         
     }
 
-    try{
-        console.log(Object.keys(filteredCharities[0]))
-    }catch(e){}
+     const updateFilterParams = (e) => {
+         
+         const value = e.target.value;
+         const input = e.target.name;
+         
+         console.log(input,value)
+
+         const newParams = JSON.parse(JSON.stringify(filteredParams));
+         newParams[input] = value;
+         
+         console.log(newParams)
+         
+         setFilteredParams(newParams)
+         
+     }
+
+     const resetFilterState = () => {
+         console.log('reseting filter')
+         setFilteredParams(initialFilterState)
+         setActualFilterParams(initialFilterState)
+        //  setTimeout(()=>{
+        //      processFilterSearches();
+        //  },100);
+     }
+     
+     const operators = {
+        '>': function(a, b) { return a > b },
+        '<': function(a, b) { return a < b },
+    };
+     
+     
+     const paramMap = {
+         'revenue_min': ['Total Revenue',operators['>']],
+         'revenue_max': ['Total Revenue',operators['<']],
+         'prog_exp_rev_min': ['Program Expense / Revenue',operators['>']],
+         'prog_exp_rev_max': ['Program Expense / Revenue',operators['<']],
+         'year_inc_min': ['Year Incorporated',operators['>']],
+         'year_inc_max': ['Year Incorporated',operators['<']],
+     }
+     
+    const [initialFilterState, setinitialFilterState] = useState({
+         'revenue_min':'',
+         'revenue_max':'',
+         'prog_exp_rev_min':'',
+         'prog_exp_rev_max':'',
+         'year_inc_min':'',
+         'year_inc_max':'',
+         'categories': {title: 'General Charity Category',checkbox: []},
+         'geography': {title: 'Main Areas of Operation',checkbox: []}
+    })
+    
+     const [filteredParams, setFilteredParams] = useState(initialFilterState);
+         
+     const [actualFilterParams, setActualFilterParams] = useState(initialFilterState);
+
+     const allAreTrue = (arr) => {
+      return arr.every(element => element === true);
+    }
+    
+     useEffect(() => {
+   // const processFilterSearches = () => {
+        
+        console.log(filteredParams);
+        
+         // get checks to pass
+        const checks = [];
+        Object.keys(filteredParams).map((c)=>{
+            if (filteredParams[c]) {
+                checks.push(c)
+            }
+        })
+         
+        const filtered = [];
+        
+        let selectedCharities = []
+        try {
+        filteredParams.categories.checkbox.map((cc)=>{
+            if (cc['isChecked'] == true){
+                selectedCharities.push(cc.name)
+            }
+        })
+        }catch(e){}
+        //console.log('selectedCharities',selectedCharities)
+
+        let selectedGeographies = [];
+        try {
+        filteredParams.geography.checkbox.map((cc)=>{
+            if (cc['isChecked'] == true){
+                selectedGeographies.push(cc.name)
+            }
+        })
+        }catch(e){}
+        console.log('selectedGeographies',selectedGeographies)
+
+        allCharities.map((c)=>{
+            
+            let searchpass = false;
+            if (searchValue != '') {
+                const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
+              if (key.toLowerCase().indexOf(searchValue.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
+                searchpass = true;
+              }
+            } else {
+                searchpass = true;
+            }
+            
+            let categorypass = false;
+            if (selectedCharities.length > 0) {
+                const charityCategories = c['Charity GENERAL Category (One Cell)'].split('\n');
+                for (let cc=0;cc<charityCategories.length;cc++) {
+                    //console.log(charityCategories[cc])
+                    if (selectedCharities.indexOf(charityCategories[cc].trim()) > -1) {
+                        categorypass = true 
+                        break
+                    }
+            }} else {
+                categorypass = true 
+            }
+            
+            let geographypass = false;
+            if (selectedGeographies.length > 0) {
+                const charityGeographies = c['Main Areas of Operation'].split(',');
+                for (let cc=0;cc<charityGeographies.length;cc++) {
+                    //console.log(charityCategories[cc])
+                    if (selectedGeographies.indexOf(charityGeographies[cc].trim()) > -1) {
+                        geographypass = true 
+                        break
+                    }
+            }} else {
+                geographypass = true 
+            }
+            
+           
+            //   const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
+            //   if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
+            //     filtered.push(c);
+            //   }
+        
+            const passes = [];
+            checks.map((cc)=>{
+                if (cc.indexOf('min') > -1 || cc.indexOf('max') > -1){
+                 if ( paramMap[cc][1](parseFloat(c[paramMap[cc][0]].replace(/,/g,'').replace(/\$/g,'')),parseFloat(filteredParams[cc]))){
+                     passes.push(true)
+                 } else {
+                     passes.push(false)
+                 }
+                }
+            })
+            
+            //console.log(c['Organization Name'],passes)
+            
+            if (allAreTrue(passes) && searchpass && categorypass && geographypass){
+                filtered.push(c);
+            }
+ 
+        })
+        
+        setFilteredCharities(filtered);
+         
+        
+     }, [actualFilterParams,setActualFilterParams,setSearchValue,searchValue]);
+    
+     const applyFilteredParams = () =>{
+         
+        setActualFilterParams(filteredParams);
+      //  processFilterSearches();  
+       
+     }
+     
+    const filtersMatch = JSON.stringify(actualFilterParams) == JSON.stringify(filteredParams);
+   
+   //console.log(filtersMatch,actualFilterParams,filteredParams);
+
+    // try{
+    //     console.log(Object.keys(filteredCharities[0]))
+    // }catch(e){}
+    
+    const handleCategoryCheckboxChange = (data) => {
+       // console.log(data);
+        
+        const newParams = JSON.parse(JSON.stringify(filteredParams));
+        newParams.categories = {title: 'General Charity Category',checkbox: data};
+        setFilteredParams(newParams)
+        
+        //setcharityGeneralCategory();
+    }
+    
+    const handleGeographyCheckboxChange = (data) => {
+       // console.log(data);
+        
+        const newParams = JSON.parse(JSON.stringify(filteredParams));
+        newParams.geography = {title: 'Main Areas of Operation',checkbox: data};
+        setFilteredParams(newParams)
+        
+        //setcharityGeneralCategory();
+    }
+    
+    const [currentTab, setCurrentTab] = useState('tab1');
+    const tabList = [
+        {
+            name: 'tab1',
+            label: 'Category',
+            content: (
+               <CheckboxContainer data={filteredParams.categories} onHandleChange={handleCategoryCheckboxChange} seeMore={true}/>
+            )
+        },
+        {
+            name: 'tab2',
+            label: 'Geography',
+            content: (
+                <CheckboxContainer data={filteredParams.geography} onHandleChange={handleGeographyCheckboxChange} seeMore={true}/>
+            )
+        },
+        {
+            name: 'tab3',
+            label: 'Other',
+            content: (
+<span>
+<div className='inputBanner'>
+                        <label className='title'>Total Revenue ($)</label>
+                        <input type="number" placeholder='0' value={filteredParams['revenue_min']} name='revenue_min' onChange={updateFilterParams} />
+                        <input type="number" placeholder='999.999' value={filteredParams['revenue_max']} name='revenue_max' onChange={updateFilterParams} />
+                    </div>
+                    <div className='inputBanner'>
+                        <label className='title'>Program Expense / Revenue (%)</label>
+                        <input type="number" placeholder='0' value={filteredParams['prog_exp_rev_min']} name='prog_exp_rev_min' onChange={updateFilterParams} />
+                        <input type="number" placeholder='100' value={filteredParams['prog_exp_rev_max']} name='prog_exp_rev_max' onChange={updateFilterParams}/>
+                    </div>
+                    <div className='inputBanner'>
+                        <label className='title'>Year Incorporated</label>
+                        <input type="number" placeholder='2000' value={filteredParams['year_inc_min']} name='year_inc_min' onChange={updateFilterParams}/>
+                        <input type="number" placeholder='2022' value={filteredParams['year_inc_max']} name='year_inc_max' onChange={updateFilterParams}/>
+                    </div>
+</span>
+            )
+        }
+    ];
+    
 
   return (
     <div id="app" className="app">
@@ -476,56 +775,77 @@ const ContributeNew = (props) => {
                 <div className='filters'>
                     <h4>Filters</h4>
                     <div className='btnBanner'>
-                        <button>Apply</button>
-                        <button>Reset</button>
+                        <button onClick={applyFilteredParams} disabled={filtersMatch ? 'disabled' : false}>Apply</button>
+                        <button onClick={resetFilterState}>Reset</button>
                     </div>
-                    <div className='inputBanner'>
-                        <label className='title'>Total Revenue ($)</label>
-                        <input type="number" placeholder='0'/>
-                        <input type="number" placeholder='999.999'/>
+                    
+                    
+                    <div className="tabs">
+                        {
+                            tabList.map((tab, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentTab(tab.name)}
+                                    className={(tab.name === currentTab) ? 'active' : ''}>
+                                    {tab.label}
+                                </button>
+                            ))
+                        }
                     </div>
-                    <div className='inputBanner'>
-                        <label className='title'>Program expense (%)</label>
-                        <input type="number" placeholder='0'/>
-                        <input type="number" placeholder='100'/>
-                    </div>
-                    <CheckboxContainer data={mainAreasOperation} seeMore={true}/>
-                    <CheckboxContainer data={countryIncorporation} seeMore={true}/>
-                    <div className='inputBanner'>
-                        <label className='title'>Year Incorporated</label>
-                        <input type="number" placeholder='2000'/>
-                        <input type="number" placeholder='2022'/>
-                    </div>
-                    <CheckboxContainer data={charityDetailedCategory}/>
-                    <CheckboxContainer data={charityGeneralCategory}/>
-                    <CheckboxContainer data={cryptosAvailableDeposit}/>
+                    {
+                        tabList.map((tab, i) => {
+                            if (tab.name === currentTab) {
+                                return <div key={i}>{tab.content}</div>;
+                            } else {
+                                return null;
+                            }
+                        })
+                    }
+                    
+                    
+                    
+                    
+                     {/* <CheckboxContainer data={ {category:charityGeneralCategory, geography:[], other}} seeMore={true}/>
+                     
+                   <CheckboxContainer data={mainAreasOperation} seeMore={true}/>
+                    <CheckboxContainer data={countryIncorporation} seeMore={true}/>*/}
+                    
+                     {/*<CheckboxContainer data={charityDetailedCategory} seeMore={true}/>*/}
+                   
+                    {/*<CheckboxContainer data={cryptosAvailableDeposit}/>*/}
                     <div className='btnBanner bottom'>
-                        <button>Apply</button>
-                        <button>Reset</button>
+                        <button onClick={applyFilteredParams}  disabled={filtersMatch ? 'disabled' : false}>Apply</button>
+                        <button onClick={resetFilterState}>Reset</button>
                     </div>
                 </div>
                 <div className='stItemContainer'>
-                    <div className='head-bar'>
-                        <button className='sortBySelect'>
-                            <div className='sortByView'>
+                    <div className='head-bar' style={{float:'right'}}>
+                         {/*<button className='sortBySelect'>
+                           <div className='sortByView'>
                                 <p>Sort by</p>
                                 <img src={sortByArrow} alt=""/>
                             </div>
                             <div className='sortByBody'>
-
+                                
                             </div>
-                        </button>
+                        </button>*/}
                         <div className='searchFilter'>
                             <div className='searchBar'>
                                 <img src={searchIcon} alt=""/>
-                                <input type="text" placeholder="Search" onChange={handleSearch}/>
+                                <input type="text" placeholder="Search" value={searchValue} onChange={handleSearch}/>
                             </div>
                         </div>
+                        
                     </div>
+                    
+                    <span style={{fontSize:'14px',fontStyle:'italic',marginTop:'13px',position:'absolute',marginLeft:'15px',color:'rgba(0, 0, 0, 0.5)'}}>Found {filteredCharities.length} out of {allCharities.length} total charities...</span>
+                    
                     <div className='kseBanner'>
 
                         {
                             filteredCharities.map((item, index) => {
+                            
+                          //  console.log(item)
                             
                                 if (index >= filteredShownCharities) { 
                                     return ''

@@ -260,7 +260,7 @@ footer {
 .contribute .quickInfo {
   box-shadow: 0.8rem 0.8rem 1.6rem rgba(0, 0, 0, 0.16);
   border-radius: 1.6rem;
-  padding: 2rem 2.4rem;
+  padding: 2rem 2.4rem 0.4rem;
   text-align: center; }
 
 .contribute .quickInfoSub {
@@ -338,6 +338,13 @@ font-size: 1.8rem;
   padding: 2.4rem;
   border-bottom: .1rem solid #D6C2F2;
   margin-bottom: 3.2rem; }
+  
+.contribute .btnBanner button:disabled {
+ /* background: #bababa42; */
+  opacity: 0.5;
+  cursor:default;
+  pointer-events:none;
+}
 
 .contribute .btnBanner.bottom {
   border-top: .1rem solid #D6C2F2;
@@ -356,6 +363,12 @@ font-size: 1.8rem;
   color: #5C0FC5;
   text-transform: uppercase;
   font-weight: 700; }
+
+.contribute .btnBanner button:hover,
+.contribute .loadMoreBtn:hover {
+  background-color: var(--dark-purple);
+  color: white;
+}
 
 .contribute .loadMoreContent {
   width: 100%;
@@ -441,7 +454,7 @@ font-size: 1.8rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 5rem; }
+  margin-top: 7rem; }
 
 .contribute .kseItem {
   max-width: 40rem;
@@ -506,10 +519,10 @@ font-size: 1.8rem;
   .contribute .keyDataBanner > div {
     transition: .5s ease; }
   .contribute .keyDataBanner .name {
-    margin: 0 0 .4rem 0; }
+    margin: 0 0 .4rem 0; text-align:center; margin-top:15px !important}
   .contribute .keyDataBanner .price {
     color: #5C0FC5;
-    font-family: 'InterMedium', sans-serif; }
+    font-family: 'InterMedium', sans-serif;text-align:center; }
   .contribute .keyDataBanner > div {
     border-right: .1rem solid #E7EAF3;
     border-top: .1rem solid #E7EAF3;
@@ -606,6 +619,7 @@ font-size: 1.8rem;
   line-height: 3.6rem;
   color: #262626; }
 
+
 .kseItem .tabs {
   padding-left: 0rem; }
   .kseItem .tabs button {
@@ -618,6 +632,21 @@ font-size: 1.8rem;
     .kseItem .tabs button.active {
       border-color: #5C0FC5; }
     .kseItem .tabs button:last-child {
+      margin-right: 0; }
+
+.filters .tabs {
+  padding-left: 0rem;margin-top:-15px;margin-bottom:2rem; }
+  .filters .tabs button {
+    color: #262626;
+    width:33%;
+    padding: 1.4rem 1.4rem;
+    font-family: 'PoppinsMedium', sans-serif;
+    font-size: 1.7rem;
+    line-height: 1.5rem;
+    border-bottom: .2rem solid #F0E6FA; }
+    .filters .tabs button.active {
+      border-color: #5C0FC5; }
+    .filters .tabs button:last-child {
       margin-right: 0; }
 
 .kseItem .banner {
@@ -633,7 +662,7 @@ font-size: 1.8rem;
   background: #FFFFFF;
   box-shadow: 0.8rem 0.8rem 1.6rem rgba(0, 0, 0, 0.16);
   border-radius: 1.6rem;
-  padding: 2rem 2.4rem; }
+  padding: 2rem 2.4rem 0rem; }
 
 .kseItem h3 {
   font-family: 'PoppinsMedium', sans-serif;

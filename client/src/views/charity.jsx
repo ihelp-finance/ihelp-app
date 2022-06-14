@@ -704,29 +704,32 @@ const ContributeNew = (props) => {
         }
     ];
     
-    const [infoItems, setInfoItems] = useState([
-    {
-        priceK:'$184k',
-        priceMM:'$2.3MM',
-        name:'Total Revenue',
-    },
-    {
-        priceK:'$184k',
-        priceMM:'$2.3MM',
-        name:'Total Expenses',
-    },
-    {
-        priceK:'$184k',
-        priceMM:'$2.3MM',
-        name:'Net Income',
-    },
-    {
-        priceK:'85%',
-        priceMM:'15%',
-        name:'Program expense (%)',
-    },
-])
+    
+    const [infoItems, setInfoItems] = useState(null)
   
+  console.log(charityInfo)
+  if (charityInfo != null && infoItems == null) {
+    console.log(charityInfo)
+    setInfoItems([
+        {
+            value:charityInfo['Total Revenue'],
+            name:'Total Revenue',
+        },
+        {
+            value: charityInfo['Total Expenses'],
+            name:'Total Expenses',
+        },
+        {
+            value: charityInfo['Net Income'],
+            name:'Net Income',
+        },
+        {
+            value: charityInfo['Program Expense'],
+            name:'Program Expense',
+        },
+    ])
+  }
+
   return (
     <div id="app" className="app">
       {/*<Head>
@@ -761,7 +764,7 @@ const ContributeNew = (props) => {
         </div>
       </div>) : ''}
 
-       {charityInfo ? (<div className={st.charity + " " + "section"}>
+       {charityInfo && infoItems ? (<div className={st.charity + " " + "section"}>
         <div className="box">
         <div className="kseItem">
         
@@ -770,8 +773,7 @@ const ContributeNew = (props) => {
                     infoItems.map((item,index)=>{
                         return(
                             <div className="infoItem" key={index}>
-                                <h3>{item.priceK}</h3>
-                                <h3>{item.priceMM}</h3>
+                                <h3>{item.value}</h3>
                                 <p>{item.name}</p>
                             </div>
                         )
