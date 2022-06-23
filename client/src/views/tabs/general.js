@@ -18,7 +18,7 @@ const PlaceholderLogo = () => (
 </svg>
 )
 
-export function GeneralInformation(props) {
+export function General(props) {
     
     const charityInfo = props.charityInfo;
     
@@ -37,16 +37,18 @@ export function GeneralInformation(props) {
                     <div className='psInfo'>
                         <div>
                             <img src={location} alt="" title=''/>
-                            <p>123 Main St., Phoenix AZ 214312</p>
+                            <p>{`${charityInfo['Headquarter Street Address']}, ${charityInfo['Headquarter City']}, ${charityInfo['Headquarter State/Province']} ${charityInfo['Headquarter Zip/Postal Code']} ${charityInfo['Headquarter Country']}`}</p>
                         </div>
                         <div>
                             <img src={web} alt="" title=''/>
-                            <p>unitedway.org</p>
+                            <a href={charityInfo['Organization Website']} target="_blank">{charityInfo['Organization Website']}</a>
                         </div>
                         <div>
-                            <img src={twitterPurple} alt="" title=''/>
-                            <img src={youtubePurple} alt="" title=''/>
-
+                        
+                        {charityInfo['Organization Twitter'] != '' ? <a href={charityInfo['Organization Twitter']} target="_blank"> <img src={twitterPurple} alt="" title=''/></a> : ''}
+                        {charityInfo['Organization Youtube'] != '' ? <a href={charityInfo['Organization Youtube']} target="_blank"><img src={youtubePurple} alt="" title=''/></a> : ''}
+                           
+                            
                         </div>
                     </div>
 

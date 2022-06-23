@@ -55,6 +55,16 @@ import sortByArrow from '../assets/images/icon/sortByArrow.png';
 import kse from '../assets/images/other/kse.png';
 import searchIcon from '../assets/images/icon/searchIcon.png';
 
+import EducationBadge from '../assets/images/badges/Education.png';
+import HealthCareBadge from '../assets/images/badges/Health Care.png';
+
+import BadgeLookup from '../assets/images/badges/badgeLookup.js';
+
+// preimport the images one time
+Object.keys(BadgeLookup).map((d)=>{
+  BadgeLookup[d]['image'] = require(`../assets/images/badges/${BadgeLookup[d]['File']}`).default
+})
+
 import $ from "jquery";
 import { Power4 } from "gsap/dist/gsap";
 import { gsap } from "gsap/dist/gsap";
@@ -636,6 +646,15 @@ const ContributeNew = (props) => {
     //     console.log(Object.keys(filteredCharities[0]))
     // }catch(e){}
     
+    function getVideoId(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+    
+        return (match && match[2].length === 11)
+          ? match[2]
+          : null;
+    }
+        
     const handleCategoryCheckboxChange = (data) => {
        // console.log(data);
         
@@ -852,25 +871,81 @@ const ContributeNew = (props) => {
                                 }
                                 else {
                             
+                                    let cat1img = null;
+                                    let cat2img = null;
+                                    let cat3img = null;
+
+                                    try {
+                                        if (item['Charity GENERAL Category #1'] && item['Charity GENERAL Category #1'] != '') {
+                                            const catId = item['Charity GENERAL Category #1'].split('(')[1].split(')')[0];
+                                            cat1img = BadgeLookup[catId]['image']
+                                        }
+                                    }catch(e){console.log('MISSING FILE 1',item['Charity GENERAL Category #1'])}
+                                    try {
+                                        if (item['Charity GENERAL Category #2'] && item['Charity GENERAL Category #2'] != '') {
+                                            const catId = item['Charity GENERAL Category #2'].split('(')[1].split(')')[0];
+                                            cat2img = BadgeLookup[catId]['image']
+                                        }
+                                    }catch(e){console.log('MISSING FILE 2',item['Charity GENERAL Category #2'])}
+                                    try {
+                                        if (item['Charity GENERAL Category #3'] && item['Charity GENERAL Category #3'] != '') {
+                                            const catId = item['Charity GENERAL Category #3'].split('(')[1].split(')')[0];
+                                            cat3img = BadgeLookup[catId]['image']
+                                        }
+                                    }catch(e){console.log('MISSING FILE 3',item['Charity GENERAL Category #3'])}
+
                                     return (
                                         <div key={index} className='kseItem'>
                                             <div className='kseBody'>
-                                                <div className='kseLogo'>{item['Logo'] != '' ? (<img src={item['Logo']} alt=""/>) : <PlaceholderLogo />}</div>
+                                            
+                                            <div className='header-section'>
+                                            
+                                                {cat1img ? (<div className='badge-section'>
+                                                
+                                                    <div className='badge-layout'>
+
+                                                        {cat1img ? <img className="badge-icon" src={cat1img} alt=""/> : ''}
+                                                        {cat2img ? <img className="badge-icon" src={cat2img} alt=""/> : ''}
+                                                        {cat3img ? <img className="badge-icon" src={cat3img} alt=""/> : ''}
+                                                 
+                                                        
+                                                    </div>
+
+                                                </div>) : '' }
+                                                {/*<img className="logo-icon" src={item['Logo']} alt=""/>*/}
+                                                {item['Logo'] != '' ? (<div className='logo-section'>
+                                                    <div className='logo-layout'>
+                                                        <img className="logo-icon" src={item['Logo']} alt=""/>
+                                                    </div>
+                                                </div>):''}
+                                            
+                                            </div>
+                                                
                                                 <p className='kseName'>
                                                     {item['Organization Name']}                                                    </p>
-                                                <p className='kseDescription'>
-                                                    {item['Short Description for Front of Card']}
-                                                </p>
+                                                
                                                 <div className='keyDataBanner'>
+                                                
+                                                    {item['Video for Charity Card'] && item['Video for Charity Card'] != '' ? (<iframe className='infoVideo' height={'200px'} width={'400px'} src={`https://www.youtube.com/embed/${item['Video for Charity Card'] && item['Video for Charity Card'] != '' ? getVideoId(item['Video for Charity Card'].split('\n')[0]) : ''}`} title="" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>) : <span className='infoVideo' style={{marginTop:'20px',width:'100%',textAlign:'center',fontSize:'18px'}}>No video found...</span>}
+                                                    
                                                     <NavLink to={`/charity/${item['Id']}`} className='cta'>Details</NavLink>
-                                                    <div>
-                                                        <p className='name'>
-                                                            Total Revenue
-                                                        </p>
-                                                        <p className='price'>
-                                                            {item['Total Revenue']}
+                                                    
+                                                    <div style={{height:'120px',overflow:'hidden'}}>
+                                                        <p className='kseDescription'>
+                                                            {item['Short Description for Front of Card']}
                                                         </p>
                                                     </div>
+                                                    
+                                                    <div className="full">
+                                                        <p className='name'>
+                                                            Operating In: 
+                                                        </p>
+                                                        <p className='price' style={{fontSize:'14px'}}>
+                                                            {item['Main Areas of Operation']}
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    {/*
                                                     <div>
                                                         <p className='name'>
                                                             Total Expenses
@@ -887,7 +962,16 @@ const ContributeNew = (props) => {
                                                             {item['Net Income']}
                                                         </p>
                                                     </div>
-                                                    <div>
+                                                    */}
+                                                    <div className="half">
+                                                        <p className='name'>
+                                                            Total Revenue
+                                                        </p>
+                                                        <p className='price'>
+                                                            {item['Total Revenue']}
+                                                        </p>
+                                                    </div>
+                                                    <div className="half">
                                                         <p className='name'>
                                                             Year Founded
                                                         </p>

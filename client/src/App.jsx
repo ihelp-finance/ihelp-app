@@ -301,11 +301,12 @@ function App(props) {
       }
       
     } else {
-    
+
     if (readContracts && readContracts[contractName]) {
       updateValue(readContracts, contractName, functionName, args).then((d) => {
-        if (d != variable) {
 
+        if (d != variable) {
+        
           callback(d);
 
         }

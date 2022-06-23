@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import st from "./styles/charity.module.css";
-import {GeneralInformation, Data, Messages, Videos} from "./tabs";
+import {General, Details, Financials, Videos} from "./tabs";
 import {
   MdSearch,
   MdMenu,
@@ -66,6 +66,8 @@ const ContributeNew = (props) => {
   const [usdcCharityTotalBalance, setusdcCharityTotalBalance] = useState(null);
   const [usdcTotalInterestEarnedUSD, setusdcTotalInterestEarnedUSD] = useState(null);
   const [usdcCharityTotalBalanceUSD, setusdcCharityTotalBalanceUSD] = useState(null);
+  
+  const [lastTotalBalance, setLastTotalBalance] = useState(null);
   
   const [allowanceCharityDAI, setallowanceCharityDAI] = useState(0);
   const [allowanceCharityUSDC, setallowanceCharityUSDC] = useState(0);
@@ -619,7 +621,7 @@ const ContributeNew = (props) => {
 
   if (init == false && currencies.length > 0 && charityInfo != null && contractNameHash != null) {
       
-      setInit(true);
+    setInit(true);
      
     const contractsToListen = [];
     Object.keys(contractNameHash).map((c)=>{
@@ -635,8 +637,11 @@ const ContributeNew = (props) => {
     
     updateContracts('init');
     
-    }
-    
+  }
+  
+  // console.log('daiCharityTotalBalance',utils.formatUnits(daiCharityTotalBalance))
+  // console.log('usdcTotalInterestEarned',utils.formatUnits(daiTotalInterestEarned))
+  
   let totalInterestUSD = 0;
   if (usdcTotalInterestEarned != null) {
     totalInterestUSD += parseFloat(utils.formatUnits(usdcTotalInterestEarned,charityDecimals['USDC']))
@@ -671,28 +676,28 @@ const ContributeNew = (props) => {
   if (daiCharityBalance > 0 || usdcCharityBalance > 0) {
     withdrawEnabled = true;
   }
-  
+
   const [currentTab, setCurrentTab] = useState('tab1');
     const tabList = [
         {
             name: 'tab1',
-            label: 'General Information',
+            label: 'General',
             content: (
-                <GeneralInformation charityInfo={charityInfo} />
+                <General charityInfo={charityInfo} />
             )
         },
         {
             name: 'tab2',
-            label: 'Data',
+            label: 'Details',
             content: (
-                <Data charityInfo={charityInfo} />
+                <Details charityInfo={charityInfo} />
             )
         },
         {
             name: 'tab3',
-            label: 'Messages',
+            label: 'Financials',
             content: (
-                <Messages charityInfo={charityInfo} />
+                <Financials charityInfo={charityInfo} />
             )
         },
         {
@@ -707,27 +712,34 @@ const ContributeNew = (props) => {
     
     const [infoItems, setInfoItems] = useState(null)
   
-  console.log(charityInfo)
-  if (charityInfo != null && infoItems == null) {
-    console.log(charityInfo)
+  // console.log(charityInfo)
+  
+  if (charityInfo != null && (infoItems == null || totalBalanceUSD != lastTotalBalance) ) {
+    
+    //console.log(charityInfo)
+    //console.log('totalBalanceUSD',totalBalanceUSD)
+    
+    setLastTotalBalance(totalBalanceUSD)
+    
     setInfoItems([
         {
-            value:charityInfo['Total Revenue'],
-            name:'Total Revenue',
+            value:`$${commafy(totalBalanceUSD.toFixed(0))}`,
+            name:'Total Value Locked (TVL)',
         },
         {
-            value: charityInfo['Total Expenses'],
-            name:'Total Expenses',
+            value: `$${commafy(totalInterestUSD.toFixed(2))}`,
+            name:'Total Yield Generated',
         },
         {
-            value: charityInfo['Net Income'],
-            name:'Net Income',
+            value: '0',
+            name:'Total Helpers',
         },
         {
-            value: charityInfo['Program Expense'],
-            name:'Program Expense',
+            value: '$0',
+            name:'Total Direct Donations',
         },
     ])
+    
   }
 
   return (

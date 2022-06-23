@@ -47,6 +47,14 @@ import {
 }
 from "recharts";
 
+import usdc from '../assets/images/other/usdc.png';
+import dai from '../assets/images/other/dai.png';
+import avax from '../assets/images/other/avax.png';
+import sortByArrow from '../assets/images/icon/sortByArrow.png';
+import edit from '../assets/images/icon/edit.png';
+import kse from '../assets/images/other/kse.png';
+import searchIcon from '../assets/images/icon/searchIcon.png';
+
 const ContributeNew = (props) => {
   
   const history = useHistory();
@@ -112,17 +120,21 @@ const ContributeNew = (props) => {
   }, []);
   
  const setValue = props.setValue;
+ 
+ console.log(props.address,statsLoaded)
 
-  if (statsLoaded == false && props.address != '0x0000000000000000000000000000000000000000') {
+  if (statsLoaded == false && props.address != '0x0000000000000000000000000000000000000000' && props.readContracts) {
 
     setStatsLoaded(true);
 
     const updateStats = () => {
       
+      console.log('calling stats')
+      
       setTimeout(()=>{
-         setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
-        setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
-        setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
+          setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
+          setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
+          setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
       },10)
 
       let url = `/api/v1/data/userstats?address=${props.address}`;
@@ -135,7 +147,7 @@ const ContributeNew = (props) => {
         else {
           setTimeout(() => {
             updateStats();
-          }, 60000);
+          }, 5000);
         }
       }).then((d) => {
         console.log(d);
@@ -415,113 +427,122 @@ const ContributeNew = (props) => {
             id. Sed rhoncus, tortor sed eleifend tristique, tortor mauris
             molestie elit, et lacinia.
           </h6>*/}
-
-          {/* Dashboard Wallet Name */}
-          <div className={st.dashboardMainGrid}>
-
-            {/* Dashboard Graph */}
-            <main className={st.dashboardGraph}>
-              <h5>My Contributions</h5>
-              <h6>Total:  {contribTotal ? `$${commafy(contribTotal.toFixed(2))}` : "..."}</h6>
-              {/*<h6>Total Interest Donated: $1,321,312</h6>
-              <h6>Total Direct Donations: $0</h6>
-              <h6>Contributions Over Time:</h6> */}
-              <div className={st.dashboardGraphBox}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart
-                    width={500}
-                    height={300}
-                    data={chartData}
-                    margin={{
-                      top: 0,
-                      right: 5,
-                      left: 7,
-                      bottom: 0,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis tick={{fontSize: 10}} dataKey="time" domain = {['auto', 'auto']} tickFormatter={timeStr => moment(timeStr).format('M-D-H')} />
-                    <YAxis tick={{fontSize: 7}} type="number" dataKey="contrib" domain = {['auto', 'auto']} tickFormatter={yStr => '$'+commafy(yStr.toFixed(0))}/>
-                    <ChartTooltip />
-                    <Legend />
-                    <Scatter
-                    legendType='none'
-                    //  type="monotone"
-                      dataKey="contrib"
-                      activeDot={{ r: 8 }}
-                      dot={false}
-                      shape={null}
-                      line = {{ stroke: '#5c0fc5' }}
-        lineJointType = 'monotoneX'
-        lineType = 'joint'
-                    />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
-              <span style={{width:'100%',fontStyle:'italic',textAlign:'center',fontSize:'10px',display:'inline-block',position:'relative',top:'-15px'}}>
-                (stats updated every minute)
-              </span>
-              {/*<button className="grd-btn">Wallet Donation Report</button>*/}
-            </main>
-            {/* Leaderboard Ranking */}
-            <main className={st.leaderBoardHeading}>
-              <h5>Leaderboard</h5>
-              <main className={st.walletName} style={{marginTop:'-12px'}}>
-              <h6>Wallet Nickname: </h6>
-              {nickName ? (
-                <div className={st.displayName}>
-                  <span>{nickname}</span>
-                  <MdEdit onClick={() => setNickName(false)} />
-                </div>
+          
+          <div className="dashboard">
+          <div className="body">
+                    <div className='contributionsContent'>
+                        <h4>My Contributions</h4>
+                        
+                        <div style={{padding: '2.4rem'}}>
+                            <p>Total Contributions</p>
+                            <h5>{contribTotal ? `$${commafy(contribTotal.toFixed(2))}` : "..."}</h5>
+                        </div>
+                        {/*<h6>Total Interest Donated: $1,321,312</h6>
+                        <h6>Total Direct Donations: $0</h6>
+                        <h6>Contributions Over Time:</h6> */}
+                        <div className={st.dashboardGraphBox}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <ScatterChart
+                              width={500}
+                              height={500}
+                              data={chartData}
+                              margin={{
+                                top: 0,
+                                right: 5,
+                                left: 7,
+                                bottom: 0,
+                              }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis tick={{fontSize: 10}} dataKey="time" domain = {['auto', 'auto']} tickFormatter={timeStr => moment(timeStr).format('M-D-H')} />
+                              <YAxis tick={{fontSize: 7}} type="number" dataKey="contrib" domain = {['auto', 'auto']} tickFormatter={yStr => '$'+commafy(yStr.toFixed(0))}/>
+                              <ChartTooltip />
+                              <Legend />
+                              <Scatter
+                              legendType='none'
+                              //  type="monotone"
+                                dataKey="contrib"
+                                activeDot={{ r: 8 }}
+                                dot={false}
+                                shape={null}
+                                line = {{ stroke: '#5c0fc5' }}
+                  lineJointType = 'monotoneX'
+                  lineType = 'joint'
+                              />
+                            </ScatterChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <span style={{width:'100%',fontStyle:'italic',textAlign:'center',fontSize:'10px',display:'inline-block',position:'relative',top:'-15px'}}>
+                          (stats updated every minute)
+                        </span>
+                        
+                    </div>
+                    <div className='rewardsContent'>
+                        <h4>My Rewards & Staking</h4>
+                        <div>
+                            <p>Claimable HELP Tokens</p>
+                            <h5>{claimableHelpTokens ? commafy(parseFloat(utils.formatUnits(claimableHelpTokens,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
+                            <button  onClick={handleClaimTokens} disabled={claimableHelpTokens > 0 ? false : true}>CLAIM HELP TOKENS</button>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>
+                                    <p>My HELP Balance</p>
+                                    <h5>{ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
+                                </li>
+                                <li>
+                                    <p>My xHELP Balance</p>
+                                    <h5>{xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
+                                </li>
+                            </ul>
+                            <button style={{color:'#5C0FC5', backgroundColor:"transparent"}} onClick={(e)=>{history.push('/stake')}}>ADJUST STAKING POSITIONS</button>
+                        </div>
+                    </div>
+                    <div className='leaderboardContent'>
+                        <h4>Leaderboard</h4>
+                        <p>
+                            Wallet Nickname
+                        </p>
+                        
+                         {/*
+              <h6>24h Ranking: 1st</h6>
+              <h6>7d Ranking: 3rd</h6>
+              <h6>30d Ranking: 4th</h6>
+              <h6>All Time Ranking: 5th</h6>*/}
+                        
+                            {nickName ? (
+               <div>
+                       <p>{nickname}</p>
+                     <img src={edit} alt="" onClick={() => setNickName(false)}/>
+               </div>
               ) : (
                 <div className={st.displayNameEdit}>
                   <input type="text" onChange={handleChangeNickname}/>
                   <MdClose onClick={() => setNickName(true)} />
                 </div>
               )}
-              </main>
-             {/* <span>
-                <MdContentCopy />
-                <FaTwitter />
-              </span> */}
-              
-              {/*
-              <h6>24h Ranking: 1st</h6>
-              <h6>7d Ranking: 3rd</h6>
-              <h6>30d Ranking: 4th</h6>
-              <h6>All Time Ranking: 5th</h6>*/}
-            </main>
-            {/* Dashboard Balance */}
-            <main className={st.dashboardBalance}>
-            <h5>My Rewards & Staking</h5>
-              <main>
-              <div>
-                <h6 style={{marginTop:'-10px'}}>Claimable HELP Tokens: {claimableHelpTokens ? commafy(parseFloat(utils.formatUnits(claimableHelpTokens,charityDecimals['DAI'])).toFixed(2)) : "..."}</h6>
-                <span> 
-                <button onClick={handleClaimTokens} disabled={claimableHelpTokens > 0 ? false : true} className="grd-btn">Claim HELP Tokens</button>
-                </span>
+                            
+                     
+                    </div>
+                    
+                    
+                    
                 </div>
-                
-                <div>
-                <h6>HELP Balance: {ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h6>
-                <h6>xHELP Balance: {xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h6>
-                <span>
-                <button className="grd-btn" onClick={(e)=>{history.push('/stake')}}>Adjust Staking Positions</button>
-                </span>
-                </div>
-                
-              </main>
 
-            </main>
+         
           </div>
 
           {/* Table Grid */}
           <div className={st.tableGrid}>
             {/* Current Deposit Detail */}
             <div className={st.tableContainer}>
-              <h5>My Contribution Details</h5>
+            {/*  <div className='contributionDetailsContent'>
+                      <h4>My Contribution Details</h4>
+                      
+                    </div>*/}
+                    
               {/* Table */}
-              <div className={st.dashboardTable + " " + "table"}>
+              <div className={st.dashboardTable + " " + "table"} >
           
           <Table 
           className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={tableData} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 

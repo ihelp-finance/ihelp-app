@@ -43,6 +43,8 @@ import { utils } from "ethers";
 import moment from 'moment'
 import { Header, Footer } from "../components";
 
+import {StakeStake, StakeUnstake} from "./tabs";
+
 const ContributeNew = (props) => {
   
   const [exchangeChartData, setexchangeChartData] = useState([]);
@@ -193,33 +195,7 @@ const ContributeNew = (props) => {
     });
   };
   
-  const handleStake = async() => {
-
-    console.log('staking',amount,'HELP tokens to xHELP staking contract:',props.readContracts.xHelp.address)
-    const stakeAmountWei = utils.parseEther(amount).toString(10);
-    
-    setAmount('');
-    
-      const sponsorTx = props.tx(props.writeContracts.xHelp.deposit(stakeAmountWei), update => {
-     
-        console.log("📡 Transaction Update:", update);
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          console.log(" 🍾 Transaction " + update.hash + " finished!");
-          console.log(
-            " ⛽️ " +
-            update.gasUsed +
-            "/" +
-            (update.gasLimit || update.gas) +
-            " @ " +
-            parseFloat(update.gasPrice) / 1000000000 +
-            " gwei",
-          );
-        }
-      });
-      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-      console.log(await sponsorTx);
-    
-  }
+ 
   
   const handleClaim = async() => {
 
@@ -246,43 +222,6 @@ const ContributeNew = (props) => {
     
   }
   
-  const handleUnstake = async() => {
-    
-    console.log('unstaking',amount,'HELP tokens to xHELP staking contract:',props.readContracts.xHelp.address)
-    const unstakeAmountWei = utils.parseEther(amount).toString(10);
-    
-    setAmount('');
-    
-      const sponsorTx = props.tx(props.writeContracts.xHelp.withdraw(unstakeAmountWei), update => {
-     
-        console.log("📡 Transaction Update:", update);
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          console.log(" 🍾 Transaction " + update.hash + " finished!");
-          console.log(
-            " ⛽️ " +
-            update.gasUsed +
-            "/" +
-            (update.gasLimit || update.gas) +
-            " @ " +
-            parseFloat(update.gasPrice) / 1000000000 +
-            " gwei",
-          );
-        }
-      });
-      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-      console.log(await sponsorTx);
-      
-  }
-  
-  let stakeEnabled = false;
-  if (ihelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
-    stakeEnabled = true;
-  }
-  
-  let unstakeEnabled = false;
-  if (xhelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
-    unstakeEnabled = true;
-  }
   
   let redeemableHELP = null;
   if (xhelpBalance > 0) {
@@ -302,8 +241,26 @@ const ContributeNew = (props) => {
         stakingEnabled = false;
       }
   }
-
   
+  const [currentTab, setCurrentTab] = useState('tab1');
+    const tabList = [
+        {
+            name: 'tab1',
+            label: 'Stake',
+            content: (
+                <StakeStake props={props} ihelpBalance={ihelpBalance} xHelpBalance={xhelpBalance}/>
+            )
+        },
+        {
+            name: 'tab2',
+            label: 'Unstake',
+            content: (
+                <StakeUnstake props={props} ihelpBalance={ihelpBalance} xhelpBalance={xhelpBalance}/>
+            )
+        },
+    ];
+    
+    
   return (
     <div id="app" className="app">
       {/*<Head>
@@ -316,13 +273,28 @@ const ContributeNew = (props) => {
       <div className={st.stake + " " + " section"}>
         <div className="box">
          <div className="sectionHeader">Stake</div>
-          <div className={st.stakeGrid}>
-            <div className={st.stakeGridLeft}>
-              <h5>Staking Actions</h5>
-              <div className={st.maxFormGroup}>
+         
+          <div className='stake'>
+            <div className="body">
+         
+         
+          <div className='stakeAction'>
+           
+              <h4>Staking Actions</h4>
+  
+                <div className='head-bar'>
+                      <div>
+                          <h5>My HELP Balance</h5>
+                          <p>{ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,18)).toFixed(2)) : "..."}</p>
+                      </div>
+                      <div>
+                          <h5>My xHELP Balance</h5>
+                          <p>{xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,18)).toFixed(2)) : "..."}</p>
+                      </div>
+                  </div>
               
-                <h6 style={{marginTop:'-8px'}}>My HELP Balance: {ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,18)).toFixed(2)) : "..."}</h6>
-                <h6>My xHELP Balance: {xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,18)).toFixed(2)) : "..."}</h6>
+              
+          
                 {/*<h6>Redeemable HELP from xHELP: {redeemableHELP ? commafy(parseFloat(redeemableHELP).toFixed(2)) : "..."}</h6>*/}
               
               { !stakingEnabled ? stakingEnabled === null ? '' : (
@@ -357,7 +329,43 @@ const ContributeNew = (props) => {
                 >
                   ENABLE STAKING
                 </button>) : (
+                <span>
+                  <div className='stake'>
+                    <div className='claim'>
+                      <p>My DAI Staking Rewards<span>0.10</span></p>
+                      <button disabled={claimableReward && props.web3Modal && props.web3Modal.cachedProvider && parseFloat(utils.formatUnits(claimableReward,18)) > 0 ? false : true} onClick={handleClaim}>CLAIM</button>
+                     </div>
+                  </div>
+            
+                 <div className="tabs">
+                            {
+                                tabList.map((tab, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setCurrentTab(tab.name)}
+                                        className={(tab.name === currentTab) ? 'active' : ''}>
+                                        {tab.label}
+                                    </button>
+                                ))
+                            }
+                        </div>
+
+                        {
+                            tabList.map((tab, i) => {
+                                if (tab.name === currentTab) {
+                                    return <div key={i}>{tab.content}</div>;
+                                } else {
+                                    return null;
+                                }
+                            })
+                        }
+                        
+                        
+                {/*
         <span>
+        
+       
+        
                   <div className={st.buttonGroup} style={{marginTop:'20px'}}>
                 <button className={mode == 'stake' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('stake');setAmount('');setInputFocus()}}>Stake</button>
                 <button className={mode == 'unstake' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('unstake');setAmount('');setInputFocus()}}>Unstake</button>
@@ -369,8 +377,8 @@ const ContributeNew = (props) => {
                 </div>
          
               <div className={st.charityBtnGrd} style={{marginTop:'-10px',gridTemplateColumns:'repeat(1,1fr)'}}>
-                    <button style={{display:mode == 'stake' ? '' : 'none'}} disabled={props.web3Modal && props.web3Modal.cachedProvider && stakeEnabled ? false : true} className="grd-btn" onClick={handleStake}>Approve Stake</button>
-                    <button style={{display:mode == 'unstake' ? '' : 'none'}} disabled={props.web3Modal && props.web3Modal.cachedProvider && unstakeEnabled ? false : true} className="grd-btn" onClick={handleUnstake}>Approve Unstake</button>
+                    <button style={{display:mode == 'stake' ? '' : 'none'}} disabled={props.web3Modal && props.web3Modal.cachedProvider && stakeEnabled ? false : true} className="grd-btn" onClick={handleStake}>Stake</button>
+                    <button style={{display:mode == 'unstake' ? '' : 'none'}} disabled={props.web3Modal && props.web3Modal.cachedProvider && unstakeEnabled ? false : true} className="grd-btn" onClick={handleUnstake}>Unstake</button>
                   </div>
                   
                   <h6 style={{marginTop:'30px'}}>My Claimable DAI Staking Reward: {claimableReward ? commafy(parseFloat(utils.formatUnits(claimableReward,18)).toFixed(2)) : "..."}</h6>
@@ -380,9 +388,13 @@ const ContributeNew = (props) => {
                   
                   
                   </span>
+                  */}
+                        
+                  </span>
                   
                   )}
                   
+                   
                        </div>
                   
              {/* <div className={st.stakeInfo}>
@@ -394,18 +406,39 @@ Like liquidity providing (LP), you will earn fees according to your share in the
                 You have generated 21.23 IHELP in 23 days. <br /> You have
                 deposited 20 IHELP and withdrawn 0 from the staking pool.
               </div>*/}
-            </div>
-            <div className={st.stakeGridRight}>
-              <h5 style={{marginBottom:'20px'}}>Staking Data</h5>
+          
+          
+             <div className='stake'>
+            <div className="body">
+         
+         
+          <div className='stakeData' style={{border:'0px'}}>
+          
+              <h4>Staking Data</h4>
               
-              <span>
-                <h6>HELP Circulating: {ihelpCirculating ? commafy(parseFloat(utils.formatUnits(ihelpCirculating,18)).toFixed(2)) : "..."}</h6>
-                <h6>xHELP in Staking Pool: {xhelpSupply && ihelpCirculating? `${commafy(parseFloat(utils.formatUnits(xhelpSupply,18)).toFixed(2)) } (${commafy(((parseFloat(utils.formatUnits(xhelpSupply,18))/parseFloat(utils.formatUnits(ihelpCirculating,18)))*100).toFixed(1))}% staked)` : "..."}</h6>
-
+              
+              <div className='head-bar'>
+                            <div>
+                                <h5>HELP Circulating</h5>
+                                <p>{ihelpCirculating ? commafy(parseFloat(utils.formatUnits(ihelpCirculating,18)).toFixed(2)) : "..."}</p>
+                            </div>
+                            <div>
+                                <h5>xHELP in Staking Pool</h5>
+                                <p>{xhelpSupply && ihelpCirculating? `${commafy(parseFloat(utils.formatUnits(xhelpSupply,18)).toFixed(2)) } (${commafy(((parseFloat(utils.formatUnits(xhelpSupply,18))/parseFloat(utils.formatUnits(ihelpCirculating,18)))*100).toFixed(1))}% staked)` : "..."}</p>
+                            </div>
+                        </div>
+                        
+          {/*
+                <h5>HELP Circulating: {ihelpCirculating ? commafy(parseFloat(utils.formatUnits(ihelpCirculating,18)).toFixed(2)) : "..."}</h5>
+                <h5>xHELP in Staking Pool: {xhelpSupply && ihelpCirculating? `${commafy(parseFloat(utils.formatUnits(xhelpSupply,18)).toFixed(2)) } (${commafy(((parseFloat(utils.formatUnits(xhelpSupply,18))/parseFloat(utils.formatUnits(ihelpCirculating,18)))*100).toFixed(1))}% staked)` : "..."}</h5>
+*/}
                {/* <h6 style={{marginTop:'18px'}}>1 xHELP =  {exchangeRate ? commafy(parseFloat(utils.formatUnits(exchangeRate,18)).toFixed(4)) : "..."} HELP</h6>
                 <h6>Staking APY: {xhelpAPY ? `$${commafy(xhelpAPY.toFixed(2))}` : "..."}</h6>*/}
-                
-              <h6 style={{marginTop:'20px'}}>Reward History</h6>
+                <div className='head-bar' style={{border:'0px'}}>
+                            <div>
+              <h5>Reward History</h5>
+                   </div>
+                        </div>
               <div className={st.stakeGraphBox}>
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart
@@ -473,8 +506,7 @@ Like liquidity providing (LP), you will earn fees according to your share in the
                 </ResponsiveContainer>
               </div>*/}
               
-             </span>
-                            
+                  
               {/*<div className={st.stakeGraphBox}>
                 <h2>APY</h2>
                 <main>
@@ -519,6 +551,10 @@ Like liquidity providing (LP), you will earn fees according to your share in the
               </div>
               */}
             </div>
+            </div>
+            </div>
+         
+          </div>
           </div>
         </div>
       </div><Footer {...props}/>
