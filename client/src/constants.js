@@ -14,7 +14,7 @@ export const NETWORKS = {
     chainId: 31337,
     blockExplorer: "",
     //rpcUrl: "http://" + window.location.hostname + ":8545",
-    rpcUrl: "https://rinkeby.ihelp.finance/rpc",
+    rpcUrl: "https://newdev.ihelp.finance/rpc",
   },
   mainnet: {
     name: "mainnet",

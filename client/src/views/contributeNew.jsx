@@ -17,7 +17,7 @@ import {
   FaInstagram,
 }
 from "react-icons/fa";
-
+import { utils } from "ethers";
 /*
 import {
     usdc,
@@ -138,43 +138,50 @@ const ContributeNew = (props) => {
     //document.getElementById("favicon").href = "/favicon.ico";
   }, []);
 
+  const setValue = props.setValue;
+  const updateValue = props.updateValue;
+
+  
+   const listener = (blockNumber, contract) => {
+    if (contract != undefined) {
+      //console.log(contract, blockNumber); // , fn, args, provider.listeners()
+      updateContracts(contract);
+    }
+  };
+  
+  
+  const updateContracts = () => {
+    
+      if (props.readContracts == undefined) {
+       
+         setTimeout(()=>{
+          updateContracts();
+        },50);
+        
+      } else {
+        
+      // console.log(props.readContracts['iHelp'].address)
+      //     console.log('README',props.readContracts)
+      
+      props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address,0,100]).then((d) => {
+        //console.log(d)  
+        
+        const totalHelpers = commafy(parseFloat(d['totalHelpers']).toFixed(0))
+        const totalCharities = commafy(parseFloat(d['totalCharities']).toFixed(0))
+        
+        setTotalHelpers(totalHelpers)
+        setTotalCharities(totalCharities)
+        setTotalInterest(commafy(parseFloat(utils.formatUnits(d['totalInterestGenerated'],18)).toFixed(0)))
+        setTvl(commafy(parseFloat(utils.formatUnits(d['totalValueLocked'],18)).toFixed(0)))
+        
+      });
+      
+      }
+  };
+
   useEffect(async() => {
 
-    const updateStats = () => {
-
-      let url = `/api/v1/data/stats`;
-
-      fetch(url).then((d) => {
-        if (d.ok) {
-          return d.json()
-        }else {
-        //   setTimeout(()=>{
-        //   updateStats();
-        // },5000);
-        }
-      }).then((d) => {
-        
-        console.log(d);
-        
-        setTotalInterest(commafy(d['totalInterest']))
-        setTvl(commafy(d['tvl']))
-        setTotalCharities(commafy(d['totalCharities']))
-        setTotalCountries(commafy(d['totalCountries']))
-        setTotalHelpers(commafy(d['totalHelpers']))
-        
-        // setTimeout(()=>{
-        //   updateStats();
-        // },5000);
-        
-      }).catch((d) => {
-        console.log('error',d);
-        // setTimeout(()=>{
-        //   updateStats();
-        // },5000);
-      })
-
-    }
-    updateStats();
+    updateContracts();
     
      let url = `/api/v1/data/charities`;
       fetch(url).then((d) => {
@@ -255,7 +262,7 @@ const ContributeNew = (props) => {
         setFilteredCharities(chars);
       })
       
-  }, []);
+  }, [props]);
   
   const charityColumns = [
     {
@@ -748,7 +755,7 @@ const ContributeNew = (props) => {
               
               <img src={helpers_light} alt="logo" className='quickInfoIcon'/>
               <div className={"quickInfoSub"}>{totalHelpers}</div>
-              <p>Total Helpers</p>
+              <p>Total Yield Donors</p>
             </div>
             <div className={"quickInfo"}>
               

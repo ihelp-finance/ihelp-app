@@ -10,7 +10,9 @@ For development, the server and client apps can be deployed as a single monolith
 
 ```
 # install nvm and use node v12 for the current state of this app
-
+# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install v12
+nvm use v12
 
 # install the requirements
 yarn install
