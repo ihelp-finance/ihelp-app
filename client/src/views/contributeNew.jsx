@@ -205,7 +205,7 @@ const ContributeNew = (props) => {
         
         const chars = [];
         d.map((c)=>{
-          if (c['Status'] == 'LIVE') {
+          if (c['Status'] == 'LIVE' && c['CharityPool Contract'] != '') {
             chars.push(c)
           }
         })
@@ -748,7 +748,7 @@ const ContributeNew = (props) => {
               
               <img src={generated_light} alt="logo" className='quickInfoIcon'/>
               <div className={"quickInfoSub"}>{totalInterest == '' ? '' : `$${totalInterest}`}</div>
-              <p>Total Interest Generated</p>
+              <p>Total Yield Donated</p>
               
             </div>
             <div className={"quickInfo"}>
@@ -935,7 +935,7 @@ const ContributeNew = (props) => {
                                                 
                                                     {item['Video for Charity Card'] && item['Video for Charity Card'] != '' ? (<iframe className='infoVideo' height={'200px'} width={'400px'} src={`https://www.youtube.com/embed/${item['Video for Charity Card'] && item['Video for Charity Card'] != '' ? getVideoId(item['Video for Charity Card'].split('\n')[0]) : ''}`} title="" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>) : <span className='infoVideo' style={{marginTop:'20px',width:'100%',textAlign:'center',fontSize:'18px'}}>No video found...</span>}
                                                     
-                                                    <NavLink to={`/charity/${item['Id']}`} className='cta'>Details</NavLink>
+                                                    <NavLink to={`/charity/${item['CharityPool Contract']}`} className='cta'>Details</NavLink>
                                                     
                                                     <div style={{height:'120px',overflow:'hidden'}}>
                                                         <p className='kseDescription'>

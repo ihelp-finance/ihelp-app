@@ -172,7 +172,7 @@ router.get('/charities/:id', (req, res) => {
 
           var charityObject = null;
           for (var i = 0; i < jsonObj.length; i++) {
-            if (jsonObj[i]['Id'] == charity_id) {
+            if (jsonObj[i]['CharityPool Contract'] == charity_id) {
               charityObject = jsonObj[i]
               break
             }

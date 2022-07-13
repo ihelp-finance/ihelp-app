@@ -202,6 +202,9 @@ const ContributeNew = (props) => {
   // setValue("USDC", "allowance", [props.address, charityInfo[`CharityPool Contract`]], allowanceCharityUSDC, setallowanceCharityUSDC);
    // setValue("WETH", "allowance", [props.address, charityInfo[`CharityPool Contract`]], allowanceCharityUSDC, setallowanceCharityUSDC);
    
+   const nativeBalance = await props.localProvider.getBalance(props.address);
+   //console.log('BALANCE:',newBalance)
+   
    props.readContracts["analytics"]["getDonationCurrencyAllowances"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
      
      const cHash = {}
@@ -215,13 +218,15 @@ const ContributeNew = (props) => {
     const cHash = {}
     d.map((c)=>{
       cHash[c['currency']] = c['balance']
+      if (c['currency'][0] == 'W') { 
+        cHash[c['currency'].replace('W','')] = nativeBalance
+      }
     })
-    //console.log('getUserWalletBalances',cHash)
+    
+    console.log('getUserWalletBalances',cHash)
     setcurrencyBalances(cHash)
   })
-  
-  
-  
+
   props.readContracts["analytics"]["getUserTokenContributionsPerCharity"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
     console.log('getUserTokenContributionsPerCharity',d)
     const cHash = {}
@@ -254,7 +259,17 @@ const ContributeNew = (props) => {
        
       if (d[i]['currency'].toLowerCase() == 'weth' || d[i]['currency'].toLowerCase() == 'wavax') {
         const newD = JSON.parse(JSON.stringify(d[i]))
+        
         newD['native'] = true
+        newD['currency'] = d[i]['currency'].replace('W','')
+        newD['decimals'] = d[i]['decimals']
+        newD['lendingAddress'] = d[i]['lendingAddress']
+        newD['price'] = d[i]['price']
+        newD['priceDecimals'] = d[i]['priceDecimals']
+        newD['priceFeed'] = d[i]['priceFeed']
+        newD['provider'] = d[i]['provider']
+        newD['underlyingToken'] = d[i]['underlyingToken']
+        
         if (Object.keys(currencyHash).indexOf(d[i]['currency'].replace('W','')) > -1) { 
           currencyHash[d[i]['currency'].replace('W','')].push(newD)
         }else {
@@ -278,8 +293,6 @@ const ContributeNew = (props) => {
    
    props.readContracts["analytics"]["charityStats"](charityInfo[`CharityPool Contract`]).then((d) => {
     
-    //console.log(d)  
-    
     const totalHelpers = commafy(parseFloat(d['numerOfContributors']).toFixed(0))
     const totalDirectDonations = commafy(parseFloat(utils.formatUnits(d['totalDirectDonations'],18)).toFixed(0)) 
     const totalYield = commafy(parseFloat(utils.formatUnits(d['totalYieldGenerated'],18)).toFixed(0)) 
@@ -292,7 +305,7 @@ const ContributeNew = (props) => {
         },
         {
             value: `$${totalYield}`,
-            name:'Total Yield Generated',
+            name:'Total Yield Donated',
         },
         {
             value: totalHelpers,
@@ -303,8 +316,7 @@ const ContributeNew = (props) => {
             name:'Total Direct Donations',
         },
     ])
-    
-    
+
   });
    
    /*
@@ -494,10 +506,20 @@ const ContributeNew = (props) => {
       setLoading(true)
       
       const sponsorAmountWei = utils.parseUnits(inputAmount,charityDecimals[currency]).toString();
+      console.log(sponsorAmountWei)
       
       const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
-        
-      const sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei), update => {
+      
+      let nativeToken = false;
+      if (currency == 'ETH' || currency == 'AVAX') {
+        nativeToken = true;
+      }
+      
+      let sponsorTx = null;
+      
+      if (nativeToken == false) {
+      
+        sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -513,18 +535,44 @@ const ContributeNew = (props) => {
             );
           }
         });
-        console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-        console.log(await sponsorTx);
         
-        // setTimeout(()=>{
-           
-           setLoading(false)
-           setInputAmount('')
-           setShowDepositInterest(false);
-           setShowDepositDirect(false);
-           setShowWithdrawInterest(false);
+      }
+      else {
+        
+        // TODO - native deposits not working for some reason
+        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress, {value:sponsorAmountWei }), update => {
+       
+          console.log("Transaction Update:", update);
+          if (update && (update.status === "confirmed" || update.status === 1)) {
+            console.log("Transaction " + update.hash + " finished!");
+            console.log(
+              "" +
+              update.gasUsed +
+              "/" +
+              (update.gasLimit || update.gas) +
+              " @ " +
+              parseFloat(update.gasPrice) / 1000000000 +
+              " gwei",
+            );
+          }
+        });
+        
+      }
+        
+      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
+      console.log(await sponsorTx);
+      
+      // setTimeout(()=>{
          
-        // },1000)
+       setLoading(false)
+       setInputAmount('')
+       setShowDepositInterest(false);
+       setShowDepositDirect(false);
+       setShowWithdrawInterest(false);
+       
+       
+     
+      // },1000)
 
     }
     
@@ -626,8 +674,13 @@ const ContributeNew = (props) => {
       action = 'donate';
     }
     
+    let nativeToken = false;
+    if (currency == 'ETH' || currency == 'AVAX') {
+      nativeToken = true;
+    }
+    
     if (action == 'deposit' || action == 'donate') {
-      
+
       setInputAmount(parseFloat(utils.formatUnits(currencyBalances[currency],charityDecimals[currency])).toFixed(6))
       
       // if (currency == 'DAI') {
@@ -655,9 +708,16 @@ const ContributeNew = (props) => {
       
     setLoading(true)
     
+    let nativeToken = false;
+    let mapToken = currency;
+    if (currency == 'ETH' || currency == 'AVAX') {
+      nativeToken = true;
+      mapToken = `W${currency}`
+    }
+    
     const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
     
-    const sponsorTx = props.tx(props.writeContracts[currency].approve(props.readContracts[contractName].address, utils.parseEther('100000000000').toString()), update => {
+    const sponsorTx = props.tx(props.writeContracts[mapToken].approve(props.readContracts[contractName].address, utils.parseEther('100000000000').toString()), update => {
       
       console.log("📡 Transaction Update:", update);
       if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -697,8 +757,15 @@ const ContributeNew = (props) => {
     
     // REVISE WITH NEW CURRENCY ALLOWANCES
     
+    let nativeToken = false;
+    let mapToken = d;
+    if (d == 'ETH' || d == 'AVAX') {
+      nativeToken = true;
+      mapToken = `W${d}`
+    }
+    
     // ensure the contract action is enabled
-    if (currencyAllowances && Object.keys(currencyAllowances).indexOf(d) > -1 && currencyAllowances[d] >= 100000000) {
+    if ( nativeToken || ( currencyAllowances && Object.keys(currencyAllowances).indexOf(mapToken) > -1 && currencyAllowances[mapToken] >= 100000000) ) {
        currencyApproved = true;
     }
     
@@ -771,7 +838,6 @@ const ContributeNew = (props) => {
       }
         <div className={st.charityBtnGrd}>
         
-                  
           <Dropdown overlay={menu}  trigger={['click']} >
             <a onClick={e => e.preventDefault()} style={{marginTop:'-10px',display:showDepositDirect ? 'none' : ''}} >
               <Space>
@@ -781,8 +847,6 @@ const ContributeNew = (props) => {
             </a>
           </Dropdown>
           
-    
-        
           <button className="grd-btn" 
             onClick={(e)=>onAction(d)}
             disabled={loading || inputAmount == 0 || buttonDisabled }
@@ -798,7 +862,7 @@ const ContributeNew = (props) => {
         
         </span>) : loading ? (<Spin indicator={antIcon} />) : 
         
-        <button className="grd-btn" style={{width:'100%',height:'80px',fontSize:'20px',fontWeight:'600'}} onClick={(e)=>enableCurrency(d)}>ENABLE</button>
+        <button className="grd-btn" style={{width:'100%',height:'80px',fontSize:'20px',fontWeight:'600'}} onClick={(e)=>enableCurrency(d)}>ENABLE {d}</button>
           
         }
 

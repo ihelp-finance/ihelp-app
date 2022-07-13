@@ -92,8 +92,17 @@ const ContributeNew = (props) => {
   const updateStats = (c) => {
     
     setTimeout(()=>{
+
       setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
       setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
+      
+      props.readContracts["analytics"]["stakingPoolState"](props.readContracts['iHelp'].address,props.readContracts['xHelp'].address).then((d) => {
+        
+        console.log('stakingPoolState',d)
+        
+      });
+      
+      /*
       setValue("iHelp", "totalSupply", null, ihelpSupply, setihelpSupply);
       setValue("iHelp", "totalCirculating", null, ihelpCirculating, setihelpCirculating);
       setValue("xHelp", "totalSupply", null, xhelpSupply, setxhelpSupply);
@@ -101,6 +110,8 @@ const ContributeNew = (props) => {
       //setValue("xHelp", "getCash", null, xhelpCash, setxhelpCash);
       //setValue("xHelp", "exchangeRateCurrent", null, exchangeRate, setexchangeRate);
       setValue("iHelp", "allowance", [props.address,props.readContracts.xHelp.address], allowanceStaking, setAllowanceStaking);
+      */
+      
     },10)
     
     let url = `/api/v1/data/stakingstats`;

@@ -19,8 +19,8 @@ import Web3Modal from "web3modal";
 const { ethers } = require("ethers");
 import WalletLink from "walletlink";
 
-import logo_wt from "../logo_wt.svg";
-import logo from "../logo.svg";
+import logo_wt from "../assets/logos/logo.IHELP.wt.svg";
+import logo from "../assets/logos/logo.IHELP.svg";
 
 import Account from "./Account";
 

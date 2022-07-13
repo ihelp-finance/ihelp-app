@@ -332,7 +332,7 @@ const ContributeNew = (props) => {
            
            onRow={(record, rowIndex) => {
             return {
-              onClick: event => { history.push(`/charity/${record['Id']}`) }
+              onClick: event => { history.push(`/charity/${record['CharityPool Contract']}`) }
             };
           }}
           className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={filteredCharities} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 

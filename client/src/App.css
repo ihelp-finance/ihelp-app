@@ -1292,3 +1292,10 @@ color: #262626;
 .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title {
   text-align: center;
 }
+
+button:disabled {
+ /* background: #bababa42; */
+  opacity: 0.5;
+  cursor:default;
+  pointer-events:none;
+}
