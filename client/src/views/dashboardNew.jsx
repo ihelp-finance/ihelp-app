@@ -546,7 +546,7 @@ const ContributeNew = (props) => {
           <div className="dashboard">
           <div className="body">
                     <div className='contributionsContent' style={{textAlign:'center'}}>
-                        <h4>My Stats</h4>
+                        <h4>Contributions</h4>
                         
                         <div style={{padding: '2.4rem',width:'34%',display:'inline-block',textAlign:'center'}}>
                             <p>Active Contributions</p>
@@ -602,7 +602,7 @@ const ContributeNew = (props) => {
                         
                     </div>
                     <div className='rewardsContent' style={{textAlign:'center'}}>
-                        <h4>My Rewards & Staking</h4>
+                        <h4>Rewards & Staking</h4>
                         <div >
                             <p>Claimable HELP Tokens</p>
                             <h5>{charityDecimals && claimableHelpTokens ? commafy(parseFloat(utils.formatUnits(claimableHelpTokens,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
@@ -611,11 +611,11 @@ const ContributeNew = (props) => {
                         <div style={{textAlign:'center'}}>
                             <ul>
                                 <li>
-                                    <p>My HELP Balance</p>
+                                    <p>HELP Balance</p>
                                     <h5>{charityDecimals && ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
                                 </li>
                                 <li>
-                                    <p>My xHELP Balance</p>
+                                    <p>xHELP Balance</p>
                                     <h5>{charityDecimals && xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
                                 </li>
                             </ul>

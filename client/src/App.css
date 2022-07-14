@@ -1299,3 +1299,27 @@ button:disabled {
   cursor:default;
   pointer-events:none;
 }
+
+.ant-empty-normal, .ant-empty-small {
+  display:inline-block !important;
+}
+.ant-empty-description {
+  text-align:center;
+  display: block !important;
+}
+
+.ant-spin-dot-item { 
+  background-color:var(--dark-purple) !important;
+}
+
+.mainLoader {
+    zoom: 5;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    position: absolute;
+    z-index: 10000;
+    top: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+}

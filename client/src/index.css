@@ -360,6 +360,7 @@ button {
   overflow-y: hidden;
   overflow-x: auto;
   margin-top:15px;
+  min-height:300px;
 }
 .table table {
   border-collapse: collapse;

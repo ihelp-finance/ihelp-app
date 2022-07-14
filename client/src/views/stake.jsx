@@ -54,6 +54,7 @@ const ContributeNew = (props) => {
   
   const [ihelpSupply, setihelpSupply] = useState(null);
   const [ihelpCirculating, setihelpCirculating] = useState(null);
+  const [ihelpStaked, setihelpStaked] = useState(null);
   const [xhelpSupply, setxhelpSupply] = useState(null);
   const [xhelpCash, setxhelpCash] = useState(null);
   const [xhelpAPY, setxhelpAPY] = useState(null);
@@ -95,10 +96,24 @@ const ContributeNew = (props) => {
 
       setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
       setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
+      setValue("iHelp", "totalSupply", null, ihelpSupply, setihelpSupply);
+      //setValue("iHelp", "totalCirculating", null, ihelpCirculating, setihelpCirculating);
+      setValue("xHelp", "totalSupply", null, xhelpSupply, setxhelpSupply);
+      setValue("iHelp", "allowance", [props.address,props.readContracts.xHelp.address], allowanceStaking, setAllowanceStaking);
+      //setValue("xHelp", "claimableRewardOf", [props.address], claimableReward, setclaimableReward);
+      
+      props.readContracts["xHelp"]["claimableRewardOf"](props.address).then((d) => {
+        setclaimableReward(d)
+      }).catch((e)=>{
+        setclaimableReward('0')
+      })
       
       props.readContracts["analytics"]["stakingPoolState"](props.readContracts['iHelp'].address,props.readContracts['xHelp'].address).then((d) => {
         
         console.log('stakingPoolState',d)
+        
+        setihelpCirculating(d['iHelpTokensInCirculation'])
+        setihelpStaked(d['iHelpStaked'])
         
       });
       
@@ -106,10 +121,10 @@ const ContributeNew = (props) => {
       setValue("iHelp", "totalSupply", null, ihelpSupply, setihelpSupply);
       setValue("iHelp", "totalCirculating", null, ihelpCirculating, setihelpCirculating);
       setValue("xHelp", "totalSupply", null, xhelpSupply, setxhelpSupply);
-      setValue("xHelp", "claimableRewardOf", [props.address], claimableReward, setclaimableReward);
+      
       //setValue("xHelp", "getCash", null, xhelpCash, setxhelpCash);
       //setValue("xHelp", "exchangeRateCurrent", null, exchangeRate, setexchangeRate);
-      setValue("iHelp", "allowance", [props.address,props.readContracts.xHelp.address], allowanceStaking, setAllowanceStaking);
+      
       */
       
     },10)
@@ -206,7 +221,61 @@ const ContributeNew = (props) => {
     });
   };
   
- 
+  const handleStake = async() => {
+
+    console.log('staking',amount,'HELP tokens to xHELP staking contract:',props.readContracts.xHelp.address)
+    const stakeAmountWei = utils.parseEther(amount).toString(10);
+    
+    setAmount('');
+    
+      const sponsorTx = props.tx(props.writeContracts.xHelp.deposit(stakeAmountWei), update => {
+     
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          console.log(" 🍾 Transaction " + update.hash + " finished!");
+          console.log(
+            " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+          );
+        }
+      });
+      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
+      console.log(await sponsorTx);
+    
+  }
+  
+  const handleUnstake = async() => {
+    
+    console.log('unstaking',amount,'HELP tokens to xHELP staking contract:',props.readContracts.xHelp.address)
+    const unstakeAmountWei = utils.parseEther(amount).toString(10);
+    
+    setAmount('');
+    
+      const sponsorTx = props.tx(props.writeContracts.xHelp.withdraw(unstakeAmountWei), update => {
+     
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          console.log(" 🍾 Transaction " + update.hash + " finished!");
+          console.log(
+            " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+          );
+        }
+      });
+      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
+      console.log(await sponsorTx);
+      
+  }
   
   const handleClaim = async() => {
 
@@ -253,6 +322,16 @@ const ContributeNew = (props) => {
       }
   }
   
+  let stakeEnabled = false;
+  if (ihelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000) {
+    stakeEnabled = true;
+  }
+  
+  let unstakeEnabled = false;
+  if (xhelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
+    unstakeEnabled = true;
+  }
+  
   const [currentTab, setCurrentTab] = useState('tab1');
     const tabList = [
         {
@@ -291,9 +370,9 @@ const ContributeNew = (props) => {
          
           <div className='stakeAction'>
            
-              <h4>Staking Actions</h4>
+              <h4 style={{textAlign:'center'}}>Staking Actions</h4>
   
-                <div className='head-bar'>
+                <div className='head-bar' style={{textAlign:'center'}}>
                       <div>
                           <h5>My HELP Balance</h5>
                           <p>{ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,18)).toFixed(2)) : "..."}</p>
@@ -341,11 +420,15 @@ const ContributeNew = (props) => {
                   ENABLE STAKING
                 </button>) : (
                 <span>
-                  <div className='stake'>
-                    <div className='claim'>
-                      <p>My DAI Staking Rewards<span>0.10</span></p>
-                      <button disabled={claimableReward && props.web3Modal && props.web3Modal.cachedProvider && parseFloat(utils.formatUnits(claimableReward,18)) > 0 ? false : true} onClick={handleClaim}>CLAIM</button>
-                     </div>
+ 
+                  <div className='head-bar stake' style={{margin: '0',textAlign:'center'}}>
+                      <div>
+                          <h5>My DAI Staking Rewards</h5>
+                          <p>{claimableReward ? commafy(parseFloat(utils.formatUnits(claimableReward,18)).toFixed(2)) : "..."}</p>
+                      </div>
+                      <div>
+                          <button disabled={claimableReward && props.web3Modal && props.web3Modal.cachedProvider && parseFloat(utils.formatUnits(claimableReward,18)) > 0 ? false : true} onClick={handleClaim}>CLAIM</button>
+                      </div>
                   </div>
             
                  <div className="tabs">
@@ -372,7 +455,7 @@ const ContributeNew = (props) => {
                         }
                         
                         
-                {/*
+              {/*
         <span>
         
        
@@ -400,6 +483,7 @@ const ContributeNew = (props) => {
                   
                   </span>
                   */}
+               
                         
                   </span>
                   
@@ -425,17 +509,17 @@ Like liquidity providing (LP), you will earn fees according to your share in the
          
           <div className='stakeData' style={{border:'0px'}}>
           
-              <h4>Staking Data</h4>
+              <h4 style={{textAlign:'center'}}>Staking Data</h4>
               
               
-              <div className='head-bar'>
+              <div className='head-bar' style={{textAlign:'center'}}>
                             <div>
                                 <h5>HELP Circulating</h5>
                                 <p>{ihelpCirculating ? commafy(parseFloat(utils.formatUnits(ihelpCirculating,18)).toFixed(2)) : "..."}</p>
                             </div>
                             <div>
                                 <h5>xHELP in Staking Pool</h5>
-                                <p>{xhelpSupply && ihelpCirculating? `${commafy(parseFloat(utils.formatUnits(xhelpSupply,18)).toFixed(2)) } (${commafy(((parseFloat(utils.formatUnits(xhelpSupply,18))/parseFloat(utils.formatUnits(ihelpCirculating,18)))*100).toFixed(1))}% staked)` : "..."}</p>
+                                <p>{xhelpSupply && ihelpCirculating? `${commafy(parseFloat(utils.formatUnits(xhelpSupply,18)).toFixed(2)) } (${ihelpCirculating == 0 ? '0' : commafy(((parseFloat(utils.formatUnits(xhelpSupply,18))/parseFloat(utils.formatUnits(ihelpCirculating,18)))*100).toFixed(1))}% staked)` : "..."}</p>
                             </div>
                         </div>
                         

@@ -178,11 +178,15 @@ const ContributeNew = (props) => {
       
       }
   };
+  
+  useEffect(async() => {
+    
+    updateContracts();
+    
+  }, [props.readContracts]);
 
   useEffect(async() => {
 
-    updateContracts();
-    
      let url = `/api/v1/data/charities`;
       fetch(url).then((d) => {
         return d.json();
@@ -262,7 +266,7 @@ const ContributeNew = (props) => {
         setFilteredCharities(chars);
       })
       
-  }, [props]);
+  }, []);
   
   const charityColumns = [
     {

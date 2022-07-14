@@ -37,7 +37,7 @@ import { utils } from "ethers";
 import Address from "../components/Address";
 import { Header,Footer } from "../components";
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 
 const ContributeNew = (props) => {
 
@@ -84,7 +84,6 @@ const ContributeNew = (props) => {
   const [charityDecimals,setCharityDecimals] = useState(null);
   const [currencyAllowances,setcurrencyAllowances] = useState(null);
   
-
   useEffect(() => {
     
     if (props.readContracts != null) {
@@ -232,6 +231,9 @@ const ContributeNew = (props) => {
     const cHash = {}
     d.map((c)=>{
       cHash[c['currency']] = c['totalContributions']
+      if (c['currency'][0] == 'W') { 
+        cHash[c['currency'].replace('W','')] = c['totalContributions']
+      }
     })
     setcharityBalances(cHash)
   })
@@ -292,6 +294,8 @@ const ContributeNew = (props) => {
    })
    
    props.readContracts["analytics"]["charityStats"](charityInfo[`CharityPool Contract`]).then((d) => {
+     
+     console.log('charityStats',d)
     
     const totalHelpers = commafy(parseFloat(d['numerOfContributors']).toFixed(0))
     const totalDirectDonations = commafy(parseFloat(utils.formatUnits(d['totalDirectDonations'],18)).toFixed(0)) 
@@ -506,8 +510,7 @@ const ContributeNew = (props) => {
       setLoading(true)
       
       const sponsorAmountWei = utils.parseUnits(inputAmount,charityDecimals[currency]).toString();
-      console.log(sponsorAmountWei)
-      
+
       const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
       
       let nativeToken = false;
@@ -539,8 +542,7 @@ const ContributeNew = (props) => {
       }
       else {
         
-        // TODO - native deposits not working for some reason
-        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress, {value:sponsorAmountWei }), update => {
+        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress,{ value:sponsorAmountWei }), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -586,33 +588,66 @@ const ContributeNew = (props) => {
       
       const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
         
-      const sponsorTx = props.tx(props.writeContracts[contractName].withdrawTokens(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
-       
-          console.log("Transaction Update:", update);
-          if (update && (update.status === "confirmed" || update.status === 1)) {
-            console.log("Transaction " + update.hash + " finished!");
-            console.log(
-              "" +
-              update.gasUsed +
-              "/" +
-              (update.gasLimit || update.gas) +
-              " @ " +
-              parseFloat(update.gasPrice) / 1000000000 +
-              " gwei",
-            );
-          }
-        });
+      let nativeToken = false;
+      if (currency == 'ETH' || currency == 'AVAX') {
+        nativeToken = true;
+      }
+      
+      let sponsorTx = null
+      
+      if (nativeToken == false) {
+        
+          sponsorTx = props.tx(props.writeContracts[contractName].withdrawTokens(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
+         
+            console.log("Transaction Update:", update);
+            if (update && (update.status === "confirmed" || update.status === 1)) {
+              console.log("Transaction " + update.hash + " finished!");
+              console.log(
+                "" +
+                update.gasUsed +
+                "/" +
+                (update.gasLimit || update.gas) +
+                " @ " +
+                parseFloat(update.gasPrice) / 1000000000 +
+                " gwei",
+              );
+            }
+          });
+          
+        }
+        else {
+          
+          sponsorTx = props.tx(props.writeContracts[contractName].withdrawTokens(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
+         
+            console.log("Transaction Update:", update);
+            if (update && (update.status === "confirmed" || update.status === 1)) {
+              console.log("Transaction " + update.hash + " finished!");
+              console.log(
+                "" +
+                update.gasUsed +
+                "/" +
+                (update.gasLimit || update.gas) +
+                " @ " +
+                parseFloat(update.gasPrice) / 1000000000 +
+                " gwei",
+              );
+            }
+          });
+          
+        }
+      
+        
         console.log("awaiting metamask/web3 confirm result...", sponsorTx);
         console.log(await sponsorTx);
         
         // setTimeout(()=>{
            
-           setLoading(false)
-           setInputAmount('')
-           setShowDepositInterest(false);
-           setShowDepositDirect(false);
-           setShowWithdrawInterest(false);
-         
+       setLoading(false)
+       setInputAmount('')
+       setShowDepositInterest(false);
+       setShowDepositDirect(false);
+       setShowWithdrawInterest(false);
+     
         // },1000)
       
     }
@@ -626,9 +661,19 @@ const ContributeNew = (props) => {
       const donationAmountWei = utils.parseUnits(inputAmount,charityDecimals[currency]).toString();
       
       const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
-      const currencyAddress = props.readContracts[currency].address;
+      
+      let nativeToken = false;
+      if (currency == 'ETH' || currency == 'AVAX') {
+        nativeToken = true;
+      }
+      
+      let sponsorTx = null;
         
-      const sponsorTx = props.tx(props.writeContracts[contractName].directDonation(currencyAddress,donationAmountWei), update => {
+      if (nativeToken == false) {
+        
+        const currencyAddress = props.readContracts[currency].address;
+      
+        sponsorTx = props.tx(props.writeContracts[contractName].directionDonation(currencyAddress,donationAmountWei), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -644,16 +689,39 @@ const ContributeNew = (props) => {
             );
           }
         });
-        console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-        console.log(await sponsorTx);
         
-        // setTimeout(()=>{
-           
-           setLoading(false)
-           setInputAmount('')
-           setShowDepositInterest(false);
-           setShowDepositDirect(false);
-           setShowWithdrawInterest(false);
+      }
+      else {
+        
+        sponsorTx = props.tx(props.writeContracts[contractName].donateNative({ value:donationAmountWei }), update => {
+       
+          console.log("Transaction Update:", update);
+          if (update && (update.status === "confirmed" || update.status === 1)) {
+            console.log("Transaction " + update.hash + " finished!");
+            console.log(
+              "" +
+              update.gasUsed +
+              "/" +
+              (update.gasLimit || update.gas) +
+              " @ " +
+              parseFloat(update.gasPrice) / 1000000000 +
+              " gwei",
+            );
+          }
+        });
+        
+      }
+      
+      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
+      console.log(await sponsorTx);
+      
+      // setTimeout(()=>{
+         
+         setLoading(false)
+         setInputAmount('')
+         setShowDepositInterest(false);
+         setShowDepositDirect(false);
+         setShowWithdrawInterest(false);
          
         // },1000)
               
@@ -736,11 +804,14 @@ const ContributeNew = (props) => {
     console.log("awaiting metamask/web3 confirm result...", sponsorTx);
     console.log(await sponsorTx);
     
-         setLoading(false)
+    setTimeout((e)=>{
+        setLoading(false)
          setInputAmount('')
         // setShowDepositInterest(false);
         // setShowDepositDirect(false);
         // setShowWithdrawInterest(false);
+    },3000)
+       
     
   }
 
@@ -820,7 +891,7 @@ const ContributeNew = (props) => {
         
         { currencyApproved ? (<span>
         
-          {loading ? (<Spin indicator={antIcon} />) :  
+          {loading ? (<Spin style={{zoom:'3',marginTop:'7px'}} />) :  
       <span><Input
           //style={{width:'100%',display: ''}}
           type='number'
@@ -860,7 +931,7 @@ const ContributeNew = (props) => {
 
           </div>
         
-        </span>) : loading ? (<Spin indicator={antIcon} />) : 
+        </span>) : loading ? (<Spin style={{zoom:'3',marginTop:'7px'}} />) : 
         
         <button className="grd-btn" style={{width:'100%',height:'80px',fontSize:'20px',fontWeight:'600'}} onClick={(e)=>enableCurrency(d)}>ENABLE {d}</button>
           
@@ -1178,7 +1249,7 @@ useEffect(() => {
           </div> */}
         </div>
         </div>
-      </div>) : ''}
+      </div>) : <div className="mainLoader"><Spin /></div>}
       
        <Footer {...props}/>
        
