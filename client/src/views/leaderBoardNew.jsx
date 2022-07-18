@@ -87,9 +87,9 @@ const ContributeNew = (props) => {
         // }
       }).then((d) => {
         
-        d.map((e,ei)=>{
-           e['ranking'] = ei+1
-        })
+        // d.map((e,ei)=>{
+        //   e['ranking'] = ei+1
+        // })
         
         setAllCharities(d);
         setfilteredCharities(d);

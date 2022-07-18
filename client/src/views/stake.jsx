@@ -129,6 +129,7 @@ const ContributeNew = (props) => {
       
     },10)
     
+    /*
     let url = `/api/v1/data/stakingstats`;
     //console.log(url);
     fetch(url).then((d) => {
@@ -152,6 +153,8 @@ const ContributeNew = (props) => {
        setrewardChartData(d['rewardovertime']);
        
     })
+    */
+    
     
   }
   

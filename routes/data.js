@@ -430,6 +430,7 @@ router.get('/topcharities', (req, res) => {
 
 });
 
+/*
 router.get('/userstats', (req, res) => {
 
   const useraddress = req.query.address
@@ -572,6 +573,7 @@ router.get('/userstats', (req, res) => {
   }
 
 });
+*/
 
 router.get('/stakingstats', (req, res) => {
 
@@ -684,6 +686,7 @@ router.get('/stakingstats', (req, res) => {
     })
 });
 
+/*
 router.get('/contribovertime', (req, res) => {
 
   let data;
@@ -721,6 +724,7 @@ router.get('/contribovertime', (req, res) => {
     });
 
 });
+*/
 
 router.get('/topcontributors', (req, res) => {
 
@@ -1079,12 +1083,12 @@ router.get('/events', (req, res) => {
     req.app.db.Event.findAll({
         where: { sender: address },
         order: [
-          ['createdAt', 'DESC']
+          ['createdAt', 'ASC']
         ],
         //limit: 100
       }).then((d) => {
-           
-      res.send(d)
+        
+        res.send(d)
       
       })
     
@@ -1097,5 +1101,69 @@ router.get('/events', (req, res) => {
 
 });
 
+router.get('/userstats', (req, res) => {
+
+  const address = req.query.address;
+  
+  const contribOverTime = []
+  
+  if (address != undefined) {
+    
+    req.app.db.Event.findAll({
+        where: { sender: address },
+        order: [
+          ['createdAt', 'ASC']
+        ],
+        //limit: 100
+      }).then((d) => {
+        
+        // create time series scatter map of the contributions
+        
+        let lastContrib = 0
+        
+        d.map((dd)=>{
+          
+          contribOverTime.push({
+            time:dd['createdAt'],
+            contrib:lastContrib + dd['amountUSD']
+          });
+          
+          lastContrib = lastContrib + dd['amountUSD']
+          
+        })
+           
+        return req.app.db.AddressNickname.findOne({
+          where: {
+            address: address
+          }
+        })
+
+      
+      }).then((d) => {
+        
+        const response = {
+          nickname: null,
+          address: address,
+          contribovertime: contribOverTime,
+        }
+        
+        if (d == null) {
+          res.send(response);
+        }
+        else {
+          response['nickname'] = d.nickname
+          res.send(response);
+        }
+        
+      })
+      
+  } else {
+    res.send({
+      error:true,
+      message:'cannot find address'
+    })
+  }
+
+});
 
 module.exports = router;

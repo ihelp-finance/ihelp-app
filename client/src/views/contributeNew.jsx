@@ -164,7 +164,8 @@ const ContributeNew = (props) => {
       //     console.log('README',props.readContracts)
       
       props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address,0,100]).then((d) => {
-        //console.log(d)  
+        
+        console.log('generalStats',d)  
         
         const totalHelpers = commafy(parseFloat(d['totalHelpers']).toFixed(0))
         const totalCharities = commafy(parseFloat(d['totalCharities']).toFixed(0))

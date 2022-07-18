@@ -1195,8 +1195,7 @@ useEffect(() => {
           </div>
           */}
           
-          
-          
+
           {/*
           <div className={st.videoMessagesGrid}>
             <div className={st.charityVideos}>

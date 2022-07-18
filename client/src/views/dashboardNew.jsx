@@ -237,7 +237,6 @@ const ContributeNew = (props) => {
 
       }, 10)
 
-      /*
       let url = `/api/v1/data/userstats?address=${props.address}`;
       console.log(url);
 
@@ -254,7 +253,11 @@ const ContributeNew = (props) => {
         console.log(d);
         
         try {
+          
          setNickname(d.nickname);
+         setChartData(d['contribovertime']);
+         
+         /*
          setcontribTotal(d['contrib_by_charity_summary']['total']);
          setChartData(d['contribovertime']);
          
@@ -272,7 +275,6 @@ const ContributeNew = (props) => {
                contributed: d['contrib_by_charity_summary'][key]['total'],
                
              }
-             
              try {
               data['currencies'].push('DAI-'+d['contrib_by_charity_summary'][key]['DAI']['contrib'].toFixed(2))
              }catch(e){}
@@ -282,14 +284,14 @@ const ContributeNew = (props) => {
              
              tableRawData.push(data);
            }
-           
          }
          setTableData(tableRawData);
+         */
          
         }catch(e){console.log('error',e)}
 
       })
-      */
+
 
     }
 
@@ -596,9 +598,9 @@ const ContributeNew = (props) => {
                             </ScatterChart>
                           </ResponsiveContainer>
                         </div>
-                        <span style={{width:'100%',fontStyle:'italic',textAlign:'center',fontSize:'10px',display:'inline-block',position:'relative',top:'-15px'}}>
+                        {/*<span style={{width:'100%',fontStyle:'italic',textAlign:'center',fontSize:'10px',display:'inline-block',position:'relative',top:'-15px'}}>
                           (stats updated every minute)
-                        </span>
+                        </span>*/}
                         
                     </div>
                     <div className='rewardsContent' style={{textAlign:'center'}}>
