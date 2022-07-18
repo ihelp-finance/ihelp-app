@@ -1048,5 +1048,54 @@ router.get('/contracts', (req, res) => {
 
 })
 
+router.post('/event', (req, res) => {
+  
+  if (req.query.key == process.env.EVENT_API_KEY) {
+    
+    console.log(req.body)
+    
+    req.app.db.Event.create(req.body)
+    
+    res.send({
+      error:false,
+      message:'success'
+    })
+    
+  } else {
+    res.send({
+      error:true,
+      message:'cannot validate event api key'
+    })
+  }
+  
+});
+
+router.get('/events', (req, res) => {
+
+  const address = req.query.address;
+  
+  if (address != undefined) {
+    
+    req.app.db.Event.findAll({
+        where: { sender: address },
+        order: [
+          ['createdAt', 'DESC']
+        ],
+        //limit: 100
+      }).then((d) => {
+           
+      res.send(d)
+      
+      })
+    
+  } else {
+    res.send({
+      error:true,
+      message:'cannot find address'
+    })
+  }
+
+});
+
 
 module.exports = router;

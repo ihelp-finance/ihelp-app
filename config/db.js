@@ -21,7 +21,7 @@ const seq = new Sequelize(
 
 seq.authenticate().then((errors) => {
   if (errors === undefined) {
-    console.log('Connection successful: ', config.database);
+    console.log('Connection successful');
   }
   else {
     console.log('Error connecting to database: ', errors);
@@ -200,6 +200,46 @@ const CharityAccount = seq.define('charity_accounts', {
   freezeTableName: true
 });
 
+const Event = seq.define('charity_accounts', {
+  name: {
+    type: Sequelize.TEXT,
+  },
+  sender: {
+    type: Sequelize.TEXT,
+  },
+  lendingAddress: {
+    type: Sequelize.TEXT,
+  },
+  currency: {
+    type: Sequelize.TEXT,
+  },
+  provider: {
+    type: Sequelize.TEXT,
+  },
+  underlyingToken: {
+    type: Sequelize.TEXT,
+  },
+  amount: {
+    type: Sequelize.FLOAT,
+  },
+  price: {
+    type: Sequelize.FLOAT,
+  },
+  amountUSD: {
+    type: Sequelize.FLOAT,
+  },
+  createdAt: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
+  },
+},{
+  freezeTableName: true
+});
+
 CharityAccount.prototype.validPassword = function (password) {
   if (this.password == null) {
     this.password = ''
@@ -239,7 +279,6 @@ CharityAccount.sync({
       console.log('trigger already exists')
     })
 })
-
 
 ContribByCharity.sync({
   force: forceOverwrite
@@ -289,6 +328,12 @@ CharityAccount.sync({
 
 });
 
+Event.sync({
+  force: forceOverwrite
+}).then((table) => {
+
+});
+
 const db = {
   ContribByCharity,
   ContribByUser,
@@ -298,6 +343,7 @@ const db = {
   StakingStat,
   DirectDonationByUser,
   CharityAccount,
+  Event,
   seq,
 };
 

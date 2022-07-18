@@ -673,7 +673,7 @@ const ContributeNew = (props) => {
         
         const currencyAddress = props.readContracts[currency].address;
       
-        sponsorTx = props.tx(props.writeContracts[contractName].directionDonation(currencyAddress,donationAmountWei), update => {
+        sponsorTx = props.tx(props.writeContracts[contractName].directDonation(currencyAddress,donationAmountWei), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -693,7 +693,7 @@ const ContributeNew = (props) => {
       }
       else {
         
-        sponsorTx = props.tx(props.writeContracts[contractName].donateNative({ value:donationAmountWei }), update => {
+        sponsorTx = props.tx(props.writeContracts[contractName].directDonationNative({ value:donationAmountWei }), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -891,7 +891,7 @@ const ContributeNew = (props) => {
         
         { currencyApproved ? (<span>
         
-          {loading ? (<Spin style={{zoom:'3',marginTop:'7px'}} />) :  
+          {loading ? (<Spin style={{zoom:'3',marginTop:'2px'}} />) :  
       <span><Input
           //style={{width:'100%',display: ''}}
           type='number'

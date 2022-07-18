@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const config = require('./config/server');
 const logger = require('morgan');
 
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+
 logger.format('mydate', function() {
     var df = require('dateformat');
     return df(new Date(), 'HH:MM:ss.l');
