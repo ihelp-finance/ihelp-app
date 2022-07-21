@@ -96,13 +96,18 @@ const ContributeNew = (props) => {
 
       setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
       setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
-      setValue("iHelp", "totalSupply", null, ihelpSupply, setihelpSupply);
-      //setValue("iHelp", "totalCirculating", null, ihelpCirculating, setihelpCirculating);
+      
       setValue("xHelp", "totalSupply", null, xhelpSupply, setxhelpSupply);
       setValue("iHelp", "allowance", [props.address,props.readContracts.xHelp.address], allowanceStaking, setAllowanceStaking);
+      
       //setValue("xHelp", "claimableRewardOf", [props.address], claimableReward, setclaimableReward);
+      //setValue("iHelp", "totalSupply", null, ihelpSupply, setihelpSupply);
+      //setValue("iHelp", "totalCirculating", null, ihelpCirculating, setihelpCirculating);
       
       props.readContracts["xHelp"]["claimableRewardOf"](props.address).then((d) => {
+        
+        console.log('claimableRewardOf',parseFloat(utils.formatUnits(d,18)))
+        
         setclaimableReward(d)
       }).catch((e)=>{
         setclaimableReward('0')
@@ -110,7 +115,7 @@ const ContributeNew = (props) => {
       
       props.readContracts["analytics"]["stakingPoolState"](props.readContracts['iHelp'].address,props.readContracts['xHelp'].address).then((d) => {
         
-        console.log('stakingPoolState',d)
+        console.log('stakingPoolState',parseFloat(utils.formatUnits(d['iHelpTokensInCirculation'],1)))
         
         setihelpCirculating(d['iHelpTokensInCirculation'])
         setihelpStaked(d['iHelpStaked'])

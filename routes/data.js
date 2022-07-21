@@ -60,6 +60,67 @@ const getCharityStats = (req, contractAddress) => {
     });
 }
 
+
+
+const charityDevMapAddress = {}
+const charityDevMapName = {}
+
+const setCharityDevMap = (req, moveOn, skipCharityStats) => {
+  
+  const charityContracts = [];
+  const contractFile = '/hardhat_contracts.json'
+  
+  let d = fs.readFileSync(contractFile, 'utf8')
+  d = JSON.parse(d);
+  
+  Object.keys(d['31337'][0]['contracts']).map((k)=>{
+    if (k.indexOf('charityPool') > -1) {
+      charityContracts.push(d['31337'][0]['contracts'][k]['address']);
+    }
+  })
+  
+  //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
+  //var g_id = "313945428"
+  var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+  var g_id = "727836194"
+  var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
+  request(url, function(error, response, body) {
+
+    if (error == null) {
+      csv()
+        .fromString(body)
+        .then((jsonObj) => {
+
+          const filteredJsonObj = [];
+
+          let charityContractsCount = 0
+          
+          jsonObj.forEach(e => {
+            
+            if (charityContractsCount < charityContracts.length) {
+              charityDevMapAddress[charityContracts[charityContractsCount]] = e['Organization Name']
+              charityDevMapName[e['Organization Name']] = charityContracts[charityContractsCount]
+            }
+            charityContractsCount += 1
+          })
+          
+          console.log('charityDevMapName',charityDevMapName)
+          
+        })
+        
+    }
+    
+  })
+  
+}
+
+if (process.env.NODE_ENV == 'development') {
+  console.log('SETTING CHARITY DEV MAP')
+  setCharityDevMap()
+}
+
+
+
 const getCharityInformation = (req, moveOn, skipCharityStats) => {
   //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
   //var g_id = "313945428"
@@ -75,6 +136,8 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
 
           const filteredJsonObj = [];
 
+          let charityContractsCount = 0
+          
           jsonObj.forEach(e => {
 
             const maxChars = 200;
@@ -84,8 +147,26 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
             else {
               e['Shorted Description'] = e['Brief Description & History'];
             }
-
-            if (e['Status'] == 'LIVE' || e['Status'] == 'HIDE') filteredJsonObj.push(e);
+            
+            
+            if (process.env.NODE_ENV == 'development') {
+              
+              if ( Object.keys(charityDevMapName).indexOf(e['Organization Name']) > -1 ) {
+                
+                  e['CharityPool Contract'] = charityDevMapName[e['Organization Name']]
+                  e['Status'] = 'LIVE'
+                
+                 filteredJsonObj.push(e);
+                 
+              }
+              
+            } else {
+              
+              if (e['Status'] == 'LIVE' || e['Status'] == 'HIDE') filteredJsonObj.push(e);
+              
+            }
+            
+            
           });
 
           filteredJsonObj.sort((a, b) => (a['Organization Name'] > b['Organization Name']) ? 1 : -1)
@@ -172,39 +253,53 @@ router.get('/charities/:id', (req, res) => {
 
           var charityObject = null;
           for (var i = 0; i < jsonObj.length; i++) {
-            if (jsonObj[i]['CharityPool Contract'] == charity_id) {
-              charityObject = jsonObj[i]
-              break
+            
+            if (process.env.NODE_ENV == 'development') {
+              
+              if (Object.keys(charityDevMapAddress).indexOf(charity_id) > -1) {
+                if ( charityDevMapName[jsonObj[i]['Organization Name']] == charity_id ) {
+                  jsonObj[i]['CharityPool Contract'] = charity_id
+                  jsonObj[i]['Status'] = 'LIVE'
+                  charityObject = jsonObj[i]
+                  break
+                }  
+              }
+              
+            } else {
+              if (jsonObj[i]['CharityPool Contract'] == charity_id) {
+                charityObject = jsonObj[i]
+                break
+              }
             }
           }
 
-          const getCharityStat = async() => {
+          // const getCharityStat = async() => {
 
-            const e = charityObject;
-            const currencies = [];
-            e['Stats'] = {}
-            if (e['DAI CharityPool'] != '') {
-              currencies.push('DAI');
-              e['Stats']['DAI'] = await getCharityStats(req, e['DAI CharityPool']);
-            }
-            if (e['USDC CharityPool'] != '') {
-              currencies.push('USDC');
-              e['Stats']['USDC'] = await getCharityStats(req, e['USDC CharityPool']);
-            }
-            e['Currencies'] = currencies;
+          //   const e = charityObject;
+          //   const currencies = [];
+          //   e['Stats'] = {}
+          //   if (e['DAI CharityPool'] != '') {
+          //     currencies.push('DAI');
+          //     e['Stats']['DAI'] = await getCharityStats(req, e['DAI CharityPool']);
+          //   }
+          //   if (e['USDC CharityPool'] != '') {
+          //     currencies.push('USDC');
+          //     e['Stats']['USDC'] = await getCharityStats(req, e['USDC CharityPool']);
+          //   }
+          //   e['Currencies'] = currencies;
 
-            e['Stats']['Total'] = {};
-            e['Stats']['Total']['interest'] = 0;
-            e['Stats']['Total']['contribution'] = 0;
+          //   e['Stats']['Total'] = {};
+          //   e['Stats']['Total']['interest'] = 0;
+          //   e['Stats']['Total']['contribution'] = 0;
 
-            for (let j = 0; j < currencies.length; j++) {
-              e['Stats']['Total']['interest'] += e['Stats'][currencies[j]]['interest'];
-              e['Stats']['Total']['contribution'] += e['Stats'][currencies[j]]['contribution'];
-            }
+          //   for (let j = 0; j < currencies.length; j++) {
+          //     e['Stats']['Total']['interest'] += e['Stats'][currencies[j]]['interest'];
+          //     e['Stats']['Total']['contribution'] += e['Stats'][currencies[j]]['contribution'];
+          //   }
 
-            moveOn(charityObject);
+          //   moveOn(charityObject);
 
-          }
+          // }
 
           const moveOn = (charityObject) => {
             if (charityObject != null) {
@@ -221,7 +316,8 @@ router.get('/charities/:id', (req, res) => {
           }
 
           if (charityObject) {
-            getCharityStat()
+            // getCharityStat()
+            moveOn(charityObject)
           }
           else {
             moveOn(charityObject)
@@ -1041,7 +1137,14 @@ router.get('/login', (req, res) => {
 
 router.get('/contracts', (req, res) => {
 
-  fs.readFile('contracts/hardhat_contracts.json', 'utf8', (e, d) => {
+  let contractFile = null;
+  if (process.env.NODE_ENV == 'development') {
+    contractFile = '/hardhat_contracts.json'
+  } else {
+    contractFile = 'contracts/hardhat_contracts.json'
+  }
+
+  fs.readFile(contractFile, 'utf8', (e, d) => {
     try {
       res.json(JSON.parse(d));
     }

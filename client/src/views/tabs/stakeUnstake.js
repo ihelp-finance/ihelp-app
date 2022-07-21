@@ -20,17 +20,15 @@ export function StakeUnstake(propsraw) {
 
 
   let stakeEnabled = false;
-  if (  ihelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000) {
+  if (  ihelpBalance > 0 && amount != '' && parseFloat(amount) > 0 && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000) {
     stakeEnabled = true;
   }
   
   let unstakeEnabled = false;
-  if (  xhelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
+  if (  xhelpBalance > 0 && amount != '' && parseFloat(amount) > 0 && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
     unstakeEnabled = true;
   }
-     
 
-     
      const handleUnstake = async() => {
     
     console.log('unstaking',amount,'HELP tokens to xHELP staking contract:',props.readContracts.xHelp.address)
@@ -65,7 +63,7 @@ export function StakeUnstake(propsraw) {
             <div className='approve'>
                 <input  autoFocus type="number" value={amount} ref={inputRef} placeholder={`0 xHELP`} onChange={(e)=>{setAmount(e.target.value)}}/>
                 <button  className="max-button" onClick={(e)=>{setAmount((Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000).toFixed(6))}}>MAX</button>
-                <button disabled={props.web3Modal && props.web3Modal.cachedProvider && unstakeEnabled ? false : true}>UNSTAKE</button>
+                <button disabled={props.web3Modal && props.web3Modal.cachedProvider && unstakeEnabled ? false : true} onClick={handleUnstake}>UNSTAKE</button>
             </div>
         </div>
     )

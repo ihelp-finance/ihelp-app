@@ -21,12 +21,12 @@ export function StakeStake(propsraw) {
      
      
   let stakeEnabled = false;
-  if (  ihelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000) {
+  if (  ihelpBalance > 0 && amount != '' && parseFloat(amount) > 0 && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000) {
     stakeEnabled = true;
   }
   
   let unstakeEnabled = false;
-  if (  xhelpBalance > 0 && amount != '' && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
+  if (  xhelpBalance > 0 && amount != ''  && parseFloat(amount) > 0 && parseFloat(amount) <= Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000) {
     unstakeEnabled = true;
   }
      
@@ -65,7 +65,7 @@ export function StakeStake(propsraw) {
             <div className='approve'>
                 <input  autoFocus type="number" value={amount} ref={inputRef} placeholder={`0 HELP`} onChange={(e)=>{setAmount(e.target.value)}}/>
                 <button className="max-button" onClick={(e)=>{setAmount((Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000).toFixed(6))}}>MAX</button>
-                <button disabled={props.web3Modal && props.web3Modal.cachedProvider && stakeEnabled ? false : true}>STAKE</button>
+                <button disabled={props.web3Modal && props.web3Modal.cachedProvider && stakeEnabled ? false : true} onClick={handleStake}>STAKE</button>
             </div>
         </div>
     )

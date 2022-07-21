@@ -65,9 +65,9 @@ const ContributeNew = (props) => {
         // }
       }).then((d) => {
         
-        d.map((e,ei)=>{
-           e['ranking'] = ei+1
-        })
+        // d.map((e,ei)=>{
+        //   e['ranking'] = ei+1
+        // })
         
         setAllLeaderboard(d);
         setfilteredLeaderboard(d);
@@ -302,7 +302,7 @@ const ContributeNew = (props) => {
         <div className="sectionHeader">Leaderboard</div>
           {/* Search and  Filter Box */}
           <div className={st.searchFilter}>
-            <main>
+            <main style={{marginTop:'-30px'}}>
             <div className={st.buttonGroup}>
               <button className={mode == 'helpers' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('helpers');setsearchValue('');setfilteredLeaderboard(allLeaderboard)}}>Helpers</button>
               <button className={mode == 'charities' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('charities');setsearchValue('');setfilteredCharities(allCharities)}}>Charities</button>
