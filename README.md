@@ -8,13 +8,45 @@ For development, the server and client apps can be deployed as a single monolith
 
 #### Monolithic development instructions using docker:
 
+The below instructions are to run the app in a turnkey dev-mode fashion completely inside the provided docker container. We recommend this approach so the node modules match the version running inside the container:
+
+```
+# install docker (if not installed already)
+# curl -fsSL https://get.docker.com -o get-docker.sh
+# sh get-docker.sh
+# on mac or windows, you can also use Docker Desktop
+
+# create the starter db so there is some data in the database for dev purposes
+cd modules/postgresql
+tar xzvf starter_db.tgz
+cd ../../
+
+# start the docker container
+./start.sh
+
+# inside the docker container install the node modules
+yarn install
+cd client
+yarn install
+cd ../
+
+# start the server and client apps
+npm start
+```
+
+If you are running on a linux environment, you can also install the modules outside the container with the same nodejs version (v12) and run the app directly in dev mode:
+
 ```
 # install nvm and use node v12 for the current state of this app
 # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 nvm install v12
 nvm use v12
 
-# install the requirements
+# install docker (if not installed already)
+# curl -fsSL https://get.docker.com -o get-docker.sh
+# sh get-docker.sh
+
+# install the node modules
 yarn install
 cd client
 yarn install
@@ -25,12 +57,7 @@ cd modules/postgresql
 tar xzvf starter_db.tgz
 cd ../../
 
-# install docker (if not already)
-# curl -fsSL https://get.docker.com -o get-docker.sh
-# sh get-docker.sh
-# on mac or windows, you can also use Docker Desktop
-
-# start the service using docker
+# start the service in dev mode
 ./start.sh dev
 ```
 
