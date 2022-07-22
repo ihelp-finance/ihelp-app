@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 
 const forceOverwrite = false;
 
-console.log('loading db');
+// console.log('loading db');
 
 const seq = new Sequelize(
   'ihelp',
@@ -39,85 +39,64 @@ const AddressNickname = seq.define('address_nickname', {
   freezeTableName: true
 });
 
-const ContribByCharity = seq.define('contrib_by_charity', {
-  time: {
+const CharityStats = seq.define('charity_stats', {
+  address: {
+    type: Sequelize.TEXT,
+    primaryKey: true,
+  },
+  name:{
+    type: Sequelize.TEXT,
+  },
+  contributions:{
+    type: Sequelize.FLOAT,
+  },
+  donations:{
+    type: Sequelize.FLOAT,
+  },
+  interests:{
+    type: Sequelize.FLOAT,
+  },
+  createdAt: {
     type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
   },
-  charityname: {
-    type: Sequelize.TEXT,
+  updatedAt: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
   },
-  charityaddress: {
-    type: Sequelize.TEXT,
-  },
-  currency: {
-    type: Sequelize.TEXT,
-  },
-  total_contrib: {
-    type: Sequelize.FLOAT,
-  },
-  total_contrib_usd: {
-    type: Sequelize.FLOAT,
-  }
 },{
   freezeTableName: true
 });
 
-const ContribByUser = seq.define('contrib_by_user', {
-  time: {
+const UserStats = seq.define('user_stats', {
+  address: {
+    type: Sequelize.TEXT,
+    primaryKey: true,
+  },
+  name:{
+    type: Sequelize.TEXT,
+  },
+  contributions:{
+    type: Sequelize.FLOAT,
+  },
+  donations:{
+    type: Sequelize.FLOAT,
+  },
+  interests:{
+    type: Sequelize.FLOAT,
+  },
+  createdAt: {
     type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
   },
-  useraddress: {
-    type: Sequelize.TEXT,
+  updatedAt: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
   },
-  total_contrib: {
-    type: Sequelize.FLOAT,
-  },
-  total_contrib_usd: {
-    type: Sequelize.FLOAT,
-  },
-  contrib_by_charity: {
-    type: Sequelize.TEXT,
-  },
-  contrib_by_charity_usd: {
-    type: Sequelize.TEXT,
-  }
 },{
   freezeTableName: true
 });
 
-const TotalInterestByCharity = seq.define('total_interest_by_charity', {
-  time: {
-    type: Sequelize.DATE,
-  },
-  charityname: {
-    type: Sequelize.TEXT,
-  },
-  charityaddress: {
-    type: Sequelize.TEXT,
-  },
-  total_interest: {
-    type: Sequelize.FLOAT,
-  }
-},{
-  freezeTableName: true
-});
-
-const TotalInterestByUser = seq.define('total_interest_by_user', {
-  time: {
-    type: Sequelize.DATE,
-  },
-  username: {
-    type: Sequelize.TEXT,
-  },
-  useraddress: {
-    type: Sequelize.TEXT,
-  },
-  total_interest: {
-    type: Sequelize.FLOAT,
-  }
-},{
-  freezeTableName: true
-});
 
 const StakingStat = seq.define('staking_stats', {
   time: {
@@ -147,29 +126,6 @@ const StakingStat = seq.define('staking_stats', {
   xhelp_apy: {
     type: Sequelize.FLOAT,
   },
-},{
-  freezeTableName: true
-});
-
-const DirectDonationByUser = seq.define('direct_donation_by_user', {
-  time: {
-    type: Sequelize.DATE,
-  },
-  useraddress: {
-    type: Sequelize.TEXT,
-  },
-  charityaddress: {
-    type: Sequelize.TEXT,
-  },
-  charitycurrency: {
-    type: Sequelize.TEXT,
-  },
-  total_donation: {
-    type: Sequelize.FLOAT,
-  },
-  total_donation_usd: {
-    type: Sequelize.FLOAT,
-  }
 },{
   freezeTableName: true
 });
@@ -273,32 +229,20 @@ CharityAccount.sync({
       return seq.query(tableTrigger)
     })
     .then((e) => {
-      console.log('trigger applied')
+     // console.log('trigger applied')
     })
     .catch((e) => {
-      console.log('trigger already exists')
+      //console.log('trigger already exists')
     })
 })
 
-ContribByCharity.sync({
+CharityStats.sync({
   force: forceOverwrite
 }).then((table) => {
 
 });
 
-ContribByUser.sync({
-  force: forceOverwrite
-}).then((table) => {
-
-});
-
-TotalInterestByCharity.sync({
-  force: forceOverwrite
-}).then((table) => {
-
-});
-
-TotalInterestByUser.sync({
+UserStats.sync({
   force: forceOverwrite
 }).then((table) => {
 
@@ -311,12 +255,6 @@ AddressNickname.sync({
 });
 
 StakingStat.sync({
-  force: forceOverwrite
-}).then((table) => {
-
-});
-
-DirectDonationByUser.sync({
   force: forceOverwrite
 }).then((table) => {
 
@@ -335,13 +273,10 @@ Event.sync({
 });
 
 const db = {
-  ContribByCharity,
-  ContribByUser,
-  TotalInterestByCharity,
-  TotalInterestByUser,
+  CharityStats,
+  UserStats,
   AddressNickname,
   StakingStat,
-  DirectDonationByUser,
   CharityAccount,
   Event,
   seq,

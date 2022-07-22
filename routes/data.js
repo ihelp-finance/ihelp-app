@@ -13,14 +13,15 @@ router.get('/', (req, res) => {
   res.json({
     charities: '/api/v1/data/charities',
     stats: '/api/v1/data/stats',
-    totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
+    //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
     nickname: '/api/v1/data/nickname',
-    totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
-    topcharities: '/api/v1/data/topcharities',
-    userstats: '/api/v1/data/userstats',
-    stakingstats: '/api/v1/data/stakingstats',
-    contribovertime: '/api/v1/data/contribovertime',
-    topcontributors: '/api/v1/data/topcontributors',
+    //allnicknames: '/api/v1/data/allnicknames',
+    //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
+    //topcharities: '/api/v1/data/topcharities',
+    //userstats: '/api/v1/data/userstats',
+    //stakingstats: '/api/v1/data/stakingstats',
+    //contribovertime: '/api/v1/data/contribovertime',
+    //topcontributors: '/api/v1/data/topcontributors',
     contracts: '/api/v1/data/contracts',
   });
 });
@@ -30,34 +31,38 @@ const getCharityStats = (req, contractAddress) => {
 
   let latestCharityInterest = 0;
   let latestCharityContribution = 0;
-  return req.app.db.TotalInterestByCharity.findOne({
-      where: { charityaddress: contractAddress },
-      order: [
-        ['updatedAt', 'DESC']
-      ],
-    })
-    .then((data) => {
-      try {
-        latestCharityInterest = data['total_interest'];
-      }
-      catch (e) {}
-      return req.app.db.ContribByCharity.findOne({
-        where: { charityaddress: contractAddress },
-        order: [
-          ['updatedAt', 'DESC']
-        ],
-      })
-    })
-    .then((data) => {
-      try {
-        latestCharityContribution = data['total_contrib_usd'];
-      }
-      catch (e) {}
-      return {
+  return {
         interest: latestCharityInterest,
         contribution: latestCharityContribution,
       }
-    });
+  // return req.app.db.TotalInterestByCharity.findOne({
+  //     where: { charityaddress: contractAddress },
+  //     order: [
+  //       ['updatedAt', 'DESC']
+  //     ],
+  //   })
+  //   .then((data) => {
+  //     try {
+  //       latestCharityInterest = data['total_interest'];
+  //     }
+  //     catch (e) {}
+  //     return req.app.db.ContribByCharity.findOne({
+  //       where: { charityaddress: contractAddress },
+  //       order: [
+  //         ['updatedAt', 'DESC']
+  //       ],
+  //     })
+  //   })
+  //   .then((data) => {
+  //     try {
+  //       latestCharityContribution = data['total_contrib_usd'];
+  //     }
+  //     catch (e) {}
+  //     return {
+  //       interest: latestCharityInterest,
+  //       contribution: latestCharityContribution,
+  //     }
+  //   });
 }
 
 
@@ -68,7 +73,7 @@ const charityDevMapName = {}
 const setCharityDevMap = (req, moveOn, skipCharityStats) => {
   
   const charityContracts = [];
-  const contractFile = '/hardhat_contracts.json'
+  const contractFile = '/build/hardhat_contracts.json'
   
   let d = fs.readFileSync(contractFile, 'utf8')
   d = JSON.parse(d);
@@ -822,6 +827,19 @@ router.get('/contribovertime', (req, res) => {
 });
 */
 
+
+
+router.get('/allnicknames', (req, res) => {
+  
+  req.app.db.AddressNickname.findAll({attributes: 
+        ['address','nickname']}
+      ).then((data) => {
+    res.send(data)
+  })
+
+})
+
+
 router.get('/topcontributors', (req, res) => {
 
   let latestTime = null;
@@ -1139,7 +1157,7 @@ router.get('/contracts', (req, res) => {
 
   let contractFile = null;
   if (process.env.NODE_ENV == 'development') {
-    contractFile = '/hardhat_contracts.json'
+    contractFile = '/build/hardhat_contracts.json'
   } else {
     contractFile = 'contracts/hardhat_contracts.json'
   }
@@ -1268,5 +1286,32 @@ router.get('/userstats', (req, res) => {
   }
 
 });
+
+router.get('/leaderboard', (req, res) => {
+  
+  const response = {
+    helpers:[],
+    charities:[]
+  }
+  req.app.db.CharityStats.findAll({limit:100,order: [
+            ['contributions', 'DESC']]
+        }).then((d) => {
+    
+    response.charities = d;
+    
+    return req.app.db.UserStats.findAll({limit:100,order: [
+            ['contributions', 'DESC']]
+        })
+    
+  }).then((d) => {
+    
+    response.helpers = d;
+    
+    res.send(response)
+    
+  })
+    
+})
+
 
 module.exports = router;
