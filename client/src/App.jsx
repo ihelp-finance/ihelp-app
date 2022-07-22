@@ -155,6 +155,9 @@ function App(props) {
       if (targetNetwork == NETWORKS.localhost) {
         window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '31337', chainName: 'iHelp Local', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://dev.ihelp.finance/rpc'], blockExplorerUrls: [] }] })
       }
+      else if (targetNetwork == NETWORKS.avalanche) {
+        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '43114', chainName: 'Avalanche Network', nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io/'] }] })
+      }
     }catch(e){}
     
   }, [userSigner]);
