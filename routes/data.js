@@ -127,6 +127,12 @@ if (process.env.NODE_ENV == 'development') {
 
 
 const getCharityInformation = (req, moveOn, skipCharityStats) => {
+  
+  if (process.env.NODE_ENV == 'development') {
+    console.log('SETTING CHARITY DEV MAP')
+    setCharityDevMap()
+  }
+  
   //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
   //var g_id = "313945428"
   var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
