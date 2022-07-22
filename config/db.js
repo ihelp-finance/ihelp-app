@@ -101,29 +101,12 @@ const UserStats = seq.define('user_stats', {
 const StakingStat = seq.define('staking_stats', {
   time: {
     type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('NOW()')
   },
-  ihelp_interest_generated:{
+  reward:{
     type: Sequelize.FLOAT,
   },
-  ihelp_circulating:{
-    type: Sequelize.FLOAT,
-  },
-  ihelp_supply:{
-    type: Sequelize.FLOAT,
-  },
-  ihelp_avail_supply:{
-    type: Sequelize.FLOAT,
-  },
-  xhelp_exchange_rate: {
-    type: Sequelize.FLOAT,
-  },
-  xhelp_cash: {
-    type: Sequelize.FLOAT,
-  },
-  xhelp_supply: {
-    type: Sequelize.FLOAT,
-  },
-  xhelp_apy: {
+  total_reward:{
     type: Sequelize.FLOAT,
   },
 },{

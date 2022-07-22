@@ -18,10 +18,10 @@ router.get('/', (req, res) => {
     //allnicknames: '/api/v1/data/allnicknames',
     //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
     //topcharities: '/api/v1/data/topcharities',
-    //userstats: '/api/v1/data/userstats',
-    //stakingstats: '/api/v1/data/stakingstats',
+    leaderboard: '/api/v1/data/leaderboard',
+    stakingstats: '/api/v1/data/stakingstats',
     //contribovertime: '/api/v1/data/contribovertime',
-    //topcontributors: '/api/v1/data/topcontributors',
+    events: '/api/v1/data/events',
     contracts: '/api/v1/data/contracts',
   });
 });
@@ -686,77 +686,6 @@ router.get('/stakingstats', (req, res) => {
 
   const response = {};
 
-  const moveOn = (data) => {
-
-    const charityHash = {};
-    for (let i = 0; i < data.length; i++) {
-
-      if (data[i]['DAI CharityPool'] != '') {
-        charityHash[data[i]['DAI CharityPool']] = {
-          currency: 'DAI',
-          name: data[i]['Organization Name'],
-          id: data[i]['Id'],
-          logo: data[i]['Logo']
-        }
-      }
-
-      if (data[i]['USDC CharityPool'] != '') {
-        charityHash[data[i]['USDC CharityPool']] = {
-          currency: 'USDC',
-          name: data[i]['Organization Name'],
-          id: data[i]['Id'],
-          logo: data[i]['Logo']
-        }
-      }
-
-    }
-
-    response['contrib_by_charity_summary'] = {}
-    //response['contrib_by_charity_usd_summary'] ={}
-
-    let totalContributions = 0;
-
-    if (Object.keys(response['contrib_by_charity']).length > 0) {
-
-      for (var i = 0; i < Object.keys(response['contrib_by_charity']).length; i++) {
-
-        var key = Object.keys(response['contrib_by_charity'])[i];
-
-        totalContributions += response['contrib_by_charity'][key];
-
-        var match = charityHash[key];
-
-        if (response['contrib_by_charity'][key] > 0) {
-          if (Object.keys(response['contrib_by_charity_summary']).includes(match['name'])) {
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
-            }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
-          }
-          else {
-            response['contrib_by_charity_summary'][match['name']] = {};
-            response['contrib_by_charity_summary'][match['name']]['total'] = 0;
-            response['contrib_by_charity_summary'][match['name']]['id'] = match['id'];
-            response['contrib_by_charity_summary'][match['name']]['logo'] = match['logo'];
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
-            }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
-          }
-        }
-
-        //response['contrib_by_charity_usd_summary'] 
-      }
-
-    }
-
-    response['contrib_by_charity_summary']['total'] = totalContributions;
-
-    res.send(response);
-  }
-
   let data;
   req.app.db.StakingStat.findAll({
       order: [
@@ -764,7 +693,7 @@ router.get('/stakingstats', (req, res) => {
       ],
       attributes: [
         [Sequelize.fn('DISTINCT', Sequelize.col('time')), 'time'],
-        [Sequelize.col('xhelp_total_reward'), 'xhelp_total_reward'],
+        [Sequelize.col('total_reward'), 'total_reward'],
       ],
       raw: true,
       limit: 24 * 7
@@ -773,10 +702,10 @@ router.get('/stakingstats', (req, res) => {
       const r = _.map(data, function(data) {
 
         let reward = 0
-        if (data.xhelp_total_reward != null) {
-          reward = parseFloat(data.xhelp_total_reward.toFixed(6));
+        if (data.total_reward != null) {
+          reward = parseFloat(data.total_reward.toFixed(6));
         }
-        return { 'time': data.time, 'xhelp_total_reward': reward }
+        return { 'time': data.time, 'total_reward': reward }
       });
 
       response['rewardovertime'] = r;

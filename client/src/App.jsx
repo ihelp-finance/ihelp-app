@@ -150,6 +150,13 @@ function App(props) {
       }
     }
     getAddress();
+    
+    try {
+      if (targetNetwork == NETWORKS.localhost) {
+        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '31337', chainName: 'iHelp Local', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://dev.ihelp.finance/rpc'], blockExplorerUrls: [] }] })
+      }
+    }catch(e){}
+    
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network

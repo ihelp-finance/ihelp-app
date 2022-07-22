@@ -100,6 +100,39 @@ const ContributeNew = (props) => {
     document.title = `iHelp | Dashboard (${props.targetNetwork.name.replace('host','').charAt(0).toUpperCase() + props.targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
   }, []);
 
+  const handleTokenAdd = async() => {
+      
+    const tokenAddress = props.readContracts['iHelp'].address;
+    const tokenSymbol = 'HELP';
+    const tokenDecimals = 18;
+    const tokenImage = 'https://dev.ihelp.finance/assets/ihelp_icon.png';
+    
+    try {
+      // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+      const wasAdded = await ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+    
+      if (wasAdded) {
+        console.log('Help Token Added');
+      } else {
+        console.log('Your loss!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     /* Header on-scroll Animation */
@@ -613,7 +646,7 @@ const ContributeNew = (props) => {
                         <div style={{textAlign:'center'}}>
                             <ul>
                                 <li>
-                                    <p>HELP Balance</p>
+                                    <p>HELP Balance  <a style={{fontStyle:'italic'}} onClick={handleTokenAdd}>add</a></p>
                                     <h5>{charityDecimals && ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
                                 </li>
                                 <li>

@@ -10,6 +10,8 @@ For development, the server and client apps can be deployed as a single monolith
 
 The below instructions are to run the app in a turnkey dev-mode fashion completely inside the provided docker container. We recommend this approach so the node modules match the version running inside the container:
 
+NOTE - please adjust the file "client/src/constants.js" accordingly specifically for your running rpcUrl (especially if running on a local chain).
+
 ```
 # install docker (if not installed already)
 # curl -fsSL https://get.docker.com -o get-docker.sh
@@ -34,48 +36,21 @@ cd ../
 npm start
 ```
 
-If you are running on a linux environment, you can also install the modules outside the container with the same nodejs version (v12) and run the app directly in dev mode:
+After starting the service, you can access the app at http://localhost:8000.
 
-```
-# install nvm and use node v12 for the current state of this app
-# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-nvm install v12
-nvm use v12
 
-# install docker (if not installed already)
-# curl -fsSL https://get.docker.com -o get-docker.sh
-# sh get-docker.sh
-
-# install the node modules
-yarn install
-cd client
-yarn install
-cd ../
-
-# create the starter db so there is some data in the database for dev purposes
-cd modules/postgresql
-tar xzvf starter_db.tgz
-cd ../../
-
-# start the service in dev mode
-./start.sh dev
-```
-
-After starting the service, you can test the dev service is running with the below commands:
+You can test the dev service API commands as well:
 
 ```
 curl http://localhost:8000/api/v1/data
 {
-    "charities": "/api/v1/data/charities",
-    "stats": "/api/v1/data/stats",
-    "totalinterestbycharities": "/api/v1/data/totalinterestbycharities",
-    "nickname": "/api/v1/data/nickname",
-    "topcharities": "/api/v1/data/topcharities",
-    "userstats": "/api/v1/data/userstats",
-    "stakingstats": "/api/v1/data/stakingstats",
-    "contribovertime": "/api/v1/data/contribovertime",
-    "topcontributors": "/api/v1/data/topcontributors",
-    "contracts": "/api/v1/data/contracts"
+    charities: "/api/v1/data/charities",
+    stats: "/api/v1/data/stats",
+    nickname: "/api/v1/data/nickname",
+    leaderboard: "/api/v1/data/leaderboard",
+    stakingstats: "/api/v1/data/stakingstats",
+    events: "/api/v1/data/events",
+    contracts: "/api/v1/data/contracts",
 }
 ```
 

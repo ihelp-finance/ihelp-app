@@ -134,7 +134,7 @@ const ContributeNew = (props) => {
       
     },10)
     
-    /*
+
     let url = `/api/v1/data/stakingstats`;
     //console.log(url);
     fetch(url).then((d) => {
@@ -153,12 +153,12 @@ const ContributeNew = (props) => {
       // setihelpCirculating(0);
       // setxhelpSupply(0);
       // setxhelpCash(0);
-      setxhelpAPY(0);
+      // setxhelpAPY(0);
       
        setrewardChartData(d['rewardovertime']);
        
     })
-    */
+ 
     
     
   }
@@ -254,6 +254,39 @@ const ContributeNew = (props) => {
       });
       console.log("awaiting metamask/web3 confirm result...", sponsorTx);
       console.log(await sponsorTx);
+    
+  }
+  
+  const handleTokenAdd = async() => {
+      
+    const tokenAddress = props.readContracts['iHelp'].address;
+    const tokenSymbol = 'HELP';
+    const tokenDecimals = 18;
+    const tokenImage = 'https://dev.ihelp.finance/assets/ihelp_icon.png';
+    
+    try {
+      // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+      const wasAdded = await ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+    
+      if (wasAdded) {
+        console.log('Help Token Added');
+      } else {
+        console.log('Your loss!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
     
   }
   
@@ -382,7 +415,7 @@ const ContributeNew = (props) => {
   
                 <div className='head-bar' style={{textAlign:'center'}}>
                       <div>
-                          <h5>My HELP Balance</h5>
+                          <h5>My HELP Balance <a style={{fontStyle:'italic'}} onClick={handleTokenAdd}>add</a></h5>
                           <p>{ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,18)).toFixed(2)) : "..."}</p>
                       </div>
                       <div>
@@ -431,6 +464,7 @@ const ContributeNew = (props) => {
  
                   <div className='head-bar stake' style={{margin: '0',textAlign:'center'}}>
                       <div>
+                      {/*<a style={{fontStyle:'italic'}} onClick={handleTokenAdd}>add</a>*/}
                           <h5>My DAI Staking Rewards</h5>
                           <p>{claimableReward ? commafy(parseFloat(utils.formatUnits(claimableReward,18)).toFixed(2)) : "..."}</p>
                       </div>
@@ -539,7 +573,7 @@ Like liquidity providing (LP), you will earn fees according to your share in the
                 <h6>Staking APY: {xhelpAPY ? `$${commafy(xhelpAPY.toFixed(2))}` : "..."}</h6>*/}
                 <div className='head-bar' style={{border:'0px'}}>
                             <div>
-              <h5>Reward History</h5>
+              <h5>Cumulative Reward History (DAI)</h5>
                    </div>
                         </div>
               <div className={st.stakeGraphBox}>
@@ -557,13 +591,13 @@ Like liquidity providing (LP), you will earn fees according to your share in the
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis tick={{fontSize: 10}} dataKey="time" domain = {['auto', 'auto']} tickFormatter={timeStr => moment(timeStr).format('M-D-H')} />
-                    <YAxis tick={{fontSize: 7}} type="number" dataKey="xhelp_total_reward" domain = {['auto', 'auto']} tickFormatter={yStr => commafy(yStr.toFixed(5))}/>
+                    <YAxis tick={{fontSize: 7}} type="number" dataKey="total_reward" domain = {['auto', 'auto']} tickFormatter={yStr => commafy(yStr.toFixed(5))}/>
                     <ChartTooltip />
                     <Legend />
                     <Scatter
                     legendType='none'
                     //  type="monotone"
-                      dataKey="xhelp_total_reward"
+                      dataKey="total_reward"
                       activeDot={{ r: 8 }}
                       dot={false}
                       shape={null}
