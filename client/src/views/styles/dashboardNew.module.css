@@ -66,8 +66,8 @@
 }
 .dashboardGraphBox {
   width: 100%;
-  height: 20rem;
-  margin: 2.5rem 0;
+  height: 28rem;
+  margin: 0rem -1.2rem 1.2rem;
 }
 .dashboardGraph button {
   width: 100%;

@@ -56,11 +56,11 @@ export default function Wallet(props) {
   const [open, setOpen] = useState();
   const [qr, setQr] = useState();
   const [amount, setAmount] = useState();
-  const [toAddress, setToAddress] = useState();
+  const [toAddress, setToAddress] = useState(ethereum.selectedAddress);
   const [pk, setPK] = useState();
 
   const providerSend = props.provider ? (
-    <Tooltip title="Wallet">
+    <Tooltip title="Development Wallet">
       <WalletOutlined
         onClick={() => {
           setOpen(!open);
@@ -249,7 +249,7 @@ export default function Wallet(props) {
             autoFocus
             ensProvider={props.ensProvider}
             placeholder="to address"
-            address={toAddress}
+            value={toAddress}
             onChange={setToAddress}
           />
         </div>
@@ -257,7 +257,12 @@ export default function Wallet(props) {
           <EtherInput
             price={props.price}
             value={amount}
+            placeholder={'amount'}
             onChange={value => {
+            console.log(toAddress)
+            if (toAddress == '') {
+              setToAddress(ethereum.selectedAddress)
+            }
               setAmount(value);
             }}
           />
@@ -292,6 +297,7 @@ export default function Wallet(props) {
     <span>
       {providerSend}
       <Modal
+      width={600}
         visible={open}
         title={
           <div>
@@ -312,17 +318,70 @@ export default function Wallet(props) {
           setOpen(!open);
         }}
         footer={[
-          privateKeyButton,
-          receiveButton,
+          // privateKeyButton,
+          // receiveButton,
           <Button
             key="submit"
             type="primary"
             disabled={!amount || !toAddress || qr}
             loading={false}
             onClick={() => {
-              const tx = Transactor(props.provider);
+            
+             let value;
+              try {
+                value = ethers.utils.parseUnits("" + amount,18);
+              } catch (e) {
+                // failed to parseEther, try something else
+              //  value = ethers.utils.parseUnits("" + parseFloat(amount).toFixed(8));
+              }
+              
+            const tx = Transactor(props.provider);
 
-              let value;
+              const mintTx = tx(props.writeContracts["WETH"].mint(toAddress,value), update => {
+       
+                console.log("Transaction Update:", update);
+          
+              });
+              
+            }}
+          >
+            <SendOutlined /> Mint WETH
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            disabled={!amount || !toAddress || qr}
+            loading={false}
+            onClick={() => {
+            
+             let value;
+              try {
+                value = ethers.utils.parseUnits("" + amount,6);
+              } catch (e) {
+                // failed to parseEther, try something else
+              //  value = ethers.utils.parseUnits("" + parseFloat(amount).toFixed(8));
+              }
+              
+            const tx = Transactor(props.provider);
+
+              const mintTx = tx(props.writeContracts["USDC"].mint(toAddress,value), update => {
+       
+                console.log("Transaction Update:", update);
+          
+              });
+              
+            }}
+          >
+            <SendOutlined /> Mint USDC
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            disabled={!amount || !toAddress || qr}
+            loading={false}
+            onClick={() => {
+            
+             let value;
               try {
                 value = ethers.utils.parseEther("" + amount);
               } catch (e) {
@@ -330,15 +389,45 @@ export default function Wallet(props) {
                 value = ethers.utils.parseEther("" + parseFloat(amount).toFixed(8));
               }
 
+            const tx = Transactor(props.provider);
+
+              const mintTx = tx(props.writeContracts["DAI"].mint(toAddress,value), update => {
+       
+                console.log("Transaction Update:", update);
+          
+              });
+              
+            }}
+          >
+            <SendOutlined /> Mint DAI
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            disabled={!amount || !toAddress || qr}
+            loading={false}
+            onClick={() => {
+            
+             let value;
+              try {
+                value = ethers.utils.parseEther("" + amount);
+              } catch (e) {
+                // failed to parseEther, try something else
+                value = ethers.utils.parseEther("" + parseFloat(amount).toFixed(8));
+              }
+
+            const tx = Transactor(props.provider);
+
               tx({
                 to: toAddress,
                 value,
               });
               setOpen(!open);
               setQr();
+         
             }}
           >
-            <SendOutlined /> Send
+            <SendOutlined /> Send ETH
           </Button>,
         ]}
       >

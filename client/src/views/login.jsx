@@ -160,13 +160,14 @@ const ContributeNew = (props) => {
   return (
     <div id="app" className="app">
 
-      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />
+{/*
+      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />*/}
       
       <Header {...props}/>
       
       <div className={st.contribute + " " + "section"}>
-        <div className="box" style={{marginTop:'30px',marginBottom:'-10px'}}>
-          <h2>Charity Login</h2>
+        <div className="box" style={{marginTop:'30px',marginBottom:'-10px',maxWidth:'700px'}}>
+          <div className="sectionHeader">Charity Login</div>
           
            {loading ? (<Spin indicator={antIcon} />) :  
           
@@ -176,7 +177,7 @@ const ContributeNew = (props) => {
             initialValues={{
               remember: true,
             }}
-            style={{maxWidth:'600px'}}
+            
             onFinish={onFinish}
           >
             <Form.Item
@@ -217,7 +218,7 @@ const ContributeNew = (props) => {
             </Form.Item>*/}
       
             <Form.Item>
-              <button className="grd-btn" htmlType="submit">
+              <button className="grd-btn" htmlType="submit" style={{width:'100%'}}>
                 Log in
               </button>
               

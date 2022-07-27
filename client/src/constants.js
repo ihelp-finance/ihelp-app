@@ -1,11 +1,11 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "55d414ecf21e43c9a05ff0199c475b5e";
+export const INFURA_ID = "";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "XHXD1TSJBHF7UN38JEE88CMPUPMC2UPT1R";
+export const ETHERSCAN_KEY = "";
 
 // BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
+export const BLOCKNATIVE_DAPPID = "";
 
 export const NETWORKS = {
   localhost: {
@@ -14,7 +14,7 @@ export const NETWORKS = {
     chainId: 31337,
     blockExplorer: "",
     //rpcUrl: "http://" + window.location.hostname + ":8545",
-    rpcUrl: "https://rinkeby.ihelp.finance/rpc",
+    rpcUrl: "/rpc",
   },
   mainnet: {
     name: "mainnet",

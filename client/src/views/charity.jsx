@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import st from "./styles/charity.module.css";
+import {General, Details, Financials, Videos} from "./tabs";
 import {
   MdSearch,
   MdMenu,
@@ -27,8 +28,8 @@ import SwiperCore, { Navigation, Pagination } from "swiper";
 import "swiper/swiper.min.css";
 import "swiper/components/pagination/pagination.min.css";
 import { useParams } from 'react-router-dom';
-import { Input,Tabs,Spin,Tooltip } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Menu,Space,Dropdown,Input,Tabs,Spin,Tooltip } from 'antd';
+import { LoadingOutlined,DownOutlined } from '@ant-design/icons';
 const { TabPane } = Tabs;
 import commafy from 'commafy';
 import { utils } from "ethers";
@@ -36,7 +37,7 @@ import { utils } from "ethers";
 import Address from "../components/Address";
 import { Header,Footer } from "../components";
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 
 const ContributeNew = (props) => {
 
@@ -52,6 +53,13 @@ const ContributeNew = (props) => {
   
   const [contractNameHash, setcontractNameHash] = useState(null);
   
+  const [charityBalances, setcharityBalances] = useState(null);
+  const [charityBalancesUSD, setcharityBalancesUSD] = useState(null);
+  
+  const [charityAllowances, setcharityAllowances] = useState(null);
+  const [currencyBalances, setcurrencyBalances] = useState(null);
+
+  // THESE ARE OLD
   const [daiCharityBalance, setdaiCharityBalance] = useState(null);
   const [daiCharityBalanceUSD, setdaiCharityBalanceUSD] = useState(null);
   const [daiTotalInterestEarned, setdaiTotalInterestEarned] = useState(null);
@@ -66,17 +74,20 @@ const ContributeNew = (props) => {
   const [usdcTotalInterestEarnedUSD, setusdcTotalInterestEarnedUSD] = useState(null);
   const [usdcCharityTotalBalanceUSD, setusdcCharityTotalBalanceUSD] = useState(null);
   
-  const [allowanceCharityDAI, setallowanceCharityDAI] = useState(0);
-  const [allowanceCharityUSDC, setallowanceCharityUSDC] = useState(0);
-
   const [daiBalance, setdaiBalance] = useState(null);
   const [usdcBalance, setusdcBalance] = useState(null);
   
-  const charityDecimals = props.charityDecimals;
-
+  const [lastTotalBalance, setLastTotalBalance] = useState(null);
+  
+  const [selectedLendingProvider,setselectedLendingProvider] = useState(null);
+  
+  const [charityDecimals,setCharityDecimals] = useState(null);
+  const [currencyAllowances,setcurrencyAllowances] = useState(null);
+  
   useEffect(() => {
     
     if (props.readContracts != null) {
+      
     // create the charity name hash
     const charityNames = {};
     Object.keys(props.readContracts).map((c)=>{
@@ -98,13 +109,14 @@ const ContributeNew = (props) => {
 
         console.log('charityInfo', d.data);
         
-        setTimeout(()=>{
-          setCurrencies(d.data['Currencies'])
-        },0)
+        // setTimeout(()=>{
+        //   setCurrencies(d.data['Currencies'])
+        // },0)
         
       }
       catch (e) {}
     })
+    
     }
 
   }, [props.readContracts]);
@@ -157,26 +169,161 @@ const ContributeNew = (props) => {
   const handleModalClick = (e) => {
     
     //console.log(e.target.className)
-    
+    try {
     if (e.target.className.indexOf('hitbox') > -1 || e.target.className.indexOf('lightbox') > -1) {
       setShowDepositInterest(false);
       setShowDepositDirect(false);
       setShowWithdrawInterest(false);
       setInputAmount('')
     }
-    
+    }catch(e){}
+
   }
+  
+  const [currentCurrencyTab, setcurrentCurrencyTab] = useState(null)
   
   const handleCurrencyChange = (e) => {
-    console.log(e);
+    setcurrentCurrencyTab(e)
     setInputAmount('')
+    setselectedLendingProvider(null)
   }
   
-   const setValue = props.setValue;
+  const setValue = props.setValue;
+  
+  const [infoItems, setInfoItems] = useState(null)
+  const [supportedCurrencyDetails, setSupportedCurrencyDetails] = useState({})
   
   const updateContracts = async(contract) => {
 
    // console.log('updating values', contract);
+   
+  // setValue("DAI", "allowance", [props.address, charityInfo[`CharityPool Contract`]], allowanceCharityDAI, setallowanceCharityDAI);
+  // setValue("USDC", "allowance", [props.address, charityInfo[`CharityPool Contract`]], allowanceCharityUSDC, setallowanceCharityUSDC);
+   // setValue("WETH", "allowance", [props.address, charityInfo[`CharityPool Contract`]], allowanceCharityUSDC, setallowanceCharityUSDC);
+   
+   const nativeBalance = await props.localProvider.getBalance(props.address);
+   //console.log('BALANCE:',newBalance)
+   
+   props.readContracts["analytics"]["getDonationCurrencyAllowances"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
+     
+     const cHash = {}
+      d.map((c)=>{
+        cHash[c['currency']] = parseInt(c['allowance'])
+      })
+      setcurrencyAllowances(cHash)
+   });
+
+  props.readContracts["analytics"]["getUserWalletBalances"](props.readContracts['iHelp'].address,props.address).then((d) => {
+    const cHash = {}
+    d.map((c)=>{
+      cHash[c['currency']] = c['balance']
+      if (c['currency'][0] == 'W') { 
+        cHash[c['currency'].replace('W','')] = nativeBalance
+      }
+    })
+    
+    console.log('getUserWalletBalances',cHash)
+    setcurrencyBalances(cHash)
+  })
+
+  props.readContracts["analytics"]["getUserTokenContributionsPerCharity"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
+    console.log('getUserTokenContributionsPerCharity',d)
+    const cHash = {}
+    d.map((c)=>{
+      cHash[c['currency']] = c['totalContributions']
+      if (c['currency'][0] == 'W') { 
+        cHash[c['currency'].replace('W','')] = c['totalContributions']
+      }
+    })
+    setcharityBalances(cHash)
+  })
+
+   props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address).then((d) => {
+     
+    // console.log('pricefeeds:',d)
+     
+     // get hash of currencies and their lending protocols
+     
+     const currencyHash = {};
+     
+     const charityDecimalHash = {}
+     
+     for (let i=0;i<d.length;i++) {
+
+       charityDecimalHash[d[i]['currency']] = parseInt(d[i]['decimals'])
+       
+       if (Object.keys(currencyHash).indexOf(d[i]['currency']) > -1) {
+        currencyHash[d[i]['currency']].push(d[i])
+       } else {
+         currencyHash[d[i]['currency']] = []
+         currencyHash[d[i]['currency']].push(d[i])
+       }
+       
+      if (d[i]['currency'].toLowerCase() == 'weth' || d[i]['currency'].toLowerCase() == 'wavax') {
+        const newD = JSON.parse(JSON.stringify(d[i]))
+        
+        newD['native'] = true
+        newD['currency'] = d[i]['currency'].replace('W','')
+        newD['decimals'] = d[i]['decimals']
+        newD['lendingAddress'] = d[i]['lendingAddress']
+        newD['price'] = d[i]['price']
+        newD['priceDecimals'] = d[i]['priceDecimals']
+        newD['priceFeed'] = d[i]['priceFeed']
+        newD['provider'] = d[i]['provider']
+        newD['underlyingToken'] = d[i]['underlyingToken']
+        
+        if (Object.keys(currencyHash).indexOf(d[i]['currency'].replace('W','')) > -1) { 
+          currencyHash[d[i]['currency'].replace('W','')].push(newD)
+        }else {
+          currencyHash[d[i]['currency'].replace('W','')] = []
+          currencyHash[d[i]['currency'].replace('W','')].push(newD)
+        }
+        charityDecimalHash[d[i]['currency'].replace('W','')] = charityDecimalHash[d[i]['currency']]
+       }
+
+     }
+     console.log('currencyHash',currencyHash)
+     console.log('charityDecimals',charityDecimalHash)
+     
+     
+     setCharityDecimals(charityDecimalHash)
+     setCurrencies(Object.keys(currencyHash))
+     setSupportedCurrencyDetails(currencyHash)
+     setcurrentCurrencyTab(Object.keys(currencyHash)[0])
+
+   })
+   
+   props.readContracts["analytics"]["charityStats"](charityInfo[`CharityPool Contract`]).then((d) => {
+     
+     console.log('charityStats',d)
+    
+    const totalHelpers = commafy(parseFloat(d['numerOfContributors']).toFixed(0))
+    const totalDirectDonations = commafy(parseFloat(utils.formatUnits(d['totalDirectDonations'],18)).toFixed(0)) 
+    const totalYield = commafy(parseFloat(utils.formatUnits(d['totalYieldGenerated'],18)).toFixed(0)) 
+    const tvl = commafy(parseFloat(utils.formatUnits(d['totalValueLocked'],18)).toFixed(0))
+    
+    setInfoItems([
+        {
+            value: `$${tvl}`,
+            name:'Total Value Locked (TVL)',
+        },
+        {
+            value: `$${totalYield}`,
+            name:'Total Yield Donated',
+        },
+        {
+            value: totalHelpers,
+            name:'Total Yield Donors',
+        },
+        {
+            value: `$${totalDirectDonations}`,
+            name:'Total Direct Donations',
+        },
+    ])
+
+  });
+   
+   /*
     
     if (contract == 'init') {
       
@@ -338,6 +485,8 @@ const ContributeNew = (props) => {
       // setValue("xHelp", "exchangeRateCurrent", null, xHelpValue, setxHelpValue);
     
     }
+    
+    */
 
   };
 
@@ -356,15 +505,24 @@ const ContributeNew = (props) => {
     
     if (action == 'deposit') {
       
-      console.log('sponsoring',inputAmount,'gwei dai to charity:',charityInfo[`${currency} CharityPool`])
+      console.log('sponsoring',inputAmount,'gwei',currency,'to charity',charityInfo[`CharityPool Contract`],'with lender',selectedLendingProvider.lendingAddress)
       
       setLoading(true)
       
       const sponsorAmountWei = utils.parseUnits(inputAmount,charityDecimals[currency]).toString();
+
+      const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
       
-      const contractName = contractNameHash[charityInfo[`${currency} CharityPool`]];
-        
-      const sponsorTx = props.tx(props.writeContracts[contractName].sponsor(sponsorAmountWei), update => {
+      let nativeToken = false;
+      if (currency == 'ETH' || currency == 'AVAX') {
+        nativeToken = true;
+      }
+      
+      let sponsorTx = null;
+      
+      if (nativeToken == false) {
+      
+        sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -380,73 +538,142 @@ const ContributeNew = (props) => {
             );
           }
         });
-        console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-        console.log(await sponsorTx);
         
-        // setTimeout(()=>{
-           
-           setLoading(false)
-           setInputAmount('')
-           setShowDepositInterest(false);
-           setShowDepositDirect(false);
-           setShowWithdrawInterest(false);
+      }
+      else {
+        
+        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress,{ value:sponsorAmountWei }), update => {
+       
+          console.log("Transaction Update:", update);
+          if (update && (update.status === "confirmed" || update.status === 1)) {
+            console.log("Transaction " + update.hash + " finished!");
+            console.log(
+              "" +
+              update.gasUsed +
+              "/" +
+              (update.gasLimit || update.gas) +
+              " @ " +
+              parseFloat(update.gasPrice) / 1000000000 +
+              " gwei",
+            );
+          }
+        });
+        
+      }
+        
+      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
+      console.log(await sponsorTx);
+      
+      // setTimeout(()=>{
          
-        // },1000)
+       setLoading(false)
+       setInputAmount('')
+       setShowDepositInterest(false);
+       setShowDepositDirect(false);
+       setShowWithdrawInterest(false);
+       
+       
+     
+      // },1000)
 
     }
     
     else if (action == 'withdraw') {
       
-      console.log('withdrawing',inputAmount,'gwei dai to charity:',charityInfo[`${currency} CharityPool`])
-      
+      console.log('withdrawing',inputAmount,'gwei',currency,'to charity',charityInfo[`CharityPool Contract`],'with lender',selectedLendingProvider.lendingAddress)
+
       setLoading(true)
       
       const withdrawAmountWei = utils.parseUnits(inputAmount,charityDecimals[currency]).toString();
       
-      const contractName = contractNameHash[charityInfo[`${currency} CharityPool`]];
+      const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
         
-      const sponsorTx = props.tx(props.writeContracts[contractName].withdrawAmount(withdrawAmountWei), update => {
-       
-          console.log("Transaction Update:", update);
-          if (update && (update.status === "confirmed" || update.status === 1)) {
-            console.log("Transaction " + update.hash + " finished!");
-            console.log(
-              "" +
-              update.gasUsed +
-              "/" +
-              (update.gasLimit || update.gas) +
-              " @ " +
-              parseFloat(update.gasPrice) / 1000000000 +
-              " gwei",
-            );
-          }
-        });
+      let nativeToken = false;
+      if (currency == 'ETH' || currency == 'AVAX') {
+        nativeToken = true;
+      }
+      
+      let sponsorTx = null
+      
+      if (nativeToken == false) {
+        
+          sponsorTx = props.tx(props.writeContracts[contractName].withdrawTokens(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
+         
+            console.log("Transaction Update:", update);
+            if (update && (update.status === "confirmed" || update.status === 1)) {
+              console.log("Transaction " + update.hash + " finished!");
+              console.log(
+                "" +
+                update.gasUsed +
+                "/" +
+                (update.gasLimit || update.gas) +
+                " @ " +
+                parseFloat(update.gasPrice) / 1000000000 +
+                " gwei",
+              );
+            }
+          });
+          
+        }
+        else {
+          
+          sponsorTx = props.tx(props.writeContracts[contractName].withdrawTokens(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
+         
+            console.log("Transaction Update:", update);
+            if (update && (update.status === "confirmed" || update.status === 1)) {
+              console.log("Transaction " + update.hash + " finished!");
+              console.log(
+                "" +
+                update.gasUsed +
+                "/" +
+                (update.gasLimit || update.gas) +
+                " @ " +
+                parseFloat(update.gasPrice) / 1000000000 +
+                " gwei",
+              );
+            }
+          });
+          
+        }
+      
+        
         console.log("awaiting metamask/web3 confirm result...", sponsorTx);
         console.log(await sponsorTx);
         
         // setTimeout(()=>{
            
-           setLoading(false)
-           setInputAmount('')
-           setShowDepositInterest(false);
-           setShowDepositDirect(false);
-           setShowWithdrawInterest(false);
-         
+       setLoading(false)
+       setInputAmount('')
+       setShowDepositInterest(false);
+       setShowDepositDirect(false);
+       setShowWithdrawInterest(false);
+     
         // },1000)
       
     }
     
     if (action == 'donate') {
       
-      console.log('donating',inputAmount,'gwei dai to charity:',charityInfo[`${currency} CharityPool`])
+      console.log('donating',inputAmount,'gwei',currency,'to charity',charityInfo[`CharityPool Contract`])
       
       setLoading(true)
       
       const donationAmountWei = utils.parseUnits(inputAmount,charityDecimals[currency]).toString();
       
-      const contractName = contractNameHash[charityInfo[`${currency} CharityPool`]];
+      const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
+      
+      let nativeToken = false;
+      if (currency == 'ETH' || currency == 'AVAX') {
+        nativeToken = true;
+      }
+      
+      let sponsorTx = null;
         
-      const sponsorTx = props.tx(props.writeContracts[contractName].directDonation(donationAmountWei), update => {
+      if (nativeToken == false) {
+        
+        const currencyAddress = props.readContracts[currency].address;
+      
+        sponsorTx = props.tx(props.writeContracts[contractName].directDonation(currencyAddress,donationAmountWei), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -462,16 +689,39 @@ const ContributeNew = (props) => {
             );
           }
         });
-        console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-        console.log(await sponsorTx);
         
-        // setTimeout(()=>{
-           
-           setLoading(false)
-           setInputAmount('')
-           setShowDepositInterest(false);
-           setShowDepositDirect(false);
-           setShowWithdrawInterest(false);
+      }
+      else {
+        
+        sponsorTx = props.tx(props.writeContracts[contractName].directDonationNative({ value:donationAmountWei }), update => {
+       
+          console.log("Transaction Update:", update);
+          if (update && (update.status === "confirmed" || update.status === 1)) {
+            console.log("Transaction " + update.hash + " finished!");
+            console.log(
+              "" +
+              update.gasUsed +
+              "/" +
+              (update.gasLimit || update.gas) +
+              " @ " +
+              parseFloat(update.gasPrice) / 1000000000 +
+              " gwei",
+            );
+          }
+        });
+        
+      }
+      
+      console.log("awaiting metamask/web3 confirm result...", sponsorTx);
+      console.log(await sponsorTx);
+      
+      // setTimeout(()=>{
+         
+         setLoading(false)
+         setInputAmount('')
+         setShowDepositInterest(false);
+         setShowDepositDirect(false);
+         setShowWithdrawInterest(false);
          
         // },1000)
               
@@ -492,32 +742,50 @@ const ContributeNew = (props) => {
       action = 'donate';
     }
     
+    let nativeToken = false;
+    if (currency == 'ETH' || currency == 'AVAX') {
+      nativeToken = true;
+    }
+    
     if (action == 'deposit' || action == 'donate') {
-      if (currency == 'DAI') {
-        setInputAmount(parseFloat(utils.formatUnits(daiBalance,charityDecimals['DAI'])).toFixed(6))
-      } else if (currency == 'USDC') {
-        setInputAmount(parseFloat(utils.formatUnits(usdcBalance,charityDecimals['USDC'])).toFixed(6))
-      }
+
+      setInputAmount(parseFloat(utils.formatUnits(currencyBalances[currency],charityDecimals[currency])).toFixed(6))
+      
+      // if (currency == 'DAI') {
+      //   setInputAmount(parseFloat(utils.formatUnits(daiBalance,charityDecimals['DAI'])).toFixed(6))
+      // } else if (currency == 'USDC') {
+      //   setInputAmount(parseFloat(utils.formatUnits(usdcBalance,charityDecimals['USDC'])).toFixed(6))
+      // }
     }
     else if (action == 'withdraw') {
-      if (currency == 'DAI') {
-        setInputAmount(parseFloat(utils.formatUnits(daiCharityBalance,charityDecimals['DAI'])).toFixed(6))
-      } else if (currency == 'USDC') {
-        setInputAmount(parseFloat(utils.formatUnits(usdcCharityBalance,charityDecimals['USDC'])).toFixed(6))
-      }
+      
+      setInputAmount(parseFloat(utils.formatUnits(charityBalances[currency],charityDecimals[currency])).toFixed(6))
+      
+      // if (currency == 'DAI') {
+      //   setInputAmount(parseFloat(utils.formatUnits(daiCharityBalance,charityDecimals['DAI'])).toFixed(6))
+      // } else if (currency == 'USDC') {
+      //   setInputAmount(parseFloat(utils.formatUnits(usdcCharityBalance,charityDecimals['USDC'])).toFixed(6))
+      // }
     }
     
   }
 
   const enableCurrency = async(currency) => {
    
-   console.log('sponsoring',inputAmount,'gwei dai to charity:',charityInfo[`${currency} CharityPool`])
+   console.log('sponsoring',inputAmount,'gwei dai to charity:',charityInfo[`CharityPool Contract`])
       
     setLoading(true)
     
-    const contractName = contractNameHash[charityInfo[`${currency} CharityPool`]];
+    let nativeToken = false;
+    let mapToken = currency;
+    if (currency == 'ETH' || currency == 'AVAX') {
+      nativeToken = true;
+      mapToken = `W${currency}`
+    }
     
-    const sponsorTx = props.tx(props.writeContracts[currency].approve(props.readContracts[contractName].address, utils.parseEther('100000000000').toString()), update => {
+    const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
+    
+    const sponsorTx = props.tx(props.writeContracts[mapToken].approve(props.readContracts[contractName].address, utils.parseEther('100000000000').toString()), update => {
       
       console.log("📡 Transaction Update:", update);
       if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -536,37 +804,94 @@ const ContributeNew = (props) => {
     console.log("awaiting metamask/web3 confirm result...", sponsorTx);
     console.log(await sponsorTx);
     
-         setLoading(false)
+    setTimeout((e)=>{
+        setLoading(false)
          setInputAmount('')
         // setShowDepositInterest(false);
         // setShowDepositDirect(false);
         // setShowWithdrawInterest(false);
+    },3000)
+       
     
   }
 
-
+  const handleSetLendingProvider = (value) => {
+    setselectedLendingProvider({
+      provider:value.key.split('---')[0],
+      lendingAddress:value.key.split('---')[1]
+    })
+  }
+  
   const currencyTabs = currencies.map((d,i) => {
     
     let currencyApproved = false;
+    
+    // REVISE WITH NEW CURRENCY ALLOWANCES
+    
+    let nativeToken = false;
+    let mapToken = d;
+    if (d == 'ETH' || d == 'AVAX') {
+      nativeToken = true;
+      mapToken = `W${d}`
+    }
+    
     // ensure the contract action is enabled
-    if (d == 'DAI' && parseFloat(utils.formatEther(allowanceCharityDAI)) >= 100000000) {
-      currencyApproved = true;
+    if ( nativeToken || ( currencyAllowances && Object.keys(currencyAllowances).indexOf(mapToken) > -1 && currencyAllowances[mapToken] >= 100000000) ) {
+       currencyApproved = true;
     }
-    else if (d == 'USDC' && parseFloat(utils.formatEther(allowanceCharityUSDC)) >= 100000000) {
-      currencyApproved = true;
-    }
+    
+    const items =[]
 
+    Object.keys(supportedCurrencyDetails).length > 0 ? supportedCurrencyDetails[d].map((c,i)=>{
+    
+    const details = c
+
+    items.push(<Menu.Item key={`${details.provider}---${details.lendingAddress}`}>
+        <div>
+        {details.provider} <Address address={details.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />
+        </div>
+      </Menu.Item>)
+    }) : null;
+    
+    const menu = (
+    <Menu onClick={handleSetLendingProvider}>
+      {items}
+    </Menu>
+    );
+    
+    let action = null;
+    if (showDepositInterest == true) {
+      action = 'deposit';
+    } else if  (showWithdrawInterest == true) {
+      action = 'withdraw';
+    } else if  (showDepositDirect == true) {
+      action = 'donate';
+    }
+    
+    let buttonDisabled = false
+    if (action == 'deposit' || action == 'donate') {
+      if (currencyBalances && Object.keys(currencyBalances).indexOf(d) > -1  && (currencyBalances[d] == 0 || inputAmount > parseFloat(utils.formatUnits(currencyBalances[d],charityDecimals[d])))){
+        buttonDisabled = true
+      }
+    }
+    else if (action == 'withdraw') {
+      if (charityBalances && Object.keys(charityBalances).indexOf(d) > -1  && (charityBalances[d] == 0 || inputAmount > parseFloat(utils.formatUnits(charityBalances[d],charityDecimals[d])))){
+        buttonDisabled = true
+      }
+    }
+    
+    
     return (
       <TabPane tab={
           <span>
             <img src={`/assets/icons/${d.toUpperCase()}.svg`} style={{height:'20px',marginRight:'5px'}}/>
-            {d}.e
+            {d}
           </span>
         } key={d}>
         
         { currencyApproved ? (<span>
         
-          {loading ? (<Spin indicator={antIcon} />) :  
+          {loading ? (<Spin style={{zoom:'3',marginTop:'2px'}} />) :  
       <span><Input
           //style={{width:'100%',display: ''}}
           type='number'
@@ -584,28 +909,44 @@ const ContributeNew = (props) => {
       }
         <div className={st.charityBtnGrd}>
         
+          <Dropdown overlay={menu}  trigger={['click']} >
+            <a onClick={e => e.preventDefault()} style={{marginTop:'-10px',display:showDepositDirect ? 'none' : ''}} >
+              <Space>
+                Lender{selectedLendingProvider ? (<span>- {selectedLendingProvider.provider} <Address address={selectedLendingProvider.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>) : ''}
+                <DownOutlined />
+              </Space>
+            </a>
+          </Dropdown>
+          
           <button className="grd-btn" 
             onClick={(e)=>onAction(d)}
-            disabled={loading || inputAmount == 0}
+            disabled={loading || inputAmount == 0 || buttonDisabled }
           >
-            {showDepositInterest ? `Deposit ${d}.e` :
-             showWithdrawInterest ? `Withdraw ${d}.e` :
-             showDepositDirect ? `Donate ${d}.e` : ''}
+            {showDepositInterest ? `Deposit ${d}` :
+             showWithdrawInterest ? `Withdraw ${d}` :
+             showDepositDirect ? `Donate ${d}` : ''}
           </button>
-          
-          <Address address={charityInfo[`${d} CharityPool`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />
+        
+          <Address address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />
 
           </div>
         
-        </span>) : loading ? (<Spin indicator={antIcon} />) : 
+        </span>) : loading ? (<Spin style={{zoom:'3',marginTop:'7px'}} />) : 
         
-        <button className="grd-btn" style={{width:'100%',height:'80px',fontSize:'20px',fontWeight:'600'}} onClick={(e)=>enableCurrency(d)}>ENABLE</button>
+        <button className="grd-btn" style={{width:'100%',height:'80px',fontSize:'20px',fontWeight:'600'}} onClick={(e)=>enableCurrency(d)}>ENABLE {d}</button>
           
         }
 
       </TabPane>
       )
   });
+  
+  if (Object.keys(supportedCurrencyDetails).length > 0 && selectedLendingProvider == null && currentCurrencyTab) {
+     setselectedLendingProvider({
+      provider:supportedCurrencyDetails[currentCurrencyTab][0].provider,
+      lendingAddress:supportedCurrencyDetails[currentCurrencyTab][0].lendingAddress
+    });
+  }
 
   const listener = (blockNumber, contract) => {
     if (contract != undefined) {
@@ -616,13 +957,17 @@ const ContributeNew = (props) => {
 
   // console.log(init,currencies,charityInfo,contractNameHash)
 
-  if (init == false && currencies.length > 0 && charityInfo != null && contractNameHash != null) {
+useEffect(() => {
+  
+  if (init == false && charityInfo != null && contractNameHash != null) {
       
-      setInit(true);
+    setInit(true);
      
-    const contractsToListen = [];
+    const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
+    const contractsToListen = ['iHelp',contractName];
+    
     Object.keys(contractNameHash).map((c)=>{
-        contractsToListen.push(contractNameHash[c]);
+       // contractsToListen.push(contractNameHash[c]);
     });
     
     console.log('contractsToListen',contractsToListen);
@@ -634,49 +979,68 @@ const ContributeNew = (props) => {
     
     updateContracts('init');
     
-    }
-    
-  let totalInterestUSD = 0;
-  if (usdcTotalInterestEarned != null) {
-    totalInterestUSD += parseFloat(utils.formatUnits(usdcTotalInterestEarned,charityDecimals['USDC']))
-  }
-  if (daiTotalInterestEarned != null) {
-    totalInterestUSD += parseFloat(utils.formatUnits(daiTotalInterestEarned,charityDecimals['DAI']))
   }
   
-  let totalBalanceUSD = 0;
-  if (usdcCharityTotalBalance != null) {
-    totalBalanceUSD += parseFloat(utils.formatUnits(usdcCharityTotalBalance,charityDecimals['USDC']))
-  }
-  if (daiCharityTotalBalance != null) {
-    totalBalanceUSD += parseFloat(utils.formatUnits(daiCharityTotalBalance,charityDecimals['DAI']))
-  }
-  
-  let myBalanceUSD = 0;
-  if (usdcCharityBalance != null) {
-    myBalanceUSD += parseFloat(utils.formatUnits(usdcCharityBalance,charityDecimals['USDC']))
-  }
-  if (daiCharityBalance != null) {
-    myBalanceUSD += parseFloat(utils.formatUnits(daiCharityBalance,charityDecimals['DAI']))
-  }
+},[currencies,init,contractNameHash,charityInfo])
   
   let depositEnabled = false;
-  // DEPOSIT ALWAYS DISABLED SINCE WE ARE REDEPLOYING
-  if (daiBalance > 0 || usdcBalance > 0) {
-    depositEnabled = true;
-  }
-  
   let withdrawEnabled = false;
-  if (daiCharityBalance > 0 || usdcCharityBalance > 0) {
-    withdrawEnabled = true;
-  }
-  
+
+  currencies.map((c)=>{
+    try {
+      if (currencyBalances[c] > 0) {
+        depositEnabled = true
+      }
+    }catch(e){}
+    try{
+      if (charityBalances[c] > 0) {
+        withdrawEnabled = true
+      }
+    }catch(e){}
+  })
+  // console.log('depositEnabled',depositEnabled)
+  // console.log('withdrawEnabled',withdrawEnabled)
+
+
+  const [currentTab, setCurrentTab] = useState('tab1');
+    const tabList = [
+        {
+            name: 'tab1',
+            label: 'General',
+            content: (
+                <General charityInfo={charityInfo} />
+            )
+        },
+        {
+            name: 'tab2',
+            label: 'Details',
+            content: (
+                <Details charityInfo={charityInfo} />
+            )
+        },
+        {
+            name: 'tab3',
+            label: 'Financials',
+            content: (
+                <Financials charityInfo={charityInfo} />
+            )
+        },
+        {
+            name: 'tab4',
+            label: 'Videos',
+            content: (
+                <Videos charityInfo={charityInfo} />
+            )
+        }
+    ];
+    
+
   return (
     <div id="app" className="app">
       {/*<Head>
         <title>iHelp | Charity</title>
-      </Head>*/}
-      <img src="/assets/bgc.svg" alt="Bgc" className="body-bgc" />
+      </Head>
+      <img src="/assets/bgc.svg" alt="Bgc" className="body-bgc" />*/}
       
       <Header {...props}/>
       
@@ -705,9 +1069,66 @@ const ContributeNew = (props) => {
         </div>
       </div>) : ''}
 
-       {charityInfo ? (<div className={st.charity + " " + "section"}>
+       {charityInfo && infoItems ? (<div className={st.charity + " " + "section"}>
         <div className="box">
-          {/* Charity Top Overviw */}
+        <div className="kseItem">
+        
+        <div className="banner">
+                {
+                    infoItems.map((item,index)=>{
+                        return(
+                            <div className="infoItem" key={index}>
+                                <h3>{item.value}</h3>
+                                <p>{item.name}</p>
+                            </div>
+                        )
+                    })
+                }
+
+            </div>
+            
+             <div className={st.charityButtonsGrid} style={{marginTop:'-36px',marginBottom:'36px'}}>
+                <main>
+                  <h2 style={{textAlign:'center'}}>Donate Interest</h2>
+                  <div className={st.charityBtnGrd} style={{gridTemplateColumns:'repeat(2,1fr)'}}>
+                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositInterest(true)}>Deposit</button>
+                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && withdrawEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowWithdrawInterest(true)}>Withdraw</button>
+                  </div>
+                </main>
+                <main>
+                  <h2 style={{textAlign:'center'}}>Donate Principal</h2>
+                  <div className={st.charityBtnGrd}>
+                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositDirect(true)}>Direct Donate</button>
+                  </div>
+                </main>
+              </div>
+
+          <div className="tabs">
+                {
+                    tabList.map((tab, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentTab(tab.name)}
+                            className={(tab.name === currentTab) ? 'active' : ''}>
+                            {tab.label}
+                        </button>
+                    ))
+                }
+            </div>
+            {
+                tabList.map((tab, i) => {
+                    if (tab.name === currentTab) {
+                        return <div key={i}>{tab.content}</div>;
+                    } else {
+                        return null;
+                    }
+                })
+            }
+            
+            <div style={{height:'50px'}}>
+            </div>
+            
+          {/*
           <div className={st.charityOverviewGrid}>
             <div className={st.charityImageText}>
               <img src={`${charityInfo['Logo']}`} alt="" />
@@ -754,7 +1175,6 @@ const ContributeNew = (props) => {
                   {usdcTotalInterestEarned ? commafy(parseFloat(utils.formatUnits(usdcTotalInterestEarned,charityDecimals['USDC'])).toFixed(2)) : "..."}
                 </Tooltip>
                 </div> : ''}
-                {/*<h6>Total Direct Donations Received: $0</h6>*/}
               </main>
               <main>
                 <h6>Your Deposits: <span className={st.darkText}><Tooltip title={'USD Fiat'} placement="right" >${commafy(myBalanceUSD.toFixed(2))}</Tooltip></span></h6>
@@ -770,29 +1190,13 @@ const ContributeNew = (props) => {
                   {usdcCharityBalance ? commafy(parseFloat(utils.formatUnits(usdcCharityBalance,charityDecimals['USDC'])).toFixed(2)) : "..."}
                 </Tooltip>
                 </div> : ''}
-                {/*<h6>Your % of Charity Pool: 25%</h6>*/}
               </main>
             </div>
           </div>
-          
-           <div className={st.charityButtonsGrid} style={{marginTop:'-36px',marginBottom:'36px'}}>
-                <main>
-                  <h6>Donate Interest</h6>
-                  <div className={st.charityBtnGrd} style={{gridTemplateColumns:'repeat(2,1fr)'}}>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositInterest(true)}>Deposit</button>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && withdrawEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowWithdrawInterest(true)}>Withdraw</button>
-                  </div>
-                </main>
-                <main>
-                  <h6>Donate Principal</h6>
-                  <div className={st.charityBtnGrd}>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositDirect(true)}>Direct Donate</button>
-                  </div>
-                </main>
-              </div>
+          */}
           
 
-          {/* Charity Videos and Messages Grid */}
+          {/*
           <div className={st.videoMessagesGrid}>
             <div className={st.charityVideos}>
               <h1>Video Updates</h1>
@@ -800,21 +1204,12 @@ const ContributeNew = (props) => {
               {charityInfo && charityInfo['Videos'] != '' ? charityInfo['Videos'].split('\n').map((d,i) => {
               return (
                 <div className={st.charityVideoBox}>
-                  {/*<video
-                    controls
-                    muted
-                    autoPlay
-                    loop
-                    src="../assets/earth.mp4"
-                    ></video>*/}
                   <iframe height={'180px'} src={d.indexOf('facebook') > -1 ? d : `https://www.youtube.com/embed/${d}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                  {/*<h6>Uploaded: October 16, 2021</h6>*/}
+                 
                 </div>
               )}) : 'no videos...'}
             </div>
-            
-  
-            
+        
             <div className={st.charityMessages}>
               <main>
                 <h2>Description & History</h2>
@@ -841,21 +1236,19 @@ const ContributeNew = (props) => {
                       <span className="content" dangerouslySetInnerHTML={{__html: d}} />
                     </p>
                   </div>
-                  {/*<h6>Uploaded: November 15, 2035</h6>*/}
                 </div>
                 
                  )}) : 'no messages...'}
                  
-               
-                {/*<a className={st.seeAllMessages} href="#">
-                  See all messages <MdEast />
-                </a>*/}
               </main>
              
             </div>
-          </div>
+           
+            
+          </div> */}
         </div>
-      </div>) : ''}
+        </div>
+      </div>) : <div className="mainLoader"><Spin /></div>}
       
        <Footer {...props}/>
        

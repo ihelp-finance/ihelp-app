@@ -13,14 +13,15 @@ router.get('/', (req, res) => {
   res.json({
     charities: '/api/v1/data/charities',
     stats: '/api/v1/data/stats',
-    totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
+    //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
     nickname: '/api/v1/data/nickname',
-    totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
-    topcharities: '/api/v1/data/topcharities',
-    userstats: '/api/v1/data/userstats',
+    //allnicknames: '/api/v1/data/allnicknames',
+    //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
+    //topcharities: '/api/v1/data/topcharities',
+    leaderboard: '/api/v1/data/leaderboard',
     stakingstats: '/api/v1/data/stakingstats',
-    contribovertime: '/api/v1/data/contribovertime',
-    topcontributors: '/api/v1/data/topcontributors',
+    //contribovertime: '/api/v1/data/contribovertime',
+    events: '/api/v1/data/events',
     contracts: '/api/v1/data/contracts',
   });
 });
@@ -30,37 +31,59 @@ const getCharityStats = (req, contractAddress) => {
 
   let latestCharityInterest = 0;
   let latestCharityContribution = 0;
-  return req.app.db.TotalInterestByCharity.findOne({
-      where: { charityaddress: contractAddress },
-      order: [
-        ['updatedAt', 'DESC']
-      ],
-    })
-    .then((data) => {
-      try {
-        latestCharityInterest = data['total_interest'];
-      }
-      catch (e) {}
-      return req.app.db.ContribByCharity.findOne({
-        where: { charityaddress: contractAddress },
-        order: [
-          ['updatedAt', 'DESC']
-        ],
-      })
-    })
-    .then((data) => {
-      try {
-        latestCharityContribution = data['total_contrib_usd'];
-      }
-      catch (e) {}
-      return {
+  return {
         interest: latestCharityInterest,
         contribution: latestCharityContribution,
       }
-    });
+  // return req.app.db.TotalInterestByCharity.findOne({
+  //     where: { charityaddress: contractAddress },
+  //     order: [
+  //       ['updatedAt', 'DESC']
+  //     ],
+  //   })
+  //   .then((data) => {
+  //     try {
+  //       latestCharityInterest = data['total_interest'];
+  //     }
+  //     catch (e) {}
+  //     return req.app.db.ContribByCharity.findOne({
+  //       where: { charityaddress: contractAddress },
+  //       order: [
+  //         ['updatedAt', 'DESC']
+  //       ],
+  //     })
+  //   })
+  //   .then((data) => {
+  //     try {
+  //       latestCharityContribution = data['total_contrib_usd'];
+  //     }
+  //     catch (e) {}
+  //     return {
+  //       interest: latestCharityInterest,
+  //       contribution: latestCharityContribution,
+  //     }
+  //   });
 }
 
-const getCharityInformation = (req, moveOn, skipCharityStats) => {
+
+
+const charityDevMapAddress = {}
+const charityDevMapName = {}
+
+const setCharityDevMap = (req, moveOn, skipCharityStats) => {
+  
+  const charityContracts = [];
+  const contractFile = '/build/hardhat_contracts.json'
+  
+  let d = fs.readFileSync(contractFile, 'utf8')
+  d = JSON.parse(d);
+  
+  Object.keys(d['31337'][0]['contracts']).map((k)=>{
+    if (k.indexOf('charityPool') > -1) {
+      charityContracts.push(d['31337'][0]['contracts'][k]['address']);
+    }
+  })
+  
   //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
   //var g_id = "313945428"
   var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
@@ -75,6 +98,57 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
 
           const filteredJsonObj = [];
 
+          let charityContractsCount = 0
+          
+          jsonObj.forEach(e => {
+            
+            if (charityContractsCount < charityContracts.length) {
+              charityDevMapAddress[charityContracts[charityContractsCount]] = e['Organization Name']
+              charityDevMapName[e['Organization Name']] = charityContracts[charityContractsCount]
+            }
+            charityContractsCount += 1
+          })
+          
+          console.log('charityDevMapName',charityDevMapName)
+          
+        })
+        
+    }
+    
+  })
+  
+}
+
+if (process.env.NODE_ENV == 'development') {
+  console.log('SETTING CHARITY DEV MAP')
+  setCharityDevMap()
+}
+
+
+
+const getCharityInformation = (req, moveOn, skipCharityStats) => {
+  
+  if (process.env.NODE_ENV == 'development') {
+    console.log('SETTING CHARITY DEV MAP')
+    setCharityDevMap()
+  }
+  
+  //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
+  //var g_id = "313945428"
+  var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+  var g_id = "727836194"
+  var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
+  request(url, function(error, response, body) {
+
+    if (error == null) {
+      csv()
+        .fromString(body)
+        .then((jsonObj) => {
+
+          const filteredJsonObj = [];
+
+          let charityContractsCount = 0
+          
           jsonObj.forEach(e => {
 
             const maxChars = 200;
@@ -84,8 +158,26 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
             else {
               e['Shorted Description'] = e['Brief Description & History'];
             }
-
-            if (e['Status'] == 'LIVE' || e['Status'] == 'HIDE') filteredJsonObj.push(e);
+            
+            
+            if (process.env.NODE_ENV == 'development') {
+              
+              if ( Object.keys(charityDevMapName).indexOf(e['Organization Name']) > -1 ) {
+                
+                  e['CharityPool Contract'] = charityDevMapName[e['Organization Name']]
+                  e['Status'] = 'LIVE'
+                
+                 filteredJsonObj.push(e);
+                 
+              }
+              
+            } else {
+              
+              if (e['Status'] == 'LIVE' || e['Status'] == 'HIDE') filteredJsonObj.push(e);
+              
+            }
+            
+            
           });
 
           filteredJsonObj.sort((a, b) => (a['Organization Name'] > b['Organization Name']) ? 1 : -1)
@@ -172,39 +264,53 @@ router.get('/charities/:id', (req, res) => {
 
           var charityObject = null;
           for (var i = 0; i < jsonObj.length; i++) {
-            if (jsonObj[i]['Id'] == charity_id) {
-              charityObject = jsonObj[i]
-              break
+            
+            if (process.env.NODE_ENV == 'development') {
+              
+              if (Object.keys(charityDevMapAddress).indexOf(charity_id) > -1) {
+                if ( charityDevMapName[jsonObj[i]['Organization Name']] == charity_id ) {
+                  jsonObj[i]['CharityPool Contract'] = charity_id
+                  jsonObj[i]['Status'] = 'LIVE'
+                  charityObject = jsonObj[i]
+                  break
+                }  
+              }
+              
+            } else {
+              if (jsonObj[i]['CharityPool Contract'] == charity_id) {
+                charityObject = jsonObj[i]
+                break
+              }
             }
           }
 
-          const getCharityStat = async() => {
+          // const getCharityStat = async() => {
 
-            const e = charityObject;
-            const currencies = [];
-            e['Stats'] = {}
-            if (e['DAI CharityPool'] != '') {
-              currencies.push('DAI');
-              e['Stats']['DAI'] = await getCharityStats(req, e['DAI CharityPool']);
-            }
-            if (e['USDC CharityPool'] != '') {
-              currencies.push('USDC');
-              e['Stats']['USDC'] = await getCharityStats(req, e['USDC CharityPool']);
-            }
-            e['Currencies'] = currencies;
+          //   const e = charityObject;
+          //   const currencies = [];
+          //   e['Stats'] = {}
+          //   if (e['DAI CharityPool'] != '') {
+          //     currencies.push('DAI');
+          //     e['Stats']['DAI'] = await getCharityStats(req, e['DAI CharityPool']);
+          //   }
+          //   if (e['USDC CharityPool'] != '') {
+          //     currencies.push('USDC');
+          //     e['Stats']['USDC'] = await getCharityStats(req, e['USDC CharityPool']);
+          //   }
+          //   e['Currencies'] = currencies;
 
-            e['Stats']['Total'] = {};
-            e['Stats']['Total']['interest'] = 0;
-            e['Stats']['Total']['contribution'] = 0;
+          //   e['Stats']['Total'] = {};
+          //   e['Stats']['Total']['interest'] = 0;
+          //   e['Stats']['Total']['contribution'] = 0;
 
-            for (let j = 0; j < currencies.length; j++) {
-              e['Stats']['Total']['interest'] += e['Stats'][currencies[j]]['interest'];
-              e['Stats']['Total']['contribution'] += e['Stats'][currencies[j]]['contribution'];
-            }
+          //   for (let j = 0; j < currencies.length; j++) {
+          //     e['Stats']['Total']['interest'] += e['Stats'][currencies[j]]['interest'];
+          //     e['Stats']['Total']['contribution'] += e['Stats'][currencies[j]]['contribution'];
+          //   }
 
-            moveOn(charityObject);
+          //   moveOn(charityObject);
 
-          }
+          // }
 
           const moveOn = (charityObject) => {
             if (charityObject != null) {
@@ -221,7 +327,8 @@ router.get('/charities/:id', (req, res) => {
           }
 
           if (charityObject) {
-            getCharityStat()
+            // getCharityStat()
+            moveOn(charityObject)
           }
           else {
             moveOn(charityObject)
@@ -255,6 +362,7 @@ router.get('/stats', (req, res) => {
       limit: 1
     })
     .then((data) => {
+
       const times = _.map(data, function(data) { return data.time; });
 
       return req.app.db.ContribByCharity.findAll({
@@ -429,6 +537,7 @@ router.get('/topcharities', (req, res) => {
 
 });
 
+/*
 router.get('/userstats', (req, res) => {
 
   const useraddress = req.query.address
@@ -472,29 +581,36 @@ router.get('/userstats', (req, res) => {
 
         var key = Object.keys(response['contrib_by_charity'])[i];
 
+        console.log(key)
+
         totalContributions += response['contrib_by_charity'][key];
 
         var match = charityHash[key];
+        // console.log(match)
 
-        if (response['contrib_by_charity'][key] > 0) {
-          if (Object.keys(response['contrib_by_charity_summary']).includes(match['name'])) {
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
+        if (match != undefined) {
+
+          if (response['contrib_by_charity'][key] > 0) {
+            if (Object.keys(response['contrib_by_charity_summary']).includes(match['name'])) {
+              response['contrib_by_charity_summary'][match['name']][match['currency']] = {
+                address: key,
+                contrib: response['contrib_by_charity'][key]
+              }
+              response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
             }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
-          }
-          else {
-            response['contrib_by_charity_summary'][match['name']] = {};
-            response['contrib_by_charity_summary'][match['name']]['total'] = 0;
-            response['contrib_by_charity_summary'][match['name']]['id'] = match['id'];
-            response['contrib_by_charity_summary'][match['name']]['logo'] = match['logo'];
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
+            else {
+              response['contrib_by_charity_summary'][match['name']] = {};
+              response['contrib_by_charity_summary'][match['name']]['total'] = 0;
+              response['contrib_by_charity_summary'][match['name']]['id'] = match['id'];
+              response['contrib_by_charity_summary'][match['name']]['logo'] = match['logo'];
+              response['contrib_by_charity_summary'][match['name']][match['currency']] = {
+                address: key,
+                contrib: response['contrib_by_charity'][key]
+              }
+              response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
             }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
           }
+
         }
 
         //response['contrib_by_charity_usd_summary'] 
@@ -564,81 +680,11 @@ router.get('/userstats', (req, res) => {
   }
 
 });
+*/
 
 router.get('/stakingstats', (req, res) => {
 
   const response = {};
-
-  const moveOn = (data) => {
-
-    const charityHash = {};
-    for (let i = 0; i < data.length; i++) {
-
-      if (data[i]['DAI CharityPool'] != '') {
-        charityHash[data[i]['DAI CharityPool']] = {
-          currency: 'DAI',
-          name: data[i]['Organization Name'],
-          id: data[i]['Id'],
-          logo: data[i]['Logo']
-        }
-      }
-
-      if (data[i]['USDC CharityPool'] != '') {
-        charityHash[data[i]['USDC CharityPool']] = {
-          currency: 'USDC',
-          name: data[i]['Organization Name'],
-          id: data[i]['Id'],
-          logo: data[i]['Logo']
-        }
-      }
-
-    }
-
-    response['contrib_by_charity_summary'] = {}
-    //response['contrib_by_charity_usd_summary'] ={}
-
-    let totalContributions = 0;
-
-    if (Object.keys(response['contrib_by_charity']).length > 0) {
-
-      for (var i = 0; i < Object.keys(response['contrib_by_charity']).length; i++) {
-
-        var key = Object.keys(response['contrib_by_charity'])[i];
-
-        totalContributions += response['contrib_by_charity'][key];
-
-        var match = charityHash[key];
-
-        if (response['contrib_by_charity'][key] > 0) {
-          if (Object.keys(response['contrib_by_charity_summary']).includes(match['name'])) {
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
-            }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
-          }
-          else {
-            response['contrib_by_charity_summary'][match['name']] = {};
-            response['contrib_by_charity_summary'][match['name']]['total'] = 0;
-            response['contrib_by_charity_summary'][match['name']]['id'] = match['id'];
-            response['contrib_by_charity_summary'][match['name']]['logo'] = match['logo'];
-            response['contrib_by_charity_summary'][match['name']][match['currency']] = {
-              address: key,
-              contrib: response['contrib_by_charity'][key]
-            }
-            response['contrib_by_charity_summary'][match['name']]['total'] += response['contrib_by_charity'][key]
-          }
-        }
-
-        //response['contrib_by_charity_usd_summary'] 
-      }
-
-    }
-
-    response['contrib_by_charity_summary']['total'] = totalContributions;
-
-    res.send(response);
-  }
 
   let data;
   req.app.db.StakingStat.findAll({
@@ -647,20 +693,21 @@ router.get('/stakingstats', (req, res) => {
       ],
       attributes: [
         [Sequelize.fn('DISTINCT', Sequelize.col('time')), 'time'],
-        [Sequelize.col('xhelp_total_reward'), 'xhelp_total_reward'],
+        [Sequelize.col('total_reward'), 'total_reward'],
       ],
       raw: true,
       limit: 24 * 7
     })
     .then((data) => {
       const r = _.map(data, function(data) {
-        
+
         let reward = 0
-        if (data.xhelp_total_reward != null) {
-          reward = parseFloat(data.xhelp_total_reward.toFixed(6));
+        if (data.total_reward != null) {
+          reward = parseFloat(data.total_reward.toFixed(6));
         }
-        return {'time':data.time, 'xhelp_total_reward':reward} });
-      
+        return { 'time': data.time, 'total_reward': reward }
+      });
+
       response['rewardovertime'] = r;
 
       // response['contrib_by_charity'] = {};
@@ -675,6 +722,7 @@ router.get('/stakingstats', (req, res) => {
     })
 });
 
+/*
 router.get('/contribovertime', (req, res) => {
 
   let data;
@@ -712,6 +760,20 @@ router.get('/contribovertime', (req, res) => {
     });
 
 });
+*/
+
+
+
+router.get('/allnicknames', (req, res) => {
+  
+  req.app.db.AddressNickname.findAll({attributes: 
+        ['address','nickname']}
+      ).then((data) => {
+    res.send(data)
+  })
+
+})
+
 
 router.get('/topcontributors', (req, res) => {
 
@@ -860,9 +922,9 @@ router.get('/login', (req, res) => {
               return requestPromise(options)
 
             }
-            
+
             else if (user['binance_api'] != null && req.query.fetchWallet == 'true') {
-              
+
             }
             else {
 
@@ -921,8 +983,9 @@ router.get('/login', (req, res) => {
                   client.getAccount(fiat_account, function(err, fiat_account) {
                     //console.log(fiat_account)
                     try {
-                    response['coinbase']['usd'] = fiat_account.balance.amount;
-                    }catch(e){
+                      response['coinbase']['usd'] = fiat_account.balance.amount;
+                    }
+                    catch (e) {
                       response['coinbase']['usd'] = 'NA'
                     }
                     getCharityInfo();
@@ -937,9 +1000,9 @@ router.get('/login', (req, res) => {
           });
 
         })
-        // .catch((err) => {
-        //   res.json(response)
-        // })
+      // .catch((err) => {
+      //   res.json(response)
+      // })
     }
     else {
       res.json({
@@ -1026,15 +1089,163 @@ router.get('/login', (req, res) => {
 })
 
 router.get('/contracts', (req, res) => {
-  
-  fs.readFile('contracts/hardhat_contracts.json','utf8',(e,d)=>{
+
+  let contractFile = null;
+  if (process.env.NODE_ENV == 'development') {
+    contractFile = '/build/hardhat_contracts.json'
+  } else {
+    contractFile = 'contracts/hardhat_contracts.json'
+  }
+
+  fs.readFile(contractFile, 'utf8', (e, d) => {
     try {
       res.json(JSON.parse(d));
-    }catch(e){
+    }
+    catch (e) {
       res.send({});
     }
   })
+
+})
+
+router.post('/event', (req, res) => {
   
+  if (req.query.key == process.env.EVENT_API_KEY) {
+    
+    console.log(req.body)
+    
+    req.app.db.Event.create(req.body)
+    
+    res.send({
+      error:false,
+      message:'success'
+    })
+    
+  } else {
+    res.send({
+      error:true,
+      message:'cannot validate event api key'
+    })
+  }
+  
+});
+
+router.get('/events', (req, res) => {
+
+  const address = req.query.address;
+  
+  if (address != undefined) {
+    
+    req.app.db.Event.findAll({
+        where: { sender: address },
+        order: [
+          ['createdAt', 'ASC']
+        ],
+        //limit: 100
+      }).then((d) => {
+        
+        res.send(d)
+      
+      })
+    
+  } else {
+    res.send({
+      error:true,
+      message:'cannot find address'
+    })
+  }
+
+});
+
+router.get('/userstats', (req, res) => {
+
+  const address = req.query.address;
+  
+  const contribOverTime = []
+  
+  if (address != undefined) {
+    
+    req.app.db.Event.findAll({
+        where: { sender: address },
+        order: [
+          ['createdAt', 'ASC']
+        ],
+        //limit: 100
+      }).then((d) => {
+        
+        // create time series scatter map of the contributions
+        
+        let lastContrib = 0
+        
+        d.map((dd)=>{
+          
+          contribOverTime.push({
+            time:dd['createdAt'],
+            contrib:lastContrib + dd['amountUSD']
+          });
+          
+          lastContrib = lastContrib + dd['amountUSD']
+          
+        })
+           
+        return req.app.db.AddressNickname.findOne({
+          where: {
+            address: address
+          }
+        })
+
+      
+      }).then((d) => {
+        
+        const response = {
+          nickname: null,
+          address: address,
+          contribovertime: contribOverTime,
+        }
+        
+        if (d == null) {
+          res.send(response);
+        }
+        else {
+          response['nickname'] = d.nickname
+          res.send(response);
+        }
+        
+      })
+      
+  } else {
+    res.send({
+      error:true,
+      message:'cannot find address'
+    })
+  }
+
+});
+
+router.get('/leaderboard', (req, res) => {
+  
+  const response = {
+    helpers:[],
+    charities:[]
+  }
+  req.app.db.CharityStats.findAll({limit:100,order: [
+            ['contributions', 'DESC']]
+        }).then((d) => {
+    
+    response.charities = d;
+    
+    return req.app.db.UserStats.findAll({limit:100,order: [
+            ['contributions', 'DESC']]
+        })
+    
+  }).then((d) => {
+    
+    response.helpers = d;
+    
+    res.send(response)
+    
+  })
+    
 })
 
 

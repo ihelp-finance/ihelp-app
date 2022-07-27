@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -27,12 +27,11 @@ import { Contribute,Dashboard,Leaderboard,Stake,Charity,Login,CharityAccount } f
 const { ethers } = require("ethers");
 
 import ReactGA from "react-ga4";
-ReactGA.initialize("G-LYM0H4VML6");
-ReactGA.send(window.location.pathname + window.location.search);
+//ReactGA.initialize(""); // TODO - read from env variable
+//ReactGA.send(window.location.pathname + window.location.search);
 
-/// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.avalanche; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-//const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+//const targetNetwork = NETWORKS.avalanche;
+const targetNetwork = NETWORKS.localhost;
 
 document.title = `iHelp (${targetNetwork.name.replace('host','').charAt(0).toUpperCase() + targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
 
@@ -151,6 +150,16 @@ function App(props) {
       }
     }
     getAddress();
+    
+    try {
+      if (targetNetwork == NETWORKS.localhost) {
+        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '31337', chainName: 'iHelp Local', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://dev.ihelp.finance/rpc'], blockExplorerUrls: [] }] })
+      }
+      else if (targetNetwork == NETWORKS.avalanche) {
+        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '43114', chainName: 'Avalanche Network', nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io/'] }] })
+      }
+    }catch(e){}
+    
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
@@ -301,11 +310,12 @@ function App(props) {
       }
       
     } else {
-    
+
     if (readContracts && readContracts[contractName]) {
       updateValue(readContracts, contractName, functionName, args).then((d) => {
-        if (d != variable) {
 
+        if (d != variable) {
+        
           callback(d);
 
         }
@@ -368,7 +378,7 @@ function App(props) {
     'USDC': 6
   }
 
-  const params = {setValue,charityDecimals,readContracts,writeContracts,tx,targetNetwork,web3Modal,loadWeb3Modal,address,localProvider,userSigner,mainnetProvider,price,logoutOfWeb3Modal,blockExplorer}
+  const params = {faucetAvailable,updateValue,setValue,charityDecimals,readContracts,writeContracts,tx,targetNetwork,web3Modal,loadWeb3Modal,address,localProvider,userSigner,mainnetProvider,price,logoutOfWeb3Modal,blockExplorer}
   
   return (
     <div className="App">

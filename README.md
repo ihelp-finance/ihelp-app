@@ -8,42 +8,49 @@ For development, the server and client apps can be deployed as a single monolith
 
 #### Monolithic development instructions using docker:
 
+The below instructions are to run the app in a turnkey dev-mode fashion completely inside the provided docker container. We recommend this approach so the node modules match the version running inside the container:
+
+NOTE - please adjust the file "client/src/constants.js" accordingly specifically for your running rpcUrl (especially if running on a local chain).
+
 ```
-# install the requirements
-yarn install
-cd client
-yarn install
-cd ../
+# install docker (if not installed already)
+# curl -fsSL https://get.docker.com -o get-docker.sh
+# sh get-docker.sh
+# on mac or windows, you can also use Docker Desktop
 
 # create the starter db so there is some data in the database for dev purposes
 cd modules/postgresql
 tar xzvf starter_db.tgz
 cd ../../
 
-# install docker (if not already)
-# curl -fsSL https://get.docker.com -o get-docker.sh
-# sh get-docker.sh
-# on mac or windows, you can also use Docker Desktop
+# start the docker container
+./start.sh
 
-# start the service using docker
-./start.sh dev
+# inside the docker container install the node modules
+yarn install
+cd client
+yarn install
+cd ../
+
+# start the server and client apps
+npm start
 ```
 
-After starting the service, you can test the dev service is running with the below commands:
+After starting the service, you can access the app at http://localhost:8000.
+
+
+You can test the dev service API commands as well:
 
 ```
 curl http://localhost:8000/api/v1/data
 {
-    "charities": "/api/v1/data/charities",
-    "stats": "/api/v1/data/stats",
-    "totalinterestbycharities": "/api/v1/data/totalinterestbycharities",
-    "nickname": "/api/v1/data/nickname",
-    "topcharities": "/api/v1/data/topcharities",
-    "userstats": "/api/v1/data/userstats",
-    "stakingstats": "/api/v1/data/stakingstats",
-    "contribovertime": "/api/v1/data/contribovertime",
-    "topcontributors": "/api/v1/data/topcontributors",
-    "contracts": "/api/v1/data/contracts"
+    charities: "/api/v1/data/charities",
+    stats: "/api/v1/data/stats",
+    nickname: "/api/v1/data/nickname",
+    leaderboard: "/api/v1/data/leaderboard",
+    stakingstats: "/api/v1/data/stakingstats",
+    events: "/api/v1/data/events",
+    contracts: "/api/v1/data/contracts",
 }
 ```
 

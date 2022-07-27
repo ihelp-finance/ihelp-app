@@ -69,7 +69,7 @@ export default function Account({
           // size="large"
           onClick={logoutOfWeb3Modal}
         >
-          Logout
+          LOGOUT
         </button>,
       );
     } else {
@@ -83,7 +83,7 @@ export default function Account({
           /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
           onClick={loadWeb3Modal}
         >
-          Connect Wallet
+          CONNECT WALLET
         </button>,
       );
     }

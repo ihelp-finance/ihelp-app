@@ -1,7 +1,7 @@
 
 const config = {
   apiPath: process.env.API_PATH || '/api/v1',
-  database: process.env.DATABASE_URI || 'postgres://postgres:gisp123@localhost:5432/ihelp',
+  database: process.env.DATABASE_URI,
   deploy: process.env.ENV || 'local', // local, cloud
 };
 

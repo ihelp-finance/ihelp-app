@@ -45,7 +45,7 @@ export default function Faucet(props) {
       if (props.localProvider) {
         const _faucetAddress = await props.localProvider.listAccounts();
         setFaucetAddress(_faucetAddress[0]);
-        console.log(_faucetAddress);
+       // console.log(_faucetAddress);
       }
     };
     getFaucetAddress();
@@ -83,39 +83,17 @@ export default function Faucet(props) {
 
   return (
     <span>
-      <Input
-        size="large"
-        placeholder={props.placeholder ? props.placeholder : "local faucet"}
-        prefix={blockie}
-        // value={address}
-        value={ens || address}
-        onChange={e => {
-          // setAddress(e.target.value);
-          updateAddress(e.target.value);
-        }}
-        suffix={
-          <Tooltip title="Faucet: Send local ether to an address.">
-            <Button
-              onClick={() => {
-                tx({
-                  to: address,
-                  value: utils.parseEther("0.01"),
-                });
-                setAddress("");
-              }}
-              shape="circle"
-              icon={<SendOutlined />}
-            />
+      
             <Wallet
               color="#888888"
               provider={props.localProvider}
+              readContracts={props.readContracts}
+              writeContracts={props.writeContracts}
               ensProvider={props.ensProvider}
               price={props.price}
               address={faucetAddress}
             />
-          </Tooltip>
-        }
-      />
+     
     </span>
   );
 }

@@ -52,7 +52,7 @@ const ContributeNew = (props) => {
   
     const updateStats = (c) => {
       
-      let url = `/api/v1/data/topcontributors`;
+      let url = `/api/v1/data/leaderboard`;
       //console.log(url);
       fetch(url).then((d) => {
         if (d.ok) {
@@ -65,34 +65,20 @@ const ContributeNew = (props) => {
         // }
       }).then((d) => {
         
-        d.map((e,ei)=>{
-           e['ranking'] = ei+1
+        d['helpers'].map((e,ei)=>{
+          e['ranking'] = ei+1
+        })
+        d['charities'].map((e,ei)=>{
+          e['ranking'] = ei+1
         })
         
-        setAllLeaderboard(d);
-        setfilteredLeaderboard(d);
+        console.log(d)
         
-      })
-      
-      let url1 = `/api/v1/data/topcharities`;
-      //console.log(url);
-      fetch(url1).then((d) => {
-        if (d.ok) {
-          return d.json()
-        }
-        // else {
-        //   setTimeout(() => {
-        //     updateStats();
-        //   }, 60000);
-        // }
-      }).then((d) => {
+        setAllLeaderboard(d['helpers']);
+        setfilteredLeaderboard(d['helpers']);
         
-        d.map((e,ei)=>{
-           e['ranking'] = ei+1
-        })
-        
-        setAllCharities(d);
-        setfilteredCharities(d);
+        setAllCharities(d['charities']);
+        setfilteredCharities(d['charities']);
         
       })
       
@@ -162,35 +148,54 @@ const ContributeNew = (props) => {
     },
     {
       title: 'Nickname',
-      dataIndex: 'nickname',
-      key: 'nickname',
+      dataIndex: 'name',
+      key: 'name',
       //defaultSortOrder: 'descend',
       //sorter: (a, b) => a.age - b.age,
       //sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
       //render: text => <a>{text}</a>,
-      sorter: (a, b) => a['nickname'].localeCompare(b['nickname']),
+      sorter: (a, b) => a['name'].localeCompare(b['name']),
       //sortDirections: ['ascend','descend'],
-      width: '30%',
+      width: '15%',
     },
     {
       title: 'Address',
-      dataIndex: 'useraddress',
-      key: 'useraddress',
+      dataIndex: 'address',
+      key: 'address',
       // sorter: (a, b) => a['Charity Category'].localeCompare(b['Charity Category']),
       // sortDirections: ['ascend','descend'],
-      width: '30%',
+      width: '20%',
       // filters: allCategories,
       render: address => (<Address address={address} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />),
       //onFilter: (value, c) => c['Charity Category'] == value,
     },
     {
-      title: 'Contribution (USD)',
-      dataIndex: "total_contrib_usd",
-      key: 'total_contrib_usd',
-      render: c => `$${commafy(c.toFixed(2))}`,
-      sorter: (a, b) => a.total_contrib_usd - b.total_contrib_usd,
+      title: 'Direct Donations (USD)',
+      dataIndex: "donations",
+      key: 'donations',
+      render: c => c ? `$${commafy(c.toFixed(2))}` : '$0',
+      sorter: (a, b) => a.donations - b.donations,
       //sortDirections: ['ascend','descend'],
-      width: '30%',
+      width: '15%',
+    },
+    {
+      title: 'Yield Generated (USD)',
+      dataIndex: "interests",
+      key: 'interests',
+       render: c => c ? `$${commafy(c.toFixed(2))}` : '$0',
+      sorter: (a, b) => a.interests - b.interests,
+      //sortDirections: ['ascend','descend'],
+      width: '15%',
+    },
+    {
+      title: 'Contributions (USD)',
+      dataIndex: "contributions",
+      key: 'contributions',
+      defaultSortOrder: "descend",
+       render: c => c ? `$${commafy(c.toFixed(2))}` : '$0',
+      sorter: (a, b) => a.contributions - b.contributions,
+      //sortDirections: ['ascend','descend'],
+      width: '15%',
     }
   ];
   
@@ -206,36 +211,36 @@ const ContributeNew = (props) => {
     },
     {
       title: 'Charity Name',
-      dataIndex: 'charityname',
-      key: 'charityname',
+      dataIndex: 'name',
+      key: 'name',
       //defaultSortOrder: 'descend',
       //sorter: (a, b) => a.age - b.age,
       //sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
       //render: text => <a>{text}</a>,
-      sorter: (a, b) => a['charityname'].localeCompare(b['charityname']),
+      sorter: (a, b) => a['name'].localeCompare(b['name']),
       //sortDirections: ['ascend','descend'],
-      width: '25%',
-    },
-    {
-      title: 'Charity Currency',
-      dataIndex: 'currency',
-      key: 'currency',
-      //sorter: (a, b) => a.age - b.age,
-      //sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
-      filters: [
-        { text: 'DAI', value: 'DAI' },
-        { text: 'USDC', value: 'USDC' },
-      ],
       width: '15%',
-      onFilter: (value, c) => c['currency'].indexOf(value) > -1,
-      render: c => (<Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                </Tooltip>)
     },
+    // {
+    //   title: 'Charity Currency',
+    //   dataIndex: 'currency',
+    //   key: 'currency',
+    //   //sorter: (a, b) => a.age - b.age,
+    //   //sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
+    //   filters: [
+    //     { text: 'DAI', value: 'DAI' },
+    //     { text: 'USDC', value: 'USDC' },
+    //   ],
+    //   width: '15%',
+    //   onFilter: (value, c) => c['currency'].indexOf(value) > -1,
+    //   render: c => (<Tooltip title={c}>
+    //                 <img src={`/assets/icons/${c}.svg`} style={{height:'20px',marginRight:'5px'}}/>
+    //             </Tooltip>)
+    // },
     {
-      title: 'Charity Contract',
-      dataIndex: 'charityaddress',
-      key: 'charityaddress',
+      title: 'Contract',
+      dataIndex: 'address',
+      key: 'address',
       // sorter: (a, b) => a['Charity Category'].localeCompare(b['Charity Category']),
       // sortDirections: ['ascend','descend'],
       width: '20%',
@@ -244,13 +249,32 @@ const ContributeNew = (props) => {
       //onFilter: (value, c) => c['Charity Category'] == value,
     },
     {
-      title: 'Contribution (USD)',
-      dataIndex: "total_contrib_usd",
-      key: 'total_contrib_usd',
-      render: c => `$${commafy(c.toFixed(2))}`,
-      sorter: (a, b) => a.total_contrib_usd - b.total_contrib_usd,
+      title: 'Direct Donations (USD)',
+      dataIndex: "donations",
+      key: 'donations',
+       render: c => c ? `$${commafy(c.toFixed(2))}` : '$0',
+      sorter: (a, b) => a.donations - b.donations,
       //sortDirections: ['ascend','descend'],
-      width: '30%',
+      width: '15%',
+    },
+    {
+      title: 'Yield Generated (USD)',
+      dataIndex: "interests",
+      key: 'interests',
+       render: c => c ? `$${commafy(c.toFixed(2))}` : '$0',
+      sorter: (a, b) => a.interests - b.interests,
+      //sortDirections: ['ascend','descend'],
+      width: '15%',
+    },
+    {
+      title: 'Contributions (USD)',
+      dataIndex: "contributions",
+      key: 'contributions',
+      defaultSortOrder: "descend",
+      render: c => c ? `$${commafy(c.toFixed(2))}` : '$0',
+      sorter: (a, b) => a.contributions - b.contributions,
+      //sortDirections: ['ascend','descend'],
+      width: '15%',
     }
   ];
   
@@ -262,7 +286,7 @@ const ContributeNew = (props) => {
     
     allLeaderboard.map((c)=>{
       
-      const key = [c['useraddress'],c['nickname']].join(',');
+      const key = [c['name'],c['address']].join(',');
       
       if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1) {
         filtered.push(c);
@@ -275,7 +299,7 @@ const ContributeNew = (props) => {
     const filtered1 = [];
     allCharities.map((c)=>{
       
-      const key = [c['useraddress'],c['currency'],c['charityname']].join(',');
+      const key = [c['address'],c['name']].join(',');
       
       if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1) {
         filtered1.push(c);
@@ -292,16 +316,17 @@ const ContributeNew = (props) => {
     <div id="app" className="app">
      {/* <Head>
         <title>iHelp | Leaderboard</title>
-      </Head>*/}
-      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />
+      </Head>
+      <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />*/}
       
       <Header {...props}/>
       
       <div className={st.leaderborad + " " + "section"}>
         <div className="box">
+        <div className="sectionHeader">Leaderboard</div>
           {/* Search and  Filter Box */}
           <div className={st.searchFilter}>
-            <main>
+            <main style={{marginTop:'-30px'}}>
             <div className={st.buttonGroup}>
               <button className={mode == 'helpers' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('helpers');setsearchValue('');setfilteredLeaderboard(allLeaderboard)}}>Helpers</button>
               <button className={mode == 'charities' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('charities');setsearchValue('');setfilteredCharities(allCharities)}}>Charities</button>

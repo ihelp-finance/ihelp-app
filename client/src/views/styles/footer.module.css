@@ -10,8 +10,6 @@
 
 .footerContent {
   width: 100%;
-  margin: 2.5rem 0 0 0;
-  padding: 2.5rem 0;
   border-top: 0px solid var(--black);
   display: flex;
   align-items: center;

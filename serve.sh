@@ -28,6 +28,10 @@ echo "127.0.0.1 ihelp-db" >> /etc/hosts
 # paste below above this line: openBrowser(urls.localUrlForBrowser);
 # devServer.keepAliveTimeout = 0;
 
+export NVM_DIR="$HOME/.nvm"
+. "$NVM_DIR/nvm.sh"
+nvm use v12
+
 # start the service
 if [[ "$MODE" == "prod" ]];then
     npm run production

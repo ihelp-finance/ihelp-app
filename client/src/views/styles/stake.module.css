@@ -29,11 +29,7 @@
   font-weight: 600;
 }
 
-h5 {
-  font-size: 1.75rem;
-  color: var(--dark-purple)  !important;
-  font-weight:bold !important;
-}
+
 .maxInput {
   width: 100%;
   display: flex;
@@ -92,8 +88,9 @@ h5 {
 }
 .stakeGraphBox {
   width: 100%;
-  height: 20rem;
-  margin: 2.5rem 0;
+  height: 25rem;
+  margin: 1rem 0;
+      padding: 0px 17px 0px 14px;
 }
 .stakeGraphBox h2 {
   font-size: 2rem;
