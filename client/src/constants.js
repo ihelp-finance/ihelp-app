@@ -26,7 +26,7 @@ export const NETWORKS = {
   avalanche: {
     name: "avalanche",
     color: "#ff8b9e",
-    chainId: 1,
+    chainId: 43114,
     rpcUrl: `https://api.avax.network/ext/bc/C/rpc`,
     blockExplorer: "https://snowtrace.io/",
   },

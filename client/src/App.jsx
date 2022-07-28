@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -15,7 +15,6 @@ import {
   useContractLoader,
   useContractReader,
   useEventListener,
-  useExchangePrice,
   useGasPrice,
   useOnBlock,
   useUserSigner,
@@ -30,8 +29,7 @@ import ReactGA from "react-ga4";
 //ReactGA.initialize(""); // TODO - read from env variable
 //ReactGA.send(window.location.pathname + window.location.search);
 
-//const targetNetwork = NETWORKS.avalanche;
-const targetNetwork = NETWORKS.localhost;
+const targetNetwork = NETWORKS[ process.env.NETWORK | 'localhost' ];
 
 document.title = `iHelp (${targetNetwork.name.replace('host','').charAt(0).toUpperCase() + targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
 
@@ -40,8 +38,6 @@ const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = false;
 
-// 🛰 providers
-//if (DEBUG) console.log("📡 Connecting to Rinkeby Ethereum");
 // const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 //
@@ -51,7 +47,6 @@ const USE_BURNER_WALLET = false;
 //const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rinkeby.infura.io/v3/" + INFURA_ID) : null;
 //const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-rinkeby.alchemyapi.io/v2/UipRFhJQbBiZ5j7lbcWt46ex5CBjVBpW") : null;
 const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://api.avax.network/ext/bc/C/rpc") : null;
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I )
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -134,9 +129,6 @@ function App(props) {
     }, 1);
   };
 
-  /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
-
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
@@ -186,6 +178,7 @@ function App(props) {
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
+  
   useEffect(() => {
     if (
       DEBUG &&
@@ -378,7 +371,7 @@ function App(props) {
     'USDC': 6
   }
 
-  const params = {faucetAvailable,updateValue,setValue,charityDecimals,readContracts,writeContracts,tx,targetNetwork,web3Modal,loadWeb3Modal,address,localProvider,userSigner,mainnetProvider,price,logoutOfWeb3Modal,blockExplorer}
+  const params = {faucetAvailable,updateValue,setValue,charityDecimals,readContracts,writeContracts,tx,targetNetwork,web3Modal,loadWeb3Modal,address,localProvider,userSigner,mainnetProvider,logoutOfWeb3Modal,blockExplorer}
   
   return (
     <div className="App">

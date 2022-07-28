@@ -58,7 +58,7 @@ import searchIcon from '../assets/images/icon/searchIcon.png';
 import EducationBadge from '../assets/images/badges/Education.png';
 import HealthCareBadge from '../assets/images/badges/Health Care.png';
 
-import BadgeLookup from '../assets/images/badges/badgeLookup.js';
+import BadgeLookup from './badgeLookup.js';
 
 // preimport the images one time
 Object.keys(BadgeLookup).map((d)=>{
@@ -163,7 +163,7 @@ const ContributeNew = (props) => {
       // console.log(props.readContracts['iHelp'].address)
       //     console.log('README',props.readContracts)
       
-      props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address,0,100]).then((d) => {
+      props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address,0,1000]).then((d) => {
         
         console.log('generalStats',d)  
         

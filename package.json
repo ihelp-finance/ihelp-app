@@ -1,11 +1,12 @@
 {
   "name": "@ihelp-finance/server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run clientdev\"",
     "production": "concurrently \"npm run server\" \"npm run clientprod\"",
     "server": "better-npm-run server",
+    "serverprod": "better-npm-run serverprod",
     "clientprod": "better-npm-run clientprod",
     "clientdev": "better-npm-run clientdev",
     "superset": "better-npm-run superset",
@@ -16,6 +17,13 @@
       "command": "nodemon ./bin/server --exec node --config config/nodemon.json",
       "env": {
         "NODE_ENV": "development",
+        "PORT": 3001
+      }
+    },
+    "serverprod": {
+      "command": "node ./bin/server",
+      "env": {
+        "NODE_ENV": "production",
         "PORT": 3001
       }
     },

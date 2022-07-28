@@ -187,46 +187,7 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
         })
         .then((filteredJsonObj) => {
 
-          // get the contribution amounts for the given charities
-          //for (let i=0;i<filteredJsonObj.length;i++) {
-          const getCharityStat = async(i) => {
-
-            const e = filteredJsonObj[i];
-            const currencies = [];
-            e['Stats'] = {}
-            if (e['DAI CharityPool'] != '') {
-              currencies.push('DAI');
-              e['Stats']['DAI'] = await getCharityStats(req, e['DAI CharityPool']);
-            }
-            if (e['USDC CharityPool'] != '') {
-              currencies.push('USDC');
-              e['Stats']['USDC'] = await getCharityStats(req, e['USDC CharityPool']);
-            }
-            e['Currencies'] = currencies;
-
-            e['Stats']['Total'] = {};
-            e['Stats']['Total']['interest'] = 0;
-            e['Stats']['Total']['contribution'] = 0;
-
-            for (let j = 0; j < currencies.length; j++) {
-              e['Stats']['Total']['interest'] += e['Stats'][currencies[j]]['interest'];
-              e['Stats']['Total']['contribution'] += e['Stats'][currencies[j]]['contribution'];
-            }
-
-            if (i < filteredJsonObj.length - 1) {
-              getCharityStat(i + 1);
-            }
-            else {
-              moveOn(filteredJsonObj);
-            }
-
-          }
-          if (filteredJsonObj.length > 0 && skipCharityStats != true) {
-            getCharityStat(0)
-          }
-          else {
             moveOn(filteredJsonObj)
-          }
 
         })
 
