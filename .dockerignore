@@ -1,0 +1,6 @@
+k8s
+node_modules
+package-lock.json
+yarn.lock
+client
+nginx
