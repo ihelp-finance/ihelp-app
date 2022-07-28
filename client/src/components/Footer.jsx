@@ -46,7 +46,7 @@ const Footer = (props) => {
               {
               /*  if the local provider has a signer, let's show the faucet:  */
               props.faucetAvailable ? (
-                <Faucet readContracts={props.readContracts} writeContracts={props.writeContracts} address={props.address} localProvider={props.localProvider} price={props.price} ensProvider={props.mainnetProvider} />
+                <Faucet targetNetwork={props.targetNetwork} readContracts={props.readContracts} writeContracts={props.writeContracts} address={props.address} localProvider={props.localProvider} price={props.price} ensProvider={props.mainnetProvider} />
               ) : (
                 ""
               )

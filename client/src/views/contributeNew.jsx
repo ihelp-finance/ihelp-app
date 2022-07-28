@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import st from "./styles/contributeNew.module.css";
-import { Link,NavLink,Redirect,useHistory } from "react-router-dom";
+import { Link, NavLink, Redirect, useHistory } from "react-router-dom";
 import {
   MdSearch,
   MdMenu,
@@ -58,12 +58,8 @@ import searchIcon from '../assets/images/icon/searchIcon.png';
 import EducationBadge from '../assets/images/badges/Education.png';
 import HealthCareBadge from '../assets/images/badges/Health Care.png';
 
-import BadgeLookup from './badgeLookup.js';
-
-// preimport the images one time
-Object.keys(BadgeLookup).map((d)=>{
-  BadgeLookup[d]['image'] = require(`../assets/images/badges/${BadgeLookup[d]['File']}`).default
-})
+import { LoadingOutlined } from '@ant-design/icons';
+const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 
 import $ from "jquery";
 import { Power4 } from "gsap/dist/gsap";
@@ -75,12 +71,12 @@ import SwiperCore, { Navigation, Pagination } from "swiper";
 import "swiper/swiper.min.css";
 import "swiper/components/pagination/pagination.min.css";
 import commafy from 'commafy';
-import { Table, Tag, Space,Tooltip } from 'antd';
+import { Table, Tag, Space, Tooltip, Spin } from 'antd';
 
-import { Header,Footer, CheckboxContainer } from "../components";
+import { Header, Footer, CheckboxContainer } from "../components";
 
 const PlaceholderLogo = () => (
-<svg width="8rem" height="8rem" viewBox="0 0 66 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="8rem" height="8rem" viewBox="0 0 66 58" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M60.5028 6.52588L34.332 34.9145L35.049 47.9139L65.3139 20.9819C65.3139 20.755 65.3426 20.5244 65.3498 20.2938C65.5469 15.2361 63.8086 10.2985 60.5028 6.52588Z" fill="#8E40DA"/>
 <path d="M8.09663 3.57959C7.21158 4.22008 6.38053 4.935 5.6122 5.71688C5.17841 6.16337 4.76613 6.62816 4.37895 7.10393C2.54421 9.369 1.23635 12.0292 0.553711 14.8845L30.3848 40.6345L31.2309 27.7595L8.09663 3.57959Z" fill="#8830EF"/>
 <path d="M60.4986 6.52573C60.262 6.25125 60.0146 5.9841 59.7565 5.7206C59.4984 5.45709 59.2402 5.21188 58.9749 4.96668C55.328 1.64183 50.573 -0.132469 45.6853 0.00771667C40.7977 0.147903 36.1478 2.19195 32.6895 5.7206L34.0733 30.3507L60.4986 6.52573Z" fill="#B559F7"/>
@@ -90,24 +86,132 @@ const PlaceholderLogo = () => (
 </svg>
 )
 
+
+const BadgeLookup = {
+  "A": {
+    "Category": "Arts, Culture & Humanities (A)",
+    "File": "Arts, Culture & Humanities.png"
+  },
+  "B": {
+    "Category": "Education (B)",
+    "File": "Education.png"
+  },
+  "C": {
+    "Category": "Environment (C)",
+    "File": "Environment.png"
+  },
+  "D": {
+    "Category": "Animal-Related (D)",
+    "File": "Animal-Related.png"
+  },
+  "E": {
+    "Category": "Health Care (E)",
+    "File": "Health Care.png"
+  },
+  "F": {
+    "Category": "Mental Health & Crisis Intervention (F)",
+    "File": "Mental Health & Crisis Intervention.png"
+  },
+  "G": {
+    "Category": "Voluntary Health & Medical Disciplines (G)",
+    "File": "Voluntary Health & Medical Disciplines.png"
+  },
+  "H": {
+    "Category": "Medical Research (H)",
+    "File": "Medical Research.png"
+  },
+  "I": {
+    "Category": "Crime & Legal-Related (I)",
+    "File": "Crime & Legal-Related.png"
+  },
+  "J": {
+    "Category": "Employment (J)",
+    "File": "Employment.png"
+  },
+  "K": {
+    "Category": "Food, Agriculture & Nutrition (K)",
+    "File": "Food, Agriculture & Nutrition.png"
+  },
+  "L": {
+    "Category": "Housing & Shelter (L)",
+    "File": "Housing & Shelter.png"
+  },
+  "M": {
+    "Category": "Public Safety, Disaster Preparedness & Relief (M)",
+    "File": "Public Safety, Disaster Preparedness & Relief.png"
+  },
+  "N": {
+    "Category": "Recreation & Sports (N)",
+    "File": "Recreation & Sports.png"
+  },
+  "O": {
+    "Category": "Youth Development (O)",
+    "File": "Youth Development.png"
+  },
+  "P": {
+    "Category": "Human Services (P)",
+    "File": "Human Services.png"
+  },
+  "Q": {
+    "Category": "International, Foreign Affairs & National Security (Q)",
+    "File": "International, Foreign Affairs & National Security.png"
+  },
+  "R": {
+    "Category": "Civil Rights, Social Action & Advocacy (R)",
+    "File": "Civil Rights, Social Action & Advocacy.png"
+  },
+  "S": {
+    "Category": "Community Improvement & Capacity Building (S)",
+    "File": "Community Improvement & Capacity Building.png"
+  },
+  "T": {
+    "Category": "Philanthropy, Voluntarism & Grantmaking Foundations (T)",
+    "File": "Philanthropy, Voluntarism & Grantmaking Foundations.png"
+  },
+  "U": {
+    "Category": "Science & Technology (U)",
+    "File": "Science & Technology.png"
+  },
+  "V": {
+    "Category": "Social Science (V)",
+    "File": "Social Science.png"
+  },
+  "W": {
+    "Category": "Public & Societal Benefit (W)",
+    "File": "Public & Societal Benefit.png"
+  },
+  "X": {
+    "Category": "Religion-Related (X)",
+    "File": "Religion-Related.png"
+  }
+}
+
+
+// preimport the images one time
+Object.keys(BadgeLookup).map((d) => {
+  BadgeLookup[d]['image'] = require(`../assets/images/badges/${BadgeLookup[d]['File']}`).default
+})
+
 const ContributeNew = (props) => {
-  
+
   const [totalInterest, setTotalInterest] = useState(commafy(''));
   const [tvl, setTvl] = useState(commafy(''));
   const [totalCharities, setTotalCharities] = useState(commafy(''));
   const [totalCountries, setTotalCountries] = useState(commafy(''));
   const [totalHelpers, setTotalHelpers] = useState(commafy(''));
   const [searchValue, setSearchValue] = useState('');
-  
+  const [loaded, setLoaded] = useState(false);
+
   const [allCategories, setAllCategories] = useState([]);
   const [allCharities, setAllCharities] = useState([]);
   const [filteredCharities, setFilteredCharities] = useState([]);
-  const [filteredShownCharities, setFilteredShownCharities] = useState(8);
-  
-  
+
+  const CARDS_TO_SHOW = 6;
+
+  const [filteredShownCharities, setFilteredShownCharities] = useState(CARDS_TO_SHOW);
+
   const [areasOfOperation, setareasOfOperation] = useState([]);
 
-  
   const history = useHistory();
 
   SwiperCore.use([Navigation, Pagination]);
@@ -141,136 +245,169 @@ const ContributeNew = (props) => {
   const setValue = props.setValue;
   const updateValue = props.updateValue;
 
-  
-   const listener = (blockNumber, contract) => {
-    if (contract != undefined) {
-      //console.log(contract, blockNumber); // , fn, args, provider.listeners()
-      updateContracts(contract);
-    }
-  };
-  
-  
+
   const updateContracts = () => {
-    
-      if (props.readContracts == undefined) {
-       
-         setTimeout(()=>{
-          updateContracts();
-        },50);
-        
-      } else {
-        
+
+    if (props.readContracts == undefined) {
+
+    }
+    else {
+
       // console.log(props.readContracts['iHelp'].address)
       //     console.log('README',props.readContracts)
-      
-      props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address,0,1000]).then((d) => {
-        
-        console.log('generalStats',d)  
-        
+
+      props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address, 0, 1000]).then((d) => {
+
+        console.log('generalStats', d)
+
         const totalHelpers = commafy(parseFloat(d['totalHelpers']).toFixed(0))
         const totalCharities = commafy(parseFloat(d['totalCharities']).toFixed(0))
-        
+        const totalInterest = commafy(parseFloat(utils.formatUnits(d['totalInterestGenerated'], 18)).toFixed(0))
+        const totalTvl = commafy(parseFloat(utils.formatUnits(d['totalValueLocked'], 18)).toFixed(0))
+
         setTotalHelpers(totalHelpers)
         setTotalCharities(totalCharities)
-        setTotalInterest(commafy(parseFloat(utils.formatUnits(d['totalInterestGenerated'],18)).toFixed(0)))
-        setTvl(commafy(parseFloat(utils.formatUnits(d['totalValueLocked'],18)).toFixed(0)))
-        
+        setTotalInterest(totalInterest)
+        setTvl(totalTvl)
+
+        localStorage.setItem("generalStats", JSON.stringify({
+          'totalHelpers': totalHelpers,
+          'totalCharities': totalCharities,
+          'totalInterest': totalInterest,
+          'totalTvl': totalTvl
+        }));
+
       });
-      
+
+    }
+  };
+
+  const listener = (blockNumber, contract) => {
+      if (contract != undefined) {
+        console.log('UPDATING CONTRACTS');
+        //console.log(contract, blockNumber); // , fn, args, provider.listeners()
+        updateContracts(contract);
       }
   };
-  
+
   useEffect(async() => {
-    
-    updateContracts();
-    
+
+    if (loaded == false && props && props.readContracts) {
+
+      setLoaded(true)
+      
+      const contractsToListen = ['iHelp']
+      contractsToListen.map(c => {
+         props.readContracts[c].provider.removeAllListeners("block");
+        props.readContracts[c].provider.on("block", (block) => { listener(block, c) });
+      });
+      
+     updateContracts();
+
+    }
   }, [props.readContracts]);
 
   useEffect(async() => {
 
-     let url = `/api/v1/data/charities`;
-      fetch(url).then((d) => {
-        return d.json();
+    const preloadStatsData = localStorage.getItem("generalStats")
 
-      }).then((d)=>{
-        
-        const categories = [];
-        const categoriesCount = [];
-        d.map((c)=>{
-          
-              c['Charity GENERAL Category (One Cell)'].split('\n').map((cc)=>{
-                  
-                  if (categoriesCount.indexOf(cc.trim()) == -1 && cc != '') {
-                      categories.push({name:cc.trim(),isChecked:false})
-                      categoriesCount.push(cc.trim())
-                  }
-              })
-            
-        })
-        
-        const chars = [];
-        d.map((c)=>{
-          if (c['Status'] == 'LIVE' && c['CharityPool Contract'] != '') {
-            chars.push(c)
+    // if (preloadStatsData != undefined) {
+    //   try {
+    //     const preloadStats = JSON.parse(preloadStatsData)
+    //     console.log('preloadStats',preloadStats)
+    //     setTotalHelpers(preloadStats['totalHelpers'])
+    //     setTotalCharities(preloadStats['totalCharities'])
+    //     setTotalInterest(preloadStats['totalInterest'])
+    //     setTvl(preloadStats['totalTvl'])
+    //   }catch(e){}
+    // }
+
+  },[])
+
+  useEffect(async() => {
+
+    let url = `/api/v1/data/charities`;
+    fetch(url).then((d) => {
+      return d.json();
+
+    }).then((d) => {
+
+      const categories = [];
+      const categoriesCount = [];
+      d.map((c) => {
+
+        c['Charity GENERAL Category (One Cell)'].split('\n').map((cc) => {
+
+          if (categoriesCount.indexOf(cc.trim()) == -1 && cc != '') {
+            categories.push({ name: cc.trim(), isChecked: false })
+            categoriesCount.push(cc.trim())
           }
         })
-        
-        
-        let geos = [];
-        const geoCount = [];
-        d.map((c)=>{
-          
-              c['Main Areas of Operation'].split(',').map((cc)=>{
-                  
-                  if (geoCount.indexOf(cc.trim()) == -1 && cc != '') {
-                      geos.push({name:cc.trim(),isChecked:false})
-                      geoCount.push(cc.trim())
-                  }
-              })
-            
-        })
-        
-        geos.sort((a, b) => (a.name > b.name) ? 1 : -1)
-        categories.sort((a, b) => (a.name > b.name) ? 1 : -1)
-        
-        function prepend(value, array) {
-  var newArray = array.slice();
-  newArray.unshift(value);
-  return newArray;
-}
 
-
-        geos = prepend({name:'Global Non-Profit',isChecked:false},geos);
-       // console.log(categories)
-        
-         const initialCharityGeneralCategory = {
-            title: 'General Charity Category',
-            checkbox: categories
-        }
-        // setcharityGeneralCategory(initialCharityGeneralCategory)
-        filteredParams['categories'] = initialCharityGeneralCategory;
-        
-        const initialCharityGeography = {
-            title: 'Main Areas of Operation',
-            checkbox: geos
-        }
-        // setcharityGeneralCategory(initialCharityGeneralCategory)
-        filteredParams['geography'] = initialCharityGeography;
-        
-        setinitialFilterState(filteredParams)
-        
-        setFilteredParams(filteredParams)
-        setActualFilterParams(filteredParams)
-        
-        setAllCategories(categories);
-        setAllCharities(chars);
-        setFilteredCharities(chars);
       })
-      
+
+      const chars = [];
+      d.map((c) => {
+        if (c['Status'] == 'LIVE' && c['CharityPool Contract'] != '') {
+          chars.push(c)
+        }
+      })
+
+
+      let geos = [];
+      const geoCount = [];
+      d.map((c) => {
+
+        c['Main Areas of Operation'].split(',').map((cc) => {
+
+          if (geoCount.indexOf(cc.trim()) == -1 && cc != '') {
+            geos.push({ name: cc.trim(), isChecked: false })
+            geoCount.push(cc.trim())
+          }
+        })
+
+      })
+
+      geos.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      categories.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
+      function prepend(value, array) {
+        var newArray = array.slice();
+        newArray.unshift(value);
+        return newArray;
+      }
+
+
+      geos = prepend({ name: 'Global Non-Profit', isChecked: false }, geos);
+      // console.log(categories)
+
+      const initialCharityGeneralCategory = {
+        title: 'General Charity Category',
+        checkbox: categories
+      }
+      // setcharityGeneralCategory(initialCharityGeneralCategory)
+      filteredParams['categories'] = initialCharityGeneralCategory;
+
+      const initialCharityGeography = {
+        title: 'Main Areas of Operation',
+        checkbox: geos
+      }
+      // setcharityGeneralCategory(initialCharityGeneralCategory)
+      filteredParams['geography'] = initialCharityGeography;
+
+      setinitialFilterState(filteredParams)
+
+      setFilteredParams(filteredParams)
+      setActualFilterParams(filteredParams)
+
+      setAllCategories(categories);
+      setAllCharities(chars);
+      setFilteredCharities(chars);
+    })
+
   }, []);
-  
-  const charityColumns = [
-    {
+
+  const charityColumns = [{
       title: 'Logo',
       dataIndex: 'Logo',
       key: 'logo',
@@ -288,7 +425,7 @@ const ContributeNew = (props) => {
       //sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
       //render: text => <a>{text}</a>,
       sorter: (a, b) => a['Organization Name'].localeCompare(b['Organization Name']),
-      sortDirections: ['ascend','descend'],
+      sortDirections: ['ascend', 'descend'],
       width: '15%',
     },
     {
@@ -296,7 +433,7 @@ const ContributeNew = (props) => {
       dataIndex: 'Charity GENERAL Category (One Cell)',
       key: 'category',
       sorter: (a, b) => a['Charity GENERAL Category (One Cell)'].localeCompare(b['Charity GENERAL Category (One Cell)']),
-      sortDirections: ['ascend','descend'],
+      sortDirections: ['ascend', 'descend'],
       width: '25%',
       filters: allCategories,
       onFilter: (value, c) => c['Charity GENERAL Category (One Cell)'] == value,
@@ -322,46 +459,46 @@ const ContributeNew = (props) => {
       onFilter: (value, c) => c['Currencies'].indexOf(value) > -1,
       render: (c) => {
         const objs = [];
-        c.map((cc)=>{
+        c.map((cc) => {
           objs.push(<Tooltip title={cc}>
             <img src={`/assets/icons/${cc}.svg`} style={{height:'20px',marginRight:'5px'}}/>
-        </Tooltip>
-  );
+        </Tooltip>);
         })
-        return objs}
+        return objs
+      }
     },
     {
       title: 'Pool Size',
-      dataIndex: ["Stats", "Total","contribution"],
+      dataIndex: ["Stats", "Total", "contribution"],
       key: 'contributed',
       render: c => `$${commafy(c.toFixed(0))}`,
       sorter: (a, b) => a['Stats']['Total']['contribution'] - b['Stats']['Total']['contribution'],
-      sortDirections: ['ascend','descend'],
+      sortDirections: ['ascend', 'descend'],
       width: '10%',
     },
     {
       title: 'Interest Generated',
-      dataIndex: ["Stats", "Total","interest"],
+      dataIndex: ["Stats", "Total", "interest"],
       key: 'poolsize',
       render: c => `$${commafy(c.toFixed(2))}`,
       sorter: (a, b) => a['Stats']['Total']['interest'] - b['Stats']['Total']['interest'],
-      sortDirections: ['ascend','descend'],
+      sortDirections: ['ascend', 'descend'],
       width: '10%',
     }
   ];
-  
-  const handleSearch = (e)=> {
+
+  const handleSearch = (e) => {
 
     const filtered = [];
-    
+
     const searchvalue = e.target.value;
     setSearchValue(searchvalue)
-    
-    
+
+
     // setTimeout(()=>{
     //          processFilterSearches();
     //      },100);
-    
+
     /*
     allCharities.map((c)=>{
       
@@ -375,339 +512,343 @@ const ContributeNew = (props) => {
     
     setFilteredCharities(filtered);
     */
-    
+
   }
 
   const mainAreasOperation = {
     title: 'Main areas of operation',
+    checkbox: [{
+        name: "United States",
+      },
+      {
+        name: "France",
+      },
+      {
+        name: "Italy",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+    ]
+  }
+  const countryIncorporation = {
+    title: 'Country of Incorporation',
+    checkbox: [{
+        name: "United States",
+      },
+      {
+        name: "France",
+      },
+      {
+        name: "Italy",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+      {
+        name: "Germany",
+      },
+    ]
+  }
+  const charityDetailedCategory = {
+    title: 'Charity Detailed Category',
     checkbox: [
-        {
-            name: "United States",
-        },
-        {
-            name: "France",
-        },
-        {
-            name: "Italy",
-        },
-        {
-            name: "Germany",
-        },
-        {
-            name: "Germany",
-        },
-        {
-            name: "Germany",
-        },
-        {
-            name: "Germany",
-        },
-        {
-            name: "Germany",
-        },
-        {
-            name: "Germany",
-        },
-        ]
-    }
-    const countryIncorporation = {
-        title: 'Country of Incorporation',
-        checkbox: [
-            {
-                name: "United States",
-            },
-            {
-                name: "France",
-            },
-            {
-                name: "Italy",
-            },
-            {
-                name: "Germany",
-            },
-            {
-                name: "Germany",
-            },
-            {
-                name: "Germany",
-            },
-            {
-                name: "Germany",
-            },
-            {
-                name: "Germany",
-            },
-            {
-                name: "Germany",
-            },
-        ]
-    }
-    const charityDetailedCategory = {
-        title: 'Charity Detailed Category',
-        checkbox: [
-            {name: "Natural Resource Conservation and Protection (C30)"},
-            {name: "Land Resources Conservation (C34)"},
-            {name: "Alliance/Advocacy Organizations (N01) "},
-        ]
-    }
-   
-    //  const [charityGeneralCategory, setcharityGeneralCategory] = useState({title: 'General Charity Category',
-    //         checkbox: []});
-    
-    const cryptosAvailableDeposit = {
-        title: "Cryptos Available for Deposit",
-        checkbox: [
-            {
-                name: "USDC",
-                source: usdc,
-                icon: true,
-            },
-            {
-                name: "DAI",
-                source: dai,
-                icon: true
-            },
-            {
-                name: "AVAX",
-                source: avax,
-                icon: true
-            },
-        ]
-    }
-    
-    const handleShowMore = () => {
-        
-        setFilteredShownCharities(filteredShownCharities+8)
-        
-    }
+      { name: "Natural Resource Conservation and Protection (C30)" },
+      { name: "Land Resources Conservation (C34)" },
+      { name: "Alliance/Advocacy Organizations (N01) " },
+    ]
+  }
 
-     const updateFilterParams = (e) => {
-         
-         const value = e.target.value;
-         const input = e.target.name;
-         
-         console.log(input,value)
+  //  const [charityGeneralCategory, setcharityGeneralCategory] = useState({title: 'General Charity Category',
+  //         checkbox: []});
 
-         const newParams = JSON.parse(JSON.stringify(filteredParams));
-         newParams[input] = value;
-         
-         console.log(newParams)
-         
-         setFilteredParams(newParams)
-         
-     }
+  const cryptosAvailableDeposit = {
+    title: "Cryptos Available for Deposit",
+    checkbox: [{
+        name: "USDC",
+        source: usdc,
+        icon: true,
+      },
+      {
+        name: "DAI",
+        source: dai,
+        icon: true
+      },
+      {
+        name: "AVAX",
+        source: avax,
+        icon: true
+      },
+    ]
+  }
 
-     const resetFilterState = () => {
-         console.log('reseting filter')
-         setFilteredParams(initialFilterState)
-         setActualFilterParams(initialFilterState)
-        //  setTimeout(()=>{
-        //      processFilterSearches();
-        //  },100);
-     }
-     
-     const operators = {
-        '>': function(a, b) { return a > b },
-        '<': function(a, b) { return a < b },
-    };
-     
-     
-     const paramMap = {
-         'revenue_min': ['Total Revenue',operators['>']],
-         'revenue_max': ['Total Revenue',operators['<']],
-         'prog_exp_rev_min': ['Program Expense / Revenue',operators['>']],
-         'prog_exp_rev_max': ['Program Expense / Revenue',operators['<']],
-         'year_inc_min': ['Year Incorporated',operators['>']],
-         'year_inc_max': ['Year Incorporated',operators['<']],
-     }
-     
-    const [initialFilterState, setinitialFilterState] = useState({
-         'revenue_min':'',
-         'revenue_max':'',
-         'prog_exp_rev_min':'',
-         'prog_exp_rev_max':'',
-         'year_inc_min':'',
-         'year_inc_max':'',
-         'categories': {title: 'General Charity Category',checkbox: []},
-         'geography': {title: 'Main Areas of Operation',checkbox: []}
+  const handleShowMore = () => {
+
+    setFilteredShownCharities(filteredShownCharities + CARDS_TO_SHOW)
+
+  }
+
+  const updateFilterParams = (e) => {
+
+    const value = e.target.value;
+    const input = e.target.name;
+
+    console.log(input, value)
+
+    const newParams = JSON.parse(JSON.stringify(filteredParams));
+    newParams[input] = value;
+
+    console.log(newParams)
+
+    setFilteredParams(newParams)
+
+  }
+
+  const resetFilterState = () => {
+    console.log('reseting filter')
+    setFilteredParams(initialFilterState)
+    setActualFilterParams(initialFilterState)
+    //  setTimeout(()=>{
+    //      processFilterSearches();
+    //  },100);
+  }
+
+  const operators = {
+    '>': function(a, b) { return a > b },
+    '<': function(a, b) { return a < b },
+  };
+
+
+  const paramMap = {
+    'revenue_min': ['Total Revenue', operators['>']],
+    'revenue_max': ['Total Revenue', operators['<']],
+    'prog_exp_rev_min': ['Program Expense / Revenue', operators['>']],
+    'prog_exp_rev_max': ['Program Expense / Revenue', operators['<']],
+    'year_inc_min': ['Year Incorporated', operators['>']],
+    'year_inc_max': ['Year Incorporated', operators['<']],
+  }
+
+  const [initialFilterState, setinitialFilterState] = useState({
+    'revenue_min': '',
+    'revenue_max': '',
+    'prog_exp_rev_min': '',
+    'prog_exp_rev_max': '',
+    'year_inc_min': '',
+    'year_inc_max': '',
+    'categories': { title: 'General Charity Category', checkbox: [] },
+    'geography': { title: 'Main Areas of Operation', checkbox: [] }
+  })
+
+  const [filteredParams, setFilteredParams] = useState(initialFilterState);
+
+  const [actualFilterParams, setActualFilterParams] = useState(initialFilterState);
+
+  const allAreTrue = (arr) => {
+    return arr.every(element => element === true);
+  }
+
+  useEffect(() => {
+    // const processFilterSearches = () => {
+
+    console.log(filteredParams);
+
+    // get checks to pass
+    const checks = [];
+    Object.keys(filteredParams).map((c) => {
+      if (filteredParams[c]) {
+        checks.push(c)
+      }
     })
-    
-     const [filteredParams, setFilteredParams] = useState(initialFilterState);
-         
-     const [actualFilterParams, setActualFilterParams] = useState(initialFilterState);
 
-     const allAreTrue = (arr) => {
-      return arr.every(element => element === true);
-    }
-    
-     useEffect(() => {
-   // const processFilterSearches = () => {
-        
-        console.log(filteredParams);
-        
-         // get checks to pass
-        const checks = [];
-        Object.keys(filteredParams).map((c)=>{
-            if (filteredParams[c]) {
-                checks.push(c)
-            }
-        })
-         
-        const filtered = [];
-        
-        let selectedCharities = []
-        try {
-        filteredParams.categories.checkbox.map((cc)=>{
-            if (cc['isChecked'] == true){
-                selectedCharities.push(cc.name)
-            }
-        })
-        }catch(e){}
-        //console.log('selectedCharities',selectedCharities)
+    const filtered = [];
 
-        let selectedGeographies = [];
-        try {
-        filteredParams.geography.checkbox.map((cc)=>{
-            if (cc['isChecked'] == true){
-                selectedGeographies.push(cc.name)
-            }
-        })
-        }catch(e){}
-        console.log('selectedGeographies',selectedGeographies)
+    let selectedCharities = []
+    try {
+      filteredParams.categories.checkbox.map((cc) => {
+        if (cc['isChecked'] == true) {
+          selectedCharities.push(cc.name)
+        }
+      })
+    }
+    catch (e) {}
+    //console.log('selectedCharities',selectedCharities)
 
-        allCharities.map((c)=>{
-            
-            let searchpass = false;
-            if (searchValue != '') {
-                const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
-              if (key.toLowerCase().indexOf(searchValue.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
-                searchpass = true;
-              }
-            } else {
-                searchpass = true;
-            }
-            
-            let categorypass = false;
-            if (selectedCharities.length > 0) {
-                const charityCategories = c['Charity GENERAL Category (One Cell)'].split('\n');
-                for (let cc=0;cc<charityCategories.length;cc++) {
-                    //console.log(charityCategories[cc])
-                    if (selectedCharities.indexOf(charityCategories[cc].trim()) > -1) {
-                        categorypass = true 
-                        break
-                    }
-            }} else {
-                categorypass = true 
-            }
-            
-            let geographypass = false;
-            if (selectedGeographies.length > 0) {
-                const charityGeographies = c['Main Areas of Operation'].split(',');
-                for (let cc=0;cc<charityGeographies.length;cc++) {
-                    //console.log(charityCategories[cc])
-                    if (selectedGeographies.indexOf(charityGeographies[cc].trim()) > -1) {
-                        geographypass = true 
-                        break
-                    }
-            }} else {
-                geographypass = true 
-            }
-            
-           
-            //   const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
-            //   if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
-            //     filtered.push(c);
-            //   }
-        
-            const passes = [];
-            checks.map((cc)=>{
-                if (cc.indexOf('min') > -1 || cc.indexOf('max') > -1){
-                 if ( paramMap[cc][1](parseFloat(c[paramMap[cc][0]].replace(/,/g,'').replace(/\$/g,'')),parseFloat(filteredParams[cc]))){
-                     passes.push(true)
-                 } else {
-                     passes.push(false)
-                 }
-                }
-            })
-            
-            //console.log(c['Organization Name'],passes)
-            
-            if (allAreTrue(passes) && searchpass && categorypass && geographypass){
-                filtered.push(c);
-            }
- 
-        })
-        
-        setFilteredCharities(filtered);
-         
-        
-     }, [actualFilterParams,setActualFilterParams,setSearchValue,searchValue]);
-    
-     const applyFilteredParams = () =>{
-         
-        setActualFilterParams(filteredParams);
-      //  processFilterSearches();  
-       
-     }
-     
-    const filtersMatch = JSON.stringify(actualFilterParams) == JSON.stringify(filteredParams);
-   
-   //console.log(filtersMatch,actualFilterParams,filteredParams);
+    let selectedGeographies = [];
+    try {
+      filteredParams.geography.checkbox.map((cc) => {
+        if (cc['isChecked'] == true) {
+          selectedGeographies.push(cc.name)
+        }
+      })
+    }
+    catch (e) {}
+    console.log('selectedGeographies', selectedGeographies)
 
-    // try{
-    //     console.log(Object.keys(filteredCharities[0]))
-    // }catch(e){}
-    
-    function getVideoId(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-    
-        return (match && match[2].length === 11)
-          ? match[2]
-          : null;
-    }
-        
-    const handleCategoryCheckboxChange = (data) => {
-       // console.log(data);
-        
-        const newParams = JSON.parse(JSON.stringify(filteredParams));
-        newParams.categories = {title: 'General Charity Category',checkbox: data};
-        setFilteredParams(newParams)
-        
-        //setcharityGeneralCategory();
-    }
-    
-    const handleGeographyCheckboxChange = (data) => {
-       // console.log(data);
-        
-        const newParams = JSON.parse(JSON.stringify(filteredParams));
-        newParams.geography = {title: 'Main Areas of Operation',checkbox: data};
-        setFilteredParams(newParams)
-        
-        //setcharityGeneralCategory();
-    }
-    
-    const [currentTab, setCurrentTab] = useState('tab1');
-    const tabList = [
-        {
-            name: 'tab1',
-            label: 'Category',
-            content: (
-               <CheckboxContainer data={filteredParams.categories} onHandleChange={handleCategoryCheckboxChange} seeMore={true}/>
-            )
-        },
-        {
-            name: 'tab2',
-            label: 'Geography',
-            content: (
-                <CheckboxContainer data={filteredParams.geography} onHandleChange={handleGeographyCheckboxChange} seeMore={true}/>
-            )
-        },
-        {
-            name: 'tab3',
-            label: 'Other',
-            content: (
-<span>
+    allCharities.map((c) => {
+
+      let searchpass = false;
+      if (searchValue != '') {
+        const key = [c['Organization Name'], c['Charity GENERAL Category (One Cell)'], c['Brief Description & History']].join(',');
+        if (key.toLowerCase().indexOf(searchValue.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
+          searchpass = true;
+        }
+      }
+      else {
+        searchpass = true;
+      }
+
+      let categorypass = false;
+      if (selectedCharities.length > 0) {
+        const charityCategories = c['Charity GENERAL Category (One Cell)'].split('\n');
+        for (let cc = 0; cc < charityCategories.length; cc++) {
+          //console.log(charityCategories[cc])
+          if (selectedCharities.indexOf(charityCategories[cc].trim()) > -1) {
+            categorypass = true
+            break
+          }
+        }
+      }
+      else {
+        categorypass = true
+      }
+
+      let geographypass = false;
+      if (selectedGeographies.length > 0) {
+        const charityGeographies = c['Main Areas of Operation'].split(',');
+        for (let cc = 0; cc < charityGeographies.length; cc++) {
+          //console.log(charityCategories[cc])
+          if (selectedGeographies.indexOf(charityGeographies[cc].trim()) > -1) {
+            geographypass = true
+            break
+          }
+        }
+      }
+      else {
+        geographypass = true
+      }
+
+
+      //   const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
+      //   if (key.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
+      //     filtered.push(c);
+      //   }
+
+      const passes = [];
+      checks.map((cc) => {
+        if (cc.indexOf('min') > -1 || cc.indexOf('max') > -1) {
+          if (paramMap[cc][1](parseFloat(c[paramMap[cc][0]].replace(/,/g, '').replace(/\$/g, '')), parseFloat(filteredParams[cc]))) {
+            passes.push(true)
+          }
+          else {
+            passes.push(false)
+          }
+        }
+      })
+
+      //console.log(c['Organization Name'],passes)
+
+      if (allAreTrue(passes) && searchpass && categorypass && geographypass) {
+        filtered.push(c);
+      }
+
+    })
+
+    setFilteredCharities(filtered);
+
+
+  }, [actualFilterParams, setActualFilterParams, setSearchValue, searchValue]);
+
+  const applyFilteredParams = () => {
+
+    setActualFilterParams(filteredParams);
+    //  processFilterSearches();  
+
+  }
+
+  const filtersMatch = JSON.stringify(actualFilterParams) == JSON.stringify(filteredParams);
+
+  //console.log(filtersMatch,actualFilterParams,filteredParams);
+
+  // try{
+  //     console.log(Object.keys(filteredCharities[0]))
+  // }catch(e){}
+
+  function getVideoId(url) {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+
+    return (match && match[2].length === 11) ?
+      match[2] :
+      null;
+  }
+
+  const handleCategoryCheckboxChange = (data) => {
+    // console.log(data);
+
+    const newParams = JSON.parse(JSON.stringify(filteredParams));
+    newParams.categories = { title: 'General Charity Category', checkbox: data };
+    setFilteredParams(newParams)
+
+    //setcharityGeneralCategory();
+  }
+
+  const handleGeographyCheckboxChange = (data) => {
+    // console.log(data);
+
+    const newParams = JSON.parse(JSON.stringify(filteredParams));
+    newParams.geography = { title: 'Main Areas of Operation', checkbox: data };
+    setFilteredParams(newParams)
+
+    //setcharityGeneralCategory();
+  }
+
+  const [currentTab, setCurrentTab] = useState('tab1');
+  const tabList = [{
+      name: 'tab1',
+      label: 'Category',
+      content: (
+        <CheckboxContainer data={filteredParams.categories} onHandleChange={handleCategoryCheckboxChange} seeMore={true}/>
+      )
+    },
+    {
+      name: 'tab2',
+      label: 'Geography',
+      content: (
+        <CheckboxContainer data={filteredParams.geography} onHandleChange={handleGeographyCheckboxChange} seeMore={true}/>
+      )
+    },
+    {
+      name: 'tab3',
+      label: 'Other',
+      content: (
+        <span>
 <div className='inputBanner'>
                         <label className='title'>Total Revenue ($)</label>
                         <input type="number" placeholder='0' value={filteredParams['revenue_min']} name='revenue_min' onChange={updateFilterParams} />
@@ -724,10 +865,10 @@ const ContributeNew = (props) => {
                         <input type="number" placeholder='2022' value={filteredParams['year_inc_max']} name='year_inc_max' onChange={updateFilterParams}/>
                     </div>
 </span>
-            )
-        }
-    ];
-    
+      )
+    }
+  ];
+
 
   return (
     <div id="app" className="app">
@@ -745,27 +886,27 @@ const ContributeNew = (props) => {
             <div className={"quickInfo"}>
               
               <img src={valueLocked_light} alt="logo" className='quickInfoIcon'/>
-              <div className={"quickInfoSub"}>{tvl == '' ? '' : `$${tvl}`}</div>
+              <div className={"quickInfoSub"}>{tvl == '' ? <Spin /> : `$${tvl}`}</div>
               <p>Total Value Locked (TVL)</p>
               
             </div>
             <div className={"quickInfo"}>
               
               <img src={generated_light} alt="logo" className='quickInfoIcon'/>
-              <div className={"quickInfoSub"}>{totalInterest == '' ? '' : `$${totalInterest}`}</div>
+              <div className={"quickInfoSub"}>{totalInterest == '' ? <Spin /> : `$${totalInterest}`}</div>
               <p>Total Yield Donated</p>
               
             </div>
             <div className={"quickInfo"}>
               
               <img src={helpers_light} alt="logo" className='quickInfoIcon'/>
-              <div className={"quickInfoSub"}>{totalHelpers}</div>
+              <div className={"quickInfoSub"}>{totalHelpers  == '' ? <Spin /> : totalHelpers}</div>
               <p>Total Yield Donors</p>
             </div>
             <div className={"quickInfo"}>
               
               <img src={charities_light} alt="logo" className='quickInfoIcon'/>
-              <div className={"quickInfoSub"}>{totalCharities}</div>
+              <div className={"quickInfoSub"}>{totalCharities  == '' ? <Spin /> : totalCharities}</div>
               <p>Total Charities</p>
             </div>
           </div>

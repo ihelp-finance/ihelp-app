@@ -92,6 +92,8 @@ export default function Faucet(props) {
               ensProvider={props.ensProvider}
               price={props.price}
               address={faucetAddress}
+              selectedAddress={props.address}
+              targetNetwork={props.targetNetwork}
             />
      
     </span>

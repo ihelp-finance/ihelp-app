@@ -51,14 +51,15 @@ export default function useContractLoader(providerOrSigner, config = {}) {
           let accounts;
 
           if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
-            accounts = await providerOrSigner.listAccounts();
+            //accounts = await providerOrSigner.listAccounts();
+            accounts = []
           }
 
           if (ethers.Signer.isSigner(providerOrSigner)) {
             signer = providerOrSigner;
             provider = signer.provider;
           } else if (accounts && accounts.length > 0) {
-            signer = providerOrSigner.getSigner();
+            //signer = providerOrSigner.getSigner();
             provider = providerOrSigner;
           } else {
             signer = providerOrSigner;
@@ -68,7 +69,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
           const providerNetwork = await provider.getNetwork();
           //console.log(providerNetwork);
 
-          const _chainId = config.chainId || providerNetwork.chainId;
+          const _chainId = config.chainId  || providerNetwork.chainId;
 
           let contractList = {};
           let externalContractList = {};
@@ -118,6 +119,9 @@ export default function useContractLoader(providerOrSigner, config = {}) {
             return accumulator;
           }, {});
           if (active) setContracts(newContracts);
+          
+          //console.log('CONTRACTS LOADED');
+          
         } catch (e) {
           console.log("ERROR LOADING CONTRACTS!!", e);
         }

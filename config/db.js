@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const config = require('../config/server');
 const bcrypt = require('bcrypt')
 
 const forceOverwrite = false;
@@ -12,16 +11,16 @@ const seq = new Sequelize(
   'gisp123',
   {
     host: 'ihelp-db',
-    dialect: 'postgres',
     logging: false, //console.log,
     freezeTableName: true,
-    operatorsAliases: false
+    operatorsAliases: false,
+    dialect: "postgres"
   }
 )
 
 seq.authenticate().then((errors) => {
   if (errors === undefined) {
-    console.log('Connection successful');
+   // console.log('Connection successful');
   }
   else {
     console.log('Error connecting to database: ', errors);
@@ -139,7 +138,11 @@ const CharityAccount = seq.define('charity_accounts', {
   freezeTableName: true
 });
 
-const Event = seq.define('charity_accounts', {
+const Event = seq.define('events', {
+  id: {
+    type: Sequelize.TEXT,
+    primaryKey: true,
+  },
   name: {
     type: Sequelize.TEXT,
   },
@@ -201,7 +204,7 @@ const passwordTriggerFunction =
 CharityAccount.sync({
   force: false,
 }).then((table) => {
-  console.log('applying trigger to ' + table.tableName)
+  //console.log('applying trigger to ' + table.tableName)
   const tableTrigger =
     'CREATE TRIGGER encrypt_password BEFORE INSERT OR UPDATE OF password ON ' +
     table.tableName +

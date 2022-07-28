@@ -32,9 +32,9 @@ const getCharityStats = (req, contractAddress) => {
   let latestCharityInterest = 0;
   let latestCharityContribution = 0;
   return {
-        interest: latestCharityInterest,
-        contribution: latestCharityContribution,
-      }
+    interest: latestCharityInterest,
+    contribution: latestCharityContribution,
+  }
   // return req.app.db.TotalInterestByCharity.findOne({
   //     where: { charityaddress: contractAddress },
   //     order: [
@@ -67,72 +67,89 @@ const getCharityStats = (req, contractAddress) => {
 
 
 
-const charityDevMapAddress = {}
-const charityDevMapName = {}
+const charityMapAddress = {}
+const charityMapName = {}
 
-const setCharityDevMap = (req, moveOn, skipCharityStats) => {
-  
-  const charityContracts = [];
-  const contractFile = '/build/hardhat_contracts.json'
-  
+const setCharityMap = () => {
+
+  const contractFile = `/build/${process.env.NETWORK}_charities.json`
+
   let d = fs.readFileSync(contractFile, 'utf8')
   d = JSON.parse(d);
-  
-  Object.keys(d['31337'][0]['contracts']).map((k)=>{
-    if (k.indexOf('charityPool') > -1) {
-      charityContracts.push(d['31337'][0]['contracts'][k]['address']);
+
+  let deployTestCharities = false
+
+  d.map((k) => {
+    if (k['charityName'] == 'Charity Pool 1') {
+      deployTestCharities = true
     }
   })
-  
-  //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
-  //var g_id = "313945428"
-  var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
-  var g_id = "727836194"
-  var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
-  request(url, function(error, response, body) {
 
-    if (error == null) {
-      csv()
-        .fromString(body)
-        .then((jsonObj) => {
+  const charityContracts = [];
+  if (deployTestCharities == true) {
 
-          const filteredJsonObj = [];
+    d.map((k) => {
+      charityContracts.push(k['address']);
+    })
 
-          let charityContractsCount = 0
-          
-          jsonObj.forEach(e => {
-            
-            if (charityContractsCount < charityContracts.length) {
-              charityDevMapAddress[charityContracts[charityContractsCount]] = e['Organization Name']
-              charityDevMapName[e['Organization Name']] = charityContracts[charityContractsCount]
-            }
-            charityContractsCount += 1
+    var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
+    var g_id = "727836194"
+    var url = "https://docs.google.com/spreadsheets/d/" + long_id + "/export?gid=" + g_id + "&format=csv&id=" + long_id
+    request(url, function(error, response, body) {
+
+      if (error == null) {
+        csv()
+          .fromString(body)
+          .then((jsonObj) => {
+
+            const filteredJsonObj = [];
+
+            let charityContractsCount = 0
+
+            jsonObj.forEach(e => {
+
+              if (charityContractsCount < charityContracts.length) {
+                charityMapAddress[charityContracts[charityContractsCount]] = e['Organization Name']
+                charityMapName[e['Organization Name']] = charityContracts[charityContractsCount]
+              }
+              charityContractsCount += 1
+
+            })
+
+            console.log('charityMapName', charityMapName)
+
           })
-          
-          console.log('charityDevMapName',charityDevMapName)
-          
-        })
-        
-    }
-    
-  })
-  
+
+      }
+
+    })
+
+
+  }
+  else {
+    d.map((k) => {
+      charityMapAddress[k['address']] = k['charityName']
+      charityMapName[k['charityName']] = k['address']
+    })
+    //console.log('charityDevMapName', charityMapName)
+  }
+
+
+
 }
 
-if (process.env.NODE_ENV == 'development') {
-  console.log('SETTING CHARITY DEV MAP')
-  setCharityDevMap()
-}
-
+console.log('SETTING CHARITY MAP')
+setCharityMap()
 
 
 const getCharityInformation = (req, moveOn, skipCharityStats) => {
-  
-  if (process.env.NODE_ENV == 'development') {
-    console.log('SETTING CHARITY DEV MAP')
-    setCharityDevMap()
-  }
-  
+
+  // in dev mode get new charity addresses
+  //if (process.env.NODE_ENV == 'development') {
+  //  console.log('SETTING CHARITY MAP')
+  setCharityMap()
+  //}
+
   //var long_id = "1lwHTt1C8tkm_LEHFv2kcqaTOgNFJ6U0p32M_j98zts0"
   //var g_id = "313945428"
   var long_id = "1KQ7kzA2T8nDED8vo9XjnSEQyLDkxajhO6fkw1H72KgM"
@@ -147,8 +164,6 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
 
           const filteredJsonObj = [];
 
-          let charityContractsCount = 0
-          
           jsonObj.forEach(e => {
 
             const maxChars = 200;
@@ -158,26 +173,21 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
             else {
               e['Shorted Description'] = e['Brief Description & History'];
             }
-            
-            
-            if (process.env.NODE_ENV == 'development') {
-              
-              if ( Object.keys(charityDevMapName).indexOf(e['Organization Name']) > -1 ) {
-                
-                  e['CharityPool Contract'] = charityDevMapName[e['Organization Name']]
-                  e['Status'] = 'LIVE'
-                
-                 filteredJsonObj.push(e);
-                 
+
+            if (Object.keys(charityMapName).indexOf(e['Organization Name']) > -1) {
+
+              e['CharityPool Contract'] = charityMapName[e['Organization Name']]
+
+              if (process.env.NODE_ENV == 'development') {
+                e['Status'] = 'LIVE'
               }
-              
-            } else {
-              
-              if (e['Status'] == 'LIVE' || e['Status'] == 'HIDE') filteredJsonObj.push(e);
-              
+
+              if (e['Status'] == 'LIVE' || e['Status'] == 'HIDE') {
+                filteredJsonObj.push(e);
+              }
+
             }
-            
-            
+
           });
 
           filteredJsonObj.sort((a, b) => (a['Organization Name'] > b['Organization Name']) ? 1 : -1)
@@ -187,7 +197,7 @@ const getCharityInformation = (req, moveOn, skipCharityStats) => {
         })
         .then((filteredJsonObj) => {
 
-            moveOn(filteredJsonObj)
+          moveOn(filteredJsonObj);
 
         })
 
@@ -225,24 +235,21 @@ router.get('/charities/:id', (req, res) => {
 
           var charityObject = null;
           for (var i = 0; i < jsonObj.length; i++) {
-            
-            if (process.env.NODE_ENV == 'development') {
-              
-              if (Object.keys(charityDevMapAddress).indexOf(charity_id) > -1) {
-                if ( charityDevMapName[jsonObj[i]['Organization Name']] == charity_id ) {
-                  jsonObj[i]['CharityPool Contract'] = charity_id
+
+            if (Object.keys(charityMapAddress).indexOf(charity_id) > -1) {
+              if (charityMapName[jsonObj[i]['Organization Name']] == charity_id) {
+
+                jsonObj[i]['CharityPool Contract'] = charity_id
+
+                if (process.env.NODE_ENV == 'development') {
                   jsonObj[i]['Status'] = 'LIVE'
-                  charityObject = jsonObj[i]
-                  break
-                }  
-              }
-              
-            } else {
-              if (jsonObj[i]['CharityPool Contract'] == charity_id) {
+                }
+
                 charityObject = jsonObj[i]
                 break
               }
             }
+
           }
 
           // const getCharityStat = async() => {
@@ -726,10 +733,10 @@ router.get('/contribovertime', (req, res) => {
 
 
 router.get('/allnicknames', (req, res) => {
-  
-  req.app.db.AddressNickname.findAll({attributes: 
-        ['address','nickname']}
-      ).then((data) => {
+
+  req.app.db.AddressNickname.findAll({
+    attributes: ['address', 'nickname']
+  }).then((data) => {
     res.send(data)
   })
 
@@ -1051,68 +1058,91 @@ router.get('/login', (req, res) => {
 
 router.get('/contracts', (req, res) => {
 
-  let contractFile = null;
-  if (process.env.NODE_ENV == 'development') {
-    contractFile = '/build/hardhat_contracts.json'
-  } else {
-    contractFile = 'contracts/hardhat_contracts.json'
-  }
+   const contractFile = `/build/${process.env.NETWORK}_contracts.json`
+    
+  fs.readFile(contractFile, 'utf8', (e, dd) => {
 
-  fs.readFile(contractFile, 'utf8', (e, d) => {
+    /*
+    const chainid = '31337'
+    
+    const d = JSON.parse(dd)
+    
+    // only return the key function contracts
+    const contractFilters = ['analytics','iHelp']
+    
+    const contractKeys = Object.keys(d[chainid][0]['contracts']);
+    
+    const response = {}
+    response[chainid] = [{
+        "name": d[chainid][0]['name'],
+        "chainId": chainid,
+        "contracts": {}
+      }]
+
+    contractKeys.map((k)=>{
+      if (contractFilters.indexOf(k) > -1) {
+        response[chainid][0]['contracts'][k] = d[chainid][0]['contracts'][k];
+      }
+    })
+    */
+
     try {
-      res.json(JSON.parse(d));
+      res.json(JSON.parse(dd));
     }
     catch (e) {
       res.send({});
     }
+
   })
 
 })
 
 router.post('/event', (req, res) => {
-  
+
   if (req.query.key == process.env.EVENT_API_KEY) {
-    
+
     console.log(req.body)
-    
+
     req.app.db.Event.create(req.body)
-    
+
     res.send({
-      error:false,
-      message:'success'
+      error: false,
+      message: 'success'
     })
-    
-  } else {
+
+  }
+  else {
     res.send({
-      error:true,
-      message:'cannot validate event api key'
+      error: true,
+      message: 'cannot validate event api key'
     })
   }
-  
+
 });
 
 router.get('/events', (req, res) => {
 
   const address = req.query.address;
-  
+
   if (address != undefined) {
-    
+
     req.app.db.Event.findAll({
-        where: { sender: address },
-        order: [
-          ['createdAt', 'ASC']
-        ],
-        //limit: 100
-      }).then((d) => {
-        
-        res.send(d)
-      
-      })
-    
-  } else {
+      where: { sender: address },
+      order: [
+        ['createdAt', 'ASC']
+      ],
+      //limit: 100
+    }).then((d) => {
+
+      res.send(d)
+
+    })
+
+  }
+  else {
     res.send({
-      error:true,
-      message:'cannot find address'
+      error: true,
+      message: 'cannot find address'
     })
   }
 
@@ -1121,92 +1151,99 @@ router.get('/events', (req, res) => {
 router.get('/userstats', (req, res) => {
 
   const address = req.query.address;
-  
-  const contribOverTime = []
-  
-  if (address != undefined) {
-    
-    req.app.db.Event.findAll({
-        where: { sender: address },
-        order: [
-          ['createdAt', 'ASC']
-        ],
-        //limit: 100
-      }).then((d) => {
-        
-        // create time series scatter map of the contributions
-        
-        let lastContrib = 0
-        
-        d.map((dd)=>{
-          
-          contribOverTime.push({
-            time:dd['createdAt'],
-            contrib:lastContrib + dd['amountUSD']
-          });
-          
-          lastContrib = lastContrib + dd['amountUSD']
-          
-        })
-           
-        return req.app.db.AddressNickname.findOne({
-          where: {
-            address: address
-          }
-        })
 
-      
-      }).then((d) => {
-        
-        const response = {
-          nickname: null,
-          address: address,
-          contribovertime: contribOverTime,
-        }
-        
-        if (d == null) {
-          res.send(response);
-        }
-        else {
-          response['nickname'] = d.nickname
-          res.send(response);
-        }
-        
+  const contribOverTime = []
+
+  if (address != undefined) {
+
+    req.app.db.Event.findAll({
+      where: { sender: address },
+      order: [
+        ['createdAt', 'ASC']
+      ],
+      //limit: 100
+    }).then((d) => {
+
+      // create time series scatter map of the contributions
+
+      let lastContrib = 0
+
+      d.map((dd) => {
+
+        contribOverTime.push({
+          time: dd['createdAt'],
+          contrib: lastContrib + dd['amountUSD']
+        });
+
+        lastContrib = lastContrib + dd['amountUSD']
+
       })
-      
-  } else {
+
+      return req.app.db.AddressNickname.findOne({
+        where: {
+          address: address
+        }
+      })
+
+
+    }).then((d) => {
+
+      const response = {
+        nickname: null,
+        address: address,
+        contribovertime: contribOverTime,
+      }
+
+      if (d == null) {
+        res.send(response);
+      }
+      else {
+        response['nickname'] = d.nickname
+        res.send(response);
+      }
+
+    })
+
+  }
+  else {
     res.send({
-      error:true,
-      message:'cannot find address'
+      error: true,
+      message: 'cannot find address'
     })
   }
 
 });
 
 router.get('/leaderboard', (req, res) => {
-  
+
   const response = {
-    helpers:[],
-    charities:[]
+    helpers: [],
+    charities: []
   }
-  req.app.db.CharityStats.findAll({limit:100,order: [
-            ['contributions', 'DESC']]
-        }).then((d) => {
-    
-    response.charities = d;
-    
-    return req.app.db.UserStats.findAll({limit:100,order: [
-            ['contributions', 'DESC']]
-        })
-    
+  req.app.db.CharityStats.findAll({
+    limit: 100,
+    order: [
+      ['contributions', 'DESC']
+    ]
   }).then((d) => {
-    
+
+    response.charities = d;
+
+    return req.app.db.UserStats.findAll({
+      limit: 100,
+      order: [
+        ['contributions', 'DESC']
+      ]
+    })
+
+  }).then((d) => {
+
     response.helpers = d;
-    
+
     res.send(response)
-    
+
   })
-    
+
 })
 
 

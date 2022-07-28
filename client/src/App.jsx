@@ -29,9 +29,16 @@ import ReactGA from "react-ga4";
 //ReactGA.initialize(""); // TODO - read from env variable
 //ReactGA.send(window.location.pathname + window.location.search);
 
-const targetNetwork = NETWORKS[ process.env.NETWORK | 'localhost' ];
+const targetNetwork = NETWORKS[ process.env.NETWORK || 'localhost' ];
 
 document.title = `iHelp (${targetNetwork.name.replace('host','').charAt(0).toUpperCase() + targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
+
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {}
+  console.warn = () => {}
+  console.error = () => {}
+  console.debug = () => {}
+}
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -59,17 +66,15 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 const blockExplorer = targetNetwork.blockExplorer;
 
 // Coinbase walletLink init
-/*
 const walletLink = new WalletLink({
   appName: 'coinbase',
 });
 
 // WalletLink provider
 const walletLinkProvider = walletLink.makeWeb3Provider(
-    `https://api.avax.network/ext/bc/C/rpc`,
+    localProviderUrl,
     43114,
 );
-*/
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -91,9 +96,9 @@ const web3Modal = new Web3Modal({
         },
       },
     },
-    /*torus: {
-      package: Torus,
-    },
+    // torus: {
+    //   package: Torus,
+    // },
     'custom-walletlink': {
       display: {
         logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
@@ -105,7 +110,7 @@ const web3Modal = new Web3Modal({
         await provider.enable();
         return provider;
       },
-    },*/
+    },
   },
 });
 
@@ -143,15 +148,6 @@ function App(props) {
     }
     getAddress();
     
-    try {
-      if (targetNetwork == NETWORKS.localhost) {
-        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '31337', chainName: 'iHelp Local', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://dev.ihelp.finance/rpc'], blockExplorerUrls: [] }] })
-      }
-      else if (targetNetwork == NETWORKS.avalanche) {
-        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '43114', chainName: 'Avalanche Network', nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io/'] }] })
-      }
-    }catch(e){}
-    
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
@@ -163,16 +159,14 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = Transactor(localProvider, gasPrice);
+  // const faucetTx = Transactor(localProvider, gasPrice);
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, { chainId: localChainId });
-
-  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
-
+  
  // if (targetNetwork.name.indexOf("local") !== -1) {
-   const mainnetContracts = useContractLoader(mainnetProvider, { chainId: localChainId });
+   // const mainnetContracts = useContractLoader(mainnetProvider, { chainId: localChainId });
 //  }
   
   //
@@ -195,10 +189,10 @@ function App(props) {
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
       //console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       //console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
+      console.log("📝 contracts", readContracts);
       //console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       //console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
-      console.log("🔐 writeContracts", writeContracts);
+      //console.log("🔐 writeContracts", writeContracts);
       
       // setTimeout(()=>{
          setLoaded(true);
@@ -214,12 +208,17 @@ function App(props) {
   ]);
 
   let networkDisplay = "";
-  if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
+  
+  // console.log('NETWORKCHECK',NETWORKCHECK,localChainId,selectedChainId)
+  
+  if (NETWORKCHECK && localChainId && selectedChainId && localChainId != selectedChainId) {
+    
     const networkSelected = NETWORK(selectedChainId);
     const networkLocal = NETWORK(localChainId);
+    
     if (selectedChainId === 1337 && localChainId === 31337) {
       networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+        <div style={{ zIndex: 200000, position: "absolute", right: 0, top: 0, padding: 16 }}>
           <Alert
             message="⚠️ Wrong Network ID"
             description={
@@ -235,15 +234,22 @@ function App(props) {
         </div>
       );
     } else {
+      
+      console.log('WRONG NETWORK')
+      
       networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+        <div className="wrongNetwork">
           <Alert
-            message="⚠️ Wrong Network"
+            //message="⚠️ Wrong Network"
+            style={{backgroundColor:'#F35454', border:'0px',color:'white',textAlign:'center'}}
             description={
-              <div>
-                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+              <div style={{color:'white',fontSize:'18px'}}>
+                <b style={{color:'white'}}>{networkSelected && networkSelected.name.toUpperCase()}</b> is not supported. Please switch to{" "}
                 <Button
+                  style={{}}
                   onClick={async () => {
+                  
+                  /*
                     const ethereum = window.ethereum;
                     const data = [
                       {
@@ -259,9 +265,22 @@ function App(props) {
                     if (tx) {
                       console.log(tx);
                     }
+                    */
+                    
+                    try {
+                      if (targetNetwork == NETWORKS.localhost) {
+                        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '31337', chainName: 'iHelp Local', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://dev.ihelp.finance/rpc'], blockExplorerUrls: [] }] })
+                      }
+                      else if (targetNetwork == NETWORKS.avalanche) {
+                        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '43114', chainName: 'Avalanche Network', nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io/'] }] })
+                      }
+                    }catch(e){}
+                    
+                    
+                    
                   }}
                 >
-                  <b>{networkLocal && networkLocal.name}</b>
+                  <b>{networkLocal && networkLocal.name.toUpperCase()}</b>
                 </Button>
                 .
               </div>
@@ -274,7 +293,7 @@ function App(props) {
     }
   } else {
     networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 18, top: 38, padding: 16, color: targetNetwork.color }}>
+      <div style={{ zIndex: 2000000, position: "fixed", right: 83, bottom: 3, padding: 16, fontStyle:'italic',color: targetNetwork.color }}>
         {targetNetwork.name}
       </div>
     );
@@ -375,6 +394,7 @@ function App(props) {
   
   return (
     <div className="App">
+      {networkDisplay}
       <Router>
        <Switch>
           <Route exact path="/">
@@ -415,6 +435,7 @@ function App(props) {
         </Switch>
       </Router>
       <ThemeSwitch />
+      
     </div>
   );
 }

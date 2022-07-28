@@ -59,7 +59,7 @@ export default function Wallet(props) {
   const [toAddress, setToAddress] = useState(ethereum ? ethereum.selectedAddress : '');
   const [pk, setPK] = useState();
 
-  const providerSend = props && props.targetNetwork && props.targetNetwork.name == 'localhost' && props.address && props.provider ? (
+  const providerSend = props && props.targetNetwork && props.targetNetwork.name == 'localhost' && props.selectedAddress && props.selectedAddress != '0x0000000000000000000000000000000000000000' && props.provider ? (
     <Tooltip title="Development Wallet">
       <WalletOutlined
         onClick={() => {

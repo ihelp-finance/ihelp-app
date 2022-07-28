@@ -1323,3 +1323,14 @@ button:disabled {
     margin-top: -25px;
     margin-left: -25px;
 }
+
+.wrongNetwork {
+  z-index: 200000;
+    position: sticky;
+    padding: 0px;
+    top: 0px;
+    width: 100vw;
+    border: 0px;
+    background-color:#F35454;
+   
+}

@@ -29,7 +29,10 @@ import "swiper/components/pagination/pagination.min.css";
 import commafy from 'commafy';
 import { utils } from "ethers";
 import moment from 'moment'
-import { Table, Tag, Space, Tooltip } from 'antd';
+import { Table, Tag, Space, Tooltip,Spin } from 'antd';
+
+import { LoadingOutlined } from '@ant-design/icons';
+const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 
 import { Header, Footer, Address } from "../components";
 
@@ -105,7 +108,7 @@ const ContributeNew = (props) => {
     const tokenAddress = props.readContracts['iHelp'].address;
     const tokenSymbol = 'HELP';
     const tokenDecimals = 18;
-    const tokenImage = 'https://dev.ihelp.finance/assets/ihelp_icon.png';
+    const tokenImage = 'https://ihelp.finance/assets/ihelp_icon.png';
     
     try {
       // wasAdded is a boolean. Like any RPC method, an error may be thrown.
@@ -157,7 +160,7 @@ const ContributeNew = (props) => {
 
   const setValue = props.setValue;
 
-  console.log(props.address, statsLoaded)
+  // console.log(props.address, statsLoaded)
   
   const [charityDecimals,setCharityDecimals] = useState(null);
 
@@ -167,49 +170,46 @@ const ContributeNew = (props) => {
 
     const updateStats = () => {
 
-      console.log('calling stats')
+     console.log('CALLING STATS')
+      
+      let url = `/api/v1/data/userstats?address=${props.address}`;
+     // console.log(url);
+
+      fetch(url).then((d) => {
+        if (d.ok) {
+          return d.json()
+        }
+      }).then((d) => {
+        // console.log(d);
+        
+        try {
+          
+         setNickname(d.nickname);
+         setChartData(d['contribovertime']);
+         
+        }catch(e){console.log('error',e)}
+
+      })
+
 
       setTimeout(() => {
         
         setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
-        setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
         setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
-        
-        props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address, props.address, 0, 100).then((d) => {
+        setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
+
+        props.readContracts["analytics"]["userStats"](props.readContracts['iHelp'].address, props.address, 0, 1000).then((d) => {
+
+          console.log('userStats', d)
           
-          console.log('userContributionsPerCharity',d)
-          
-          const charityData = []
-          
-          d.map((c)=>{
-            if (c['totalContributions'] > 0 || c['totalDonations'] > 0 || c['yieldGenerated'] > 0) {
-              
-              const curr = []
-              
-              c['tokenStatistics'].map((r)=>{
-                if (r['totalContributions'] > 0) { 
-                  
-                  curr.push([r['currency'],r['totalContributions']])
-                  
-                } 
-              })
-              
-              charityData.push({
-                address:c['charityAddress'],
-                name:c['charityName'],
-                contributed:c['totalContributions'],
-                directdonations:c['totalDonations'],
-                yieldgenerated:c['yieldGenerated'],
-                currencies:curr,
-              })
-            }
-          })
-          
-          setTableData(charityData)
-          
+          //console.log(charityDecimals)
+
+          setcontribTotal(d['totalContributions']);
+          setdirectDonations(d['totalDirectDonations']);
+          settotalInterestGenerated(d['totalInterestGenerated']);
+
         });
-
-
+        
         props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address).then((d) => {
 
           // console.log('pricefeeds:',d)
@@ -249,86 +249,69 @@ const ContributeNew = (props) => {
           console.log('currencyHash', currencyHash)
           console.log('charityDecimals', charityDecimalHash)
 
-
           setCharityDecimals(charityDecimalHash)
           // setCurrencies(Object.keys(currencyHash))
           // setSupportedCurrencyDetails(currencyHash)
 
-          return props.readContracts["analytics"]["userStats"](props.readContracts['iHelp'].address, props.address, 0, 100)
-
-        }).then((d) => {
-
-          console.log('userStats', d)
+        })
+     
+        props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address, props.address, 0, 1000).then((d) => {
           
-          console.log(charityDecimals)
-
-          setcontribTotal(d['totalContributions']);
-          setdirectDonations(d['totalDirectDonations']);
-          settotalInterestGenerated(d['totalInterestGenerated']);
-
+          // console.log('userContributionsPerCharity',d)
+          
+          const charityData = []
+          
+          d.map((c)=>{
+            if (c['totalContributions'] > 0 || c['totalDonations'] > 0 || c['yieldGenerated'] > 0) {
+              
+              const curr = []
+              
+              c['tokenStatistics'].map((r)=>{
+                if (r['totalContributions'] > 0) { 
+                  
+                  curr.push([r['currency'],r['totalContributions']])
+                  
+                } 
+              })
+              
+              charityData.push({
+                address:c['charityAddress'],
+                name:c['charityName'],
+                contributed:c['totalContributions'],
+                directdonations:c['totalDonations'],
+                yieldgenerated:c['yieldGenerated'],
+                currencies:curr,
+              })
+            }
+          })
+          
+          setTableData(charityData)
+          
         });
 
-      }, 10)
-
-      let url = `/api/v1/data/userstats?address=${props.address}`;
-      console.log(url);
-
-      fetch(url).then((d) => {
-        if (d.ok) {
-          return d.json()
-        }
-        else {
-          setTimeout(() => {
-            updateStats();
-          }, 5000);
-        }
-      }).then((d) => {
-        console.log(d);
         
-        try {
-          
-         setNickname(d.nickname);
-         setChartData(d['contribovertime']);
-         
-         /*
-         setcontribTotal(d['contrib_by_charity_summary']['total']);
-         setChartData(d['contribovertime']);
-         
-         // format the table data
-         const tableRawData = [];
-         
-         for (var i=0;i<Object.keys(d['contrib_by_charity_summary']).length;i++) {
-           var key =Object.keys(d['contrib_by_charity_summary'])[i];
-           if (key != 'total') {
-             var data = {
-               name:key,
-               logo:d['contrib_by_charity_summary'][key]['logo'],
-               currencies: [],
-               id: d['contrib_by_charity_summary'][key]['id'],
-               contributed: d['contrib_by_charity_summary'][key]['total'],
-               
-             }
-             try {
-              data['currencies'].push('DAI-'+d['contrib_by_charity_summary'][key]['DAI']['contrib'].toFixed(2))
-             }catch(e){}
-             try {
-              data['currencies'].push('USDC-'+d['contrib_by_charity_summary'][key]['USDC']['contrib'].toFixed(2))
-             }catch(e){}
-             
-             tableRawData.push(data);
-           }
-         }
-         setTableData(tableRawData);
-         */
-         
-        }catch(e){console.log('error',e)}
-
-      })
-
+        
+      }, 10)
 
     }
 
     updateStats();
+    
+    const contractsToListen = ['iHelp'];
+
+      console.log('contractsToListen',contractsToListen);
+  
+      const listener = (blockNumber, contract) => {
+        if (contract != undefined) {
+          //console.log(contract, blockNumber); // , fn, args, provider.listeners()
+          updateStats(contract);
+        }
+      };
+  
+      contractsToListen.map(c => {
+        // not the most efficient because this will update on each block
+        props.readContracts[c].provider.on("block", (block) => { listener(block, c) });
+      });
 
   }
 
@@ -380,7 +363,7 @@ const ContributeNew = (props) => {
           onClick={props.loadWeb3Modal}
         >
           CONNECT WALLET
-        </button>,
+        </button>
    </div>
    </div>
    </div><Footer {...props}/>
@@ -470,7 +453,7 @@ const ContributeNew = (props) => {
       title: 'Yield Generated',
       dataIndex: "yieldgenerated",
       key: 'yieldgenerated',
-      render: c => `${charityDecimals ? '$'+commafy(parseFloat(utils.formatUnits(c,charityDecimals['DAI'])).toFixed(2) ) : ''}`,
+      render: c => `${'$'+commafy(parseFloat(utils.formatUnits(c,18)).toFixed(2) )}`,
       sorter: (a, b) => a['yieldgenerated'] - b['yieldgenerated'],
       sortDirections: ['ascend', 'descend'],
       // width: '10%',
@@ -479,7 +462,7 @@ const ContributeNew = (props) => {
       title: 'Active Contributions',
       dataIndex: "contributed",
       key: 'contributed',
-      render: c => `${charityDecimals ? '$'+commafy(parseFloat(utils.formatUnits(c,charityDecimals['DAI'])).toFixed(2) ) : ''}`,
+      render: c => `${'$'+commafy(parseFloat(utils.formatUnits(c,18)).toFixed(2) )}`,
       sorter: (a, b) => a['contributed'] - b['contributed'],
       sortDirections: ['ascend', 'descend'],
       // width: '10%',
@@ -585,15 +568,15 @@ const ContributeNew = (props) => {
                         
                         <div style={{padding: '2.4rem',width:'34%',display:'inline-block',textAlign:'center'}}>
                             <p>Active Contributions</p>
-                            <h5>{charityDecimals && contribTotal ? `$${commafy(parseFloat(utils.formatUnits(contribTotal,charityDecimals['DAI'])).toFixed(2))}` : "..."}</h5>
+                            <h5>{contribTotal ? `$${commafy(parseFloat(utils.formatUnits(contribTotal,18)).toFixed(2))}` : <Spin />}</h5>
                         </div>
                         <div style={{padding: '2.4rem',width:'33%',display:'inline-block',textAlign:'center'}}>
                             <p>Yield Generated</p>
-                            <h5>{charityDecimals && totalInterestGenerated ? `$${commafy(parseFloat(utils.formatUnits(totalInterestGenerated,charityDecimals['DAI'])).toFixed(2))}` : "..."}</h5>
+                            <h5>{totalInterestGenerated ? `$${commafy(parseFloat(utils.formatUnits(totalInterestGenerated,18)).toFixed(2))}` : <Spin />}</h5>
                         </div>
                         <div style={{padding: '2.4rem',width:'33%',display:'inline-block',textAlign:'center'}}>
                             <p>Direct Donations</p>
-                            <h5>{charityDecimals && directDonations ? `$${commafy(parseFloat(utils.formatUnits(directDonations,charityDecimals['DAI'])).toFixed(2))}` : "..."}</h5>
+                            <h5>{directDonations ? `$${commafy(parseFloat(utils.formatUnits(directDonations,18)).toFixed(2))}` : <Spin />}</h5>
                         </div>
                         
                         {/*<h6>Total Interest Donated: $1,321,312</h6>
@@ -640,18 +623,18 @@ const ContributeNew = (props) => {
                         <h4>Rewards & Staking</h4>
                         <div >
                             <p>Claimable HELP Tokens</p>
-                            <h5>{charityDecimals && claimableHelpTokens ? commafy(parseFloat(utils.formatUnits(claimableHelpTokens,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
+                            <h5>{claimableHelpTokens ? commafy(parseFloat(utils.formatUnits(claimableHelpTokens,18)).toFixed(2)) : <Spin />}</h5>
                             <button  onClick={handleClaimTokens} disabled={claimableHelpTokens > 0 ? false : true}>CLAIM HELP TOKENS</button>
                         </div>
                         <div style={{textAlign:'center'}}>
                             <ul>
                                 <li>
                                     <p>HELP Balance  <a style={{fontStyle:'italic'}} onClick={handleTokenAdd}>add</a></p>
-                                    <h5>{charityDecimals && ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
+                                    <h5>{ihelpBalance ? commafy(parseFloat(utils.formatUnits(ihelpBalance,18)).toFixed(2)) : <Spin />}</h5>
                                 </li>
                                 <li>
                                     <p>xHELP Balance</p>
-                                    <h5>{charityDecimals && xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}</h5>
+                                    <h5>{xhelpBalance ? commafy(parseFloat(utils.formatUnits(xhelpBalance,18)).toFixed(2)) : <Spin />}</h5>
                                 </li>
                             </ul>
                             <button style={{color:'#5C0FC5', backgroundColor:"transparent"}} onClick={(e)=>{history.push('/stake')}}>ADJUST STAKING POSITIONS</button>
@@ -706,46 +689,6 @@ const ContributeNew = (props) => {
           <Table 
           className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={tableData} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 
         
-              {/*
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Charity</th>
-                      <th>Your Deposits</th>
-                      <th>Details</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Save the Planets</td>
-                      <td>Charity 2 Deposits in DAI, USDC, WETH</td>
-                      <td>
-                        <div>
-                          <button className="grd-btn">Adjust</button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Save the Planets</td>
-                      <td>Charity 2 Deposits in DAI, USDC, WETH</td>
-                      <td>
-                        <div>
-                          <button className="grd-btn">Adjust</button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Save the Planets</td>
-                      <td>Charity 2 Deposits in DAI, USDC, WETH</td>
-                      <td>
-                        <div>
-                          <button className="grd-btn">Adjust</button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                */}
               </div>
             </div>
 

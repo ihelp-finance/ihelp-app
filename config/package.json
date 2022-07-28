@@ -1,0 +1,12 @@
+{
+  "name": "@ihelp-finance/db",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "pg": "^6.2.3",
+    "pg-hstore": "^2.3.2",
+    "pg-pubsub": "^0.3.0",
+    "sequelize": "^4.0.0"
+  }
+}

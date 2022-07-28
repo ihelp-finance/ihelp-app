@@ -571,9 +571,7 @@ const ContributeNew = (props) => {
        setShowDepositInterest(false);
        setShowDepositDirect(false);
        setShowWithdrawInterest(false);
-       
-       
-     
+
       // },1000)
 
     }
@@ -948,40 +946,45 @@ const ContributeNew = (props) => {
     });
   }
 
-  const listener = (blockNumber, contract) => {
-    if (contract != undefined) {
-      //console.log(contract, blockNumber); // , fn, args, provider.listeners()
-      updateContracts(contract);
-    }
-  };
-
   // console.log(init,currencies,charityInfo,contractNameHash)
 
-useEffect(() => {
+  useEffect(() => {
   
-  if (init == false && charityInfo != null && contractNameHash != null) {
+  console.log('init',init)
+  
+  if (props && props.readContracts && charityInfo&& contractNameHash != null && init == false) {
       
-    setInit(true);
-     
     const contractName = contractNameHash[charityInfo[`CharityPool Contract`]];
-    const contractsToListen = ['iHelp',contractName];
     
-    Object.keys(contractNameHash).map((c)=>{
-       // contractsToListen.push(contractNameHash[c]);
-    });
+    console.log('contractName',contractName)
     
-    console.log('contractsToListen',contractsToListen);
-
-    contractsToListen.map(c => {
-      // not the most efficient because this will update on each block
-      props.readContracts[c].provider.on("block", (block) => { listener(block, c) });
-    });
+    if (contractName != undefined) {
+        
+      setInit(true);
+       
+      const contractsToListen = ['iHelp'];
+      console.log('contractsToListen',contractsToListen);
+      const listener = (blockNumber, contract) => {
+        if (contract != undefined) {
+          console.log('UPDATING CONTRACTS');
+          //console.log(contract, blockNumber); // , fn, args, provider.listeners()
+          updateContracts(contract);
+        }
+      };
     
-    updateContracts('init');
+      contractsToListen.map(c => {
+        // not the most efficient because this will update on each block
+        props.readContracts[c].provider.removeAllListeners("block");
+        props.readContracts[c].provider.on("block", (block) => { listener(block, c) });
+      });
+      
+      updateContracts('init');
+    
+    }
     
   }
   
-},[currencies,init,contractNameHash,charityInfo])
+},[currencies,props.readContracts,contractNameHash,charityInfo])
   
   let depositEnabled = false;
   let withdrawEnabled = false;
