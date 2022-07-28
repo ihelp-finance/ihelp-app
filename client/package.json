@@ -18,7 +18,7 @@
     "@ant-design/icons": "^4.2.2",
     "@walletconnect/web3-provider": "^1.5.0",
     "antd": "4.16.0",
-    "axios": "^0.20.0",
+    "axios": ">=0.21.2",
     "bnc-notify": "^1.5.0",
     "commafy": "0.0.6",
     "dotenv": "^8.2.0",
