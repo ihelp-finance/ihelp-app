@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom"
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { GOOGLEANALYTICS_ID, INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -20,16 +20,17 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-
+import ReactGA from "react-ga4";
 import { Contribute,Dashboard,Leaderboard,Stake,Charity,Login,CharityAccount } from "./views";
 
 const { ethers } = require("ethers");
 
-import ReactGA from "react-ga4";
-//ReactGA.initialize(""); // TODO - read from env variable
-//ReactGA.send(window.location.pathname + window.location.search);
+if (GOOGLEANALYTICS_ID != undefined && GOOGLEANALYTICS_ID != '') {
+  ReactGA.initialize(GOOGLEANALYTICS_ID);
+  ReactGA.send(window.location.pathname + window.location.search);
+}
 
-const targetNetwork = NETWORKS[ process.env.NETWORK || 'localhost' ];
+const targetNetwork = NETWORKS[ process.env.REACT_APP_NETWORK || 'localhost' ];
 
 document.title = `iHelp (${targetNetwork.name.replace('host','').charAt(0).toUpperCase() + targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
 
@@ -51,9 +52,8 @@ const USE_BURNER_WALLET = false;
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
 //const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
-//const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rinkeby.infura.io/v3/" + INFURA_ID) : null;
-//const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-rinkeby.alchemyapi.io/v2/UipRFhJQbBiZ5j7lbcWt46ex5CBjVBpW") : null;
-const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://api.avax.network/ext/bc/C/rpc") : null;
+
+const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider(targetNetwork.rpcUrl) : null;
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -88,10 +88,11 @@ const web3Modal = new Web3Modal({
       package: WalletConnectProvider, // required
       options: {
         bridge: "https://bridge.walletconnect.org",
-        // infuraId: INFURA_ID,
+        infuraId: INFURA_ID,
         rpc: {
           1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
-          43114:`https://api.avax.network/ext/bc/C/rpc`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          42:`https://kovan.infura.io/v3/${INFURA_ID}`,
+          43114:`https://api.avax.network/ext/bc/C/rpc`,
           100:"https://dai.poa.network", // xDai
         },
       },

@@ -1,11 +1,8 @@
-// MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "";
-
-// MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "";
-
-// BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "";
+export const INFURA_ID = process.env.REACT_APP_INFURA_ID;
+export const ALCHEMY_ID = process.env.REACT_APP_ALCHEMY_ID;
+export const ETHERSCAN_KEY = process.env.REACT_APP_ETHERSCAN_KEY
+export const BLOCKNATIVE_DAPPID = process.env.REACT_APP_BLOCKNATIVE_DAPPID;
+export const GOOGLEANALYTICS_ID = process.env.REACT_APP_GOOGLEANALYTICS_ID;
 
 export const NETWORKS = {
   localhost: {
@@ -43,7 +40,7 @@ export const NETWORKS = {
     color: "#e0d068",
     chainId: 4,
     //rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    rpcUrl: `https://eth-rinkeby.alchemyapi.io/v2/UipRFhJQbBiZ5j7lbcWt46ex5CBjVBpW`,
+    rpcUrl: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_ID}`,
     faucet: "https://faucet.rinkeby.io/",
     blockExplorer: "https://rinkeby.etherscan.io/",
   },

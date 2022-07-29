@@ -72,7 +72,7 @@ const charityMapName = {}
 
 const setCharityMap = () => {
 
-  const contractFile = `/build/${process.env.NETWORK}_charities.json`
+  const contractFile = `/build/${process.env.REACT_APP_NETWORK}_charities.json`
 
   let d = fs.readFileSync(contractFile, 'utf8')
   d = JSON.parse(d);
@@ -1058,7 +1058,7 @@ router.get('/login', (req, res) => {
 
 router.get('/contracts', (req, res) => {
 
-   const contractFile = `/build/${process.env.NETWORK}_contracts.json`
+   const contractFile = `/build/${process.env.REACT_APP_NETWORK}_contracts.json`
     
   fs.readFile(contractFile, 'utf8', (e, dd) => {
 

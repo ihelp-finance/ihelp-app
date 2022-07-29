@@ -2056,6 +2056,30 @@ module.exports = {
   //     },
   //   },
   // }
+  42: {
+    contracts:{
+      DAI: {
+        address: "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
+        abi: DAIABI,
+      },
+      USDC: {
+        address: "0xb7a4F3E9097C08dA09517b5aB877F7a917224ede",
+        abi: DAIABI,
+      },
+      USDT: {
+        address: "0x07de306FF27a2B630B1141956844eB1552B956B5",
+        abi: DAIABI,
+      },
+      BAT: {
+        address: "0x482dC9bB08111CB875109B075A40881E48aE02Cd",
+        abi: DAIABI,
+      },
+      ZRX: {
+        address: "0x162c44e53097e7B5aaE939b297ffFD6Bf90D1EE3",
+        abi: DAIABI,
+      },
+    }
+  },
   43114: {
     contracts: {
       DAI: {
