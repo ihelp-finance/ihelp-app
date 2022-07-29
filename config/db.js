@@ -13,7 +13,6 @@ const seq = new Sequelize(
     host: 'ihelp-db',
     logging: false, //console.log,
     freezeTableName: true,
-    operatorsAliases: false,
     dialect: "postgres"
   }
 )
@@ -188,7 +187,6 @@ CharityAccount.prototype.validPassword = function (password) {
   }
   return bcrypt.compare(password, this.password)
 }
-
 
 const passwordTriggerFunction =
   'CREATE OR REPLACE FUNCTION encrypt_password() RETURNS TRIGGER AS $$' +
