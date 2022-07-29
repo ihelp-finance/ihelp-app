@@ -30,7 +30,7 @@ echo "127.0.0.1 ihelp-db" >> /etc/hosts
 
 export NVM_DIR="$HOME/.nvm"
 . "$NVM_DIR/nvm.sh"
-nvm use v12
+nvm use v16
 
 # start the service
 if [[ "$MODE" == "prod" ]];then

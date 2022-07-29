@@ -13,6 +13,7 @@ export default function ThemeSwitcher() {
 
   const toggleTheme = isChecked => {
     setIsDarkMode(isChecked);
+    window.localStorage.setItem("theme",isChecked ? themes.dark : themes.light);
     switcher({ theme: isChecked ? themes.dark : themes.light });
   };
 

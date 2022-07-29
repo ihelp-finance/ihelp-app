@@ -55,3 +55,12 @@
   align-items: center;
   justify-content: center;
 }
+
+@media screen and (max-width: 1000px) {
+  .footerLeft{
+   width:160px; 
+   overflow:hidden;
+   left:5px;
+   position:absolute;
+  }
+}

@@ -44,7 +44,7 @@ html {
     font-size: 8px;
     line-height: 8px; }
   body {
-    background-color: red; } }
+   } }
 
 @font-face {
   font-family: InterThin;
@@ -433,7 +433,7 @@ font-size: 1.8rem;
       width: 50%;
       margin-right:-30px;
   display: flex;
-  justify-content: space-between; }
+  justify-content: space-between;float: right; }
 
 .contribute .sortBySelect {
   width: 100%;

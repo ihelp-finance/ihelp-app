@@ -104,7 +104,7 @@ const web3Modal = new Web3Modal({
       display: {
         logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
         name: 'Coinbase',
-        description: 'Connect to Coinbase Wallet (not Coinbase App)',
+        //description: 'Coinbase Wallet',
       },
       package: walletLinkProvider,
       connector: async (provider, options) => {

@@ -59,7 +59,7 @@ const Header = (props) => {
             <div className="mob-header-content">
                   <Link to="/">
                     <a className={router.pathname == "/" ? "activeLink" : ""}>
-                      Contribute
+                      CONTRIBUTE
                     </a>
                   </Link>
                   <Link to="/dashboard" passHref={true}>
@@ -68,12 +68,12 @@ const Header = (props) => {
                         router.pathname == "/dashboard" ? "activeLink" : ""
                       }
                     >
-                      My Dashboard
+                      DASHBOARD
                     </a>
                   </Link>
                   <Link to="/stake" passHref={true}>
                     <a className={router.pathname == "/stake" ? "activeLink" : ""}>
-                      Stake
+                      STAKE
                     </a>
                   </Link>
                   <Link to="/leaderboard" passHref={true}>
@@ -82,12 +82,13 @@ const Header = (props) => {
                         router.pathname == "/leaderboard" ? "activeLink" : ""
                       }
                     >
-                      Leaderboard
+                      LEADERBOARD
                     </a>
                   </Link>
               </div>
               {/*<button className="white-btn">Ethereum Network</button>*/}
               
+              <div style={{width:'100%',textAlign:'center'}}>
               <Account
                       address={address}
                       localProvider={localProvider}
@@ -100,7 +101,7 @@ const Header = (props) => {
                       blockExplorer={blockExplorer}
                       burner={false}
                     />
-              
+              </div>
               
                   
           </div>
@@ -154,9 +155,9 @@ const Header = (props) => {
                     />
                     </div>
                   
-                  <span style={{zoom:2}}>
-                    <MdMenu onClick={openMobHeader} className="open-mob-header" />
-                    <MdClose onClick={closeMobHeader} className="close-mob-header" />
+                  <span style={{top:'5px'}}>
+                    <MdMenu onClick={openMobHeader} style={{fontSize:'36px'}} className="open-mob-header" />
+                    <MdClose onClick={closeMobHeader} style={{fontSize:'36px'}} className="close-mob-header" />
                   </span>
                   
               </div>

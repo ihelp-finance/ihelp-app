@@ -81,9 +81,9 @@
   "scripts": {
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "eject": "react-scripts eject",
-    "prestart": "node ./scripts/create_contracts.js",
     "dev": "cp /env/.env ./ && DANGEROUSLY_DISABLE_HOST_CHECK=true BROWSER=none DISABLE_ESLINT_PLUGIN=true PORT=$PORT react-scripts start",
-    "start": "env-cmd -f /env/.env npx serve -s build -l $PORT",
+    "prestart": "",
+    "start": "./setEnv.sh && npx serve -s build -l $PORT",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",

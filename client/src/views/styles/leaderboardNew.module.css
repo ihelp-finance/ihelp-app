@@ -77,7 +77,7 @@
   justify-content: center;
   background-color: var(--white);
   padding: 0.5rem;
-  width: 50%;
+  width: 100%;
   border: 1px solid var(--light-purple);
   border-radius: 1000px;
 }
@@ -109,6 +109,14 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+@media screen and (max-width: 1000px) {
+.buttonGroup,
+.buttonGroup2 {
+  
+}
+  
+}
+
 @media screen and (max-width: 800px) {
   .leaderboardGrid {
     grid-template-columns: 1fr;
@@ -119,8 +127,8 @@
     display: none;
   }
   .searchFilter {
-    grid-template-columns: 1fr;
-    grid-gap: 1.5rem;
+
+    grid-gap: 0rem;
   }
   .searchBar,
   .sortBy {

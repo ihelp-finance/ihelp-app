@@ -991,7 +991,7 @@ const ContributeNew = (props) => {
                     </div>
                 </div>
                 <div className='stItemContainer'>
-                    <div className='head-bar' style={{float:'right'}}>
+                    <div className='head-bar' >
                          {/*<button className='sortBySelect'>
                            <div className='sortByView'>
                                 <p>Sort by</p>
@@ -1010,7 +1010,7 @@ const ContributeNew = (props) => {
                         
                     </div>
                     
-                    <span style={{fontSize:'14px',fontStyle:'italic',marginTop:'13px',position:'absolute',marginLeft:'15px',color:'rgba(0, 0, 0, 0.5)'}}>Found {filteredCharities.length} out of {allCharities.length} total charities...</span>
+                    <span className="findMe">Found {filteredCharities.length} out of {allCharities.length} total charities...</span>
                     
                     <div className='kseBanner'>
 

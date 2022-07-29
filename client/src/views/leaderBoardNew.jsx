@@ -326,13 +326,13 @@ const ContributeNew = (props) => {
         <div className="sectionHeader">Leaderboard</div>
           {/* Search and  Filter Box */}
           <div className={st.searchFilter}>
-            <main style={{marginTop:'-30px'}}>
+            <main className="toggle">
             <div className={st.buttonGroup}>
               <button className={mode == 'helpers' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('helpers');setsearchValue('');setfilteredLeaderboard(allLeaderboard)}}>Helpers</button>
               <button className={mode == 'charities' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('charities');setsearchValue('');setfilteredCharities(allCharities)}}>Charities</button>
             </div>
           </main>
-            <main>
+            <main className="search">
               <div className={st.searchBar}>
                 <MdSearch />
                 <input type="text" placeholder="Search" onChange={handleSearch} value={searchValue}/>
