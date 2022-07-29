@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom"
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
-import { GOOGLEANALYTICS_ID, INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { GOOGLEANALYTICS_ID, INFURA_ID, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
