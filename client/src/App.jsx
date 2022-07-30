@@ -31,6 +31,7 @@ if (GOOGLEANALYTICS_ID != undefined && GOOGLEANALYTICS_ID != '') {
 }
 
 const targetNetwork = NETWORKS[ process.env.REACT_APP_NETWORK || 'localhost' ];
+console.log('DEPLOYED NETWORK:',process.env.REACT_APP_NETWORK);
 
 document.title = `iHelp (${targetNetwork.name.replace('host','').charAt(0).toUpperCase() + targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
 
