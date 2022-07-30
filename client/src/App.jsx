@@ -296,7 +296,7 @@ function App(props) {
   } else {
     networkDisplay = (
       <div style={{ zIndex: 2000000, position: "fixed", right: 83, bottom: 3, padding: 16, fontStyle:'italic',color: targetNetwork.color }}>
-        {targetNetwork.name}
+        {targetNetwork.name} {process.env.REACT_APP_VERSION_TAG}
       </div>
     );
   }
