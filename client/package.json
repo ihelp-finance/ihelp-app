@@ -83,7 +83,7 @@
     "eject": "react-scripts eject",
     "dev": "cp /env/.env ./ && DANGEROUSLY_DISABLE_HOST_CHECK=true BROWSER=none DISABLE_ESLINT_PLUGIN=true PORT=$PORT react-scripts start",
     "prestart": "",
-    "start": "./setEnv.sh && npx serve -s build -l $PORT",
+    "start": "npx serve -s build -l $PORT",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
