@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom"
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
-import { GOOGLEANALYTICS_ID, INFURA_ID, NETWORKS } from "./constants";
+import { GOOGLEANALYTICS_ID, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -89,12 +89,12 @@ const web3Modal = new Web3Modal({
       package: WalletConnectProvider, // required
       options: {
         bridge: "https://bridge.walletconnect.org",
-        infuraId: INFURA_ID,
+        // infuraId: INFURA_ID,
         rpc: {
-          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
-          42:`https://kovan.infura.io/v3/${INFURA_ID}`,
-          43114:`https://api.avax.network/ext/bc/C/rpc`,
-          100:"https://dai.poa.network", // xDai
+          1:process.env.REACT_APP_RPC_URL, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          42: process.env.REACT_APP_RPC_URL,
+          43114:process.env.REACT_APP_RPC_URL,
+          100:process.env.REACT_APP_RPC_URL,
         },
       },
     },

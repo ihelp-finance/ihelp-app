@@ -4,6 +4,15 @@ ul {
 a {
   text-decoration: none; }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 button {
   border: none;
   outline: none;
@@ -648,9 +657,16 @@ font-size: 1.8rem;
   line-height: 3.6rem;
   color: #262626; }
 
+.kseItem .tabs::-webkit-scrollbar {
+  display: none;
+}
 
 .kseItem .tabs {
-  padding-left: 0rem; }
+  padding-left: 0rem;
+  width:100%;
+  overflow-x:scroll;
+  white-space:nowrap;
+}
   .kseItem .tabs button {
     color: #262626;
         min-width: 160px;
@@ -1159,7 +1175,7 @@ color: #262626;
       font-weight: 400 !important;
       font-size: 1.6rem;
       line-height: 2.4rem;
-      color: #262626  !important;
+      color: #262626;
       margin-bottom: .8rem; }
     .stake .body .head-bar p {
       font-family: 'PoppinsMedium', sans-serif;
@@ -1167,7 +1183,7 @@ color: #262626;
       font-weight: 500 !important;
       font-size: 2.4rem;
       line-height: 3.6rem;
-      color: #5C0FC5  !important  }
+      color: #5C0FC5 }
   .stake .body > div {
     width: 100%;
     min-height: 44.2rem;
@@ -1183,7 +1199,7 @@ color: #262626;
     font-weight: 500  !important;
     font-size: 2.4rem;
     line-height: 3.6rem;
-    color: #262626 !important }
+    color: #262626 }
 
 .stake .stakeAction {
   max-width: 51.3rem;
@@ -1322,6 +1338,7 @@ button:disabled {
     top: 50%;
     margin-top: -25px;
     margin-left: -25px;
+    text-align: center;
 }
 
 .wrongNetwork {

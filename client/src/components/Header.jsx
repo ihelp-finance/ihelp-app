@@ -15,7 +15,6 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import Web3Modal from "web3modal";
-//import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 const { ethers } = require("ethers");
 import WalletLink from "walletlink";
 

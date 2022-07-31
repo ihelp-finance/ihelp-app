@@ -74,7 +74,7 @@
 }
 h5 {
   font-size: 1.75rem;
-  color: var(--dark-purple)  !important;
+  color: var(--dark-purple);
   font-weight:bold !important;
 }
 .leaderBoardHeading span {
@@ -131,8 +131,14 @@ h5 {
   grid-gap: 2.5rem;
   margin: 2.5rem 0 0 0;
   max-width:100%;
-  overflow-x:scroll;
+  overflow-x:auto;
+  margin-bottom: 50px;
 }
+
+.tableGrid::-webkit-scrollbar {
+  display: none;
+}
+
 .tableGrid .tableContainer:nth-child(1) {
   grid-column: 1/-1;
 }

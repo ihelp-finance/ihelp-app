@@ -322,7 +322,7 @@
     text-align: center;
   }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1000px) {
   .videoMessagesGrid {
     grid-template-columns: 1fr;
     grid-gap: 2.5rem;
@@ -333,6 +333,17 @@
   .charityButtonsGrid {
     grid-gap: 2.5rem;
     grid-template-columns: 1fr;
+    
+    margin-top: -39px !important;
+    margin-bottom: 48px !important;
+    position: fixed;
+    bottom: 0px;
+    display: block;
+    background: #212121;
+    margin-left: -23px;
+    padding: 14px;
+    padding-bottom:20px;
+    
   }
   .charityImageText {
     flex-direction: column;

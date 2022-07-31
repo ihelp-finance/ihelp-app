@@ -925,7 +925,7 @@ const ContributeNew = (props) => {
              showDepositDirect ? `Donate ${d}` : ''}
           </button>
         
-          <Address address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />
+          <span style={{marginTop:'8px'}}>Charity Contract - <Address address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>
 
           </div>
         

@@ -1,5 +1,3 @@
-export const INFURA_ID = process.env.REACT_APP_INFURA_ID;
-export const ALCHEMY_ID = process.env.REACT_APP_ALCHEMY_ID;
 export const ETHERSCAN_KEY = process.env.REACT_APP_ETHERSCAN_KEY
 export const BLOCKNATIVE_DAPPID = process.env.REACT_APP_BLOCKNATIVE_DAPPID;
 export const GOOGLEANALYTICS_ID = process.env.REACT_APP_GOOGLEANALYTICS_ID;
@@ -10,28 +8,27 @@ export const NETWORKS = {
     color: "#666666",
     chainId: 31337,
     blockExplorer: "",
-    //rpcUrl: "http://" + window.location.hostname + ":8545",
-    rpcUrl: "/rpc",
+    rpcUrl: process.env.REACT_APP_RPC_URL,
   },
   mainnet: {
     name: "mainnet",
     color: "#ff8b9e",
     chainId: 1,
-    rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://etherscan.io/",
   },
   avalanche: {
     name: "avalanche",
     color: "#ff8b9e",
     chainId: 43114,
-    rpcUrl: `https://api.avax.network/ext/bc/C/rpc`,
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://snowtrace.io/",
   },
   kovan: {
     name: "kovan",
     color: "#7003DD",
     chainId: 42,
-    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://kovan.etherscan.io/",
     faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
   },
@@ -39,8 +36,7 @@ export const NETWORKS = {
     name: "rinkeby",
     color: "#e0d068",
     chainId: 4,
-    //rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    rpcUrl: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_ID}`,
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     faucet: "https://faucet.rinkeby.io/",
     blockExplorer: "https://rinkeby.etherscan.io/",
   },
@@ -50,7 +46,7 @@ export const NETWORKS = {
     chainId: 3,
     faucet: "https://faucet.ropsten.be/",
     blockExplorer: "https://ropsten.etherscan.io/",
-    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
+    rpcUrl: process.env.REACT_APP_RPC_URL,
   },
   goerli: {
     name: "goerli",
@@ -58,7 +54,7 @@ export const NETWORKS = {
     chainId: 5,
     faucet: "https://goerli-faucet.slock.it/",
     blockExplorer: "https://goerli.etherscan.io/",
-    rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
+    rpcUrl: process.env.REACT_APP_RPC_URL,
   },
   xdai: {
     name: "xdai",
@@ -66,7 +62,7 @@ export const NETWORKS = {
     chainId: 100,
     price: 1,
     gasPrice: 1000000000,
-    rpcUrl: "https://dai.poa.network",
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     faucet: "https://xdai-faucet.top/",
     blockExplorer: "https://blockscout.com/poa/xdai/",
   },
@@ -76,7 +72,7 @@ export const NETWORKS = {
     chainId: 137,
     price: 1,
     gasPrice: 1000000000,
-    rpcUrl: "https://rpc-mainnet.maticvigil.com",
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://explorer-mainnet.maticvigil.com//",
   },
@@ -86,7 +82,7 @@ export const NETWORKS = {
     chainId: 80001,
     price: 1,
     gasPrice: 1000000000,
-    rpcUrl: "https://rpc-mumbai.maticvigil.com",
+    rpcUrl: process.env.REACT_APP_RPC_URL,
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://mumbai-explorer.matic.today/",
   },

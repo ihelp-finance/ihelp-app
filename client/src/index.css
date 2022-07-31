@@ -362,6 +362,10 @@ button {
   margin-top:15px;
   min-height:300px;
 }
+.table::-webkit-scrollbar {
+  display: none;
+}
+
 .table table {
   border-collapse: collapse;
   width: 100%;
@@ -469,6 +473,8 @@ background-color: rgba(173, 82, 242, 0.1) !important;
   margin-top:-30px;
 }
 
+
+
 @media screen and (max-width: 1000px) {
   .table td,
   .table th {
@@ -568,6 +574,10 @@ background-color: rgba(173, 82, 242, 0.1) !important;
     margin: 2rem 0rem;
     margin-bottom: 120px;
   }
+  .kseItem .banner {
+    display:block;
+  }
+  
   .headerContent {
     height: 6.5rem;
   }
@@ -578,6 +588,13 @@ background-color: rgba(173, 82, 242, 0.1) !important;
   }
   .close-mob-header {
     display: none;
+  }
+  .generalInformationItem .infoBody {
+    display: block;
+    margin-bottom: 300px;
+  }
+  .data {
+    margin-bottom: 200px;
   }
   .mob-header {
     width: 100%;
