@@ -1,50 +1,5 @@
-.maxButton {
-    -webkit-tap-highlight-color: transparent;
-    box-sizing: border-box;
-    border-radius: 3px;
-    font-family: inherit;
-    letter-spacing: 1px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    color: #ACBBC2;
-    display: block;
-    padding: 3rem 2rem 3rem 2rem;
-    text-align: center;
-    width: auto;
-    background: #F9FAFB;
-        position: relative;
-    right: 28px;
-    bottom: 29px;
-    margin-top: -50px;
-    float: right;
-}
-    
-.inputStyle {
-      width: 22rem !important;
-    height: 82px !important;
-    background: #F9FAFB !important;
-    font-size: 2.625rem !important;
-    font-weight: 500 !important;
-    text-align: center !important;
-    color: #141E27 !important;
-        border: none !important;
-    border-radius: 5px !important;
-    outline: 0 !important;
-    width: 100% !important;
-    padding: 1rem !important;
-    font-family: inherit !important;
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    color: #141E27 !important;
-    transition: all 0.2s linear !important;
-    font-size: 2.625rem !important;
-    caret-color: var(--light-purple) !important;
-}
 
+    
 .lightbox {
     transition: opacity 0.1s ease-in-out 0s;
     text-align: center;
@@ -87,23 +42,6 @@
     inset: 0px;
 }
 
-.card {
-    position: relative;
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-    border-radius: 12px;
-    margin: 10px;
-    padding: 0px;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    display: grid;
-    /*grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));*/
-    max-width: 800px;
-    min-width: fit-content;
-    max-height: 100%;
-    overflow: auto;
-}
 .wrapper{
     width: 100%;
     padding: 8px;
@@ -117,26 +55,7 @@
     border-radius: 0px;
     border: 1px solid rgba(195, 195, 195, 0.14);
 }
-.providercontainer{
-    transition: background-color 0.2s ease-in-out 0s;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    -webkit-box-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    align-items: center;
-    background-color: rgb(255, 255, 255);
-    border-radius: 12px;
-    padding: 24px 16px;
-}
-.name {
-  width: 100%;
-    font-size: 24px;
-    font-weight: 700;
-    margin-top: 0.5em;
-    color: rgb(12, 12, 13);
-}
+
 .description {
       width: 100%;
     font-size: 18px;

@@ -313,7 +313,7 @@ const ContributeNew = (props) => {
         },
         {
             value: totalHelpers,
-            name:'Total Yield Donors',
+            name:'Total Donors',
         },
         {
             value: `$${totalDirectDonations}`,
@@ -893,7 +893,7 @@ const ContributeNew = (props) => {
       <span><Input
           //style={{width:'100%',display: ''}}
           type='number'
-          className={st.inputStyle}
+          className={'charityinputStyle'}
            placeholder={`0`}
            autoFocus
            step="0.1"
@@ -902,7 +902,7 @@ const ContributeNew = (props) => {
             }}
             value={inputAmount}
         /> 
-        <button className={st.maxButton} onClick={(e)=>{handleMaxClick(d)}}>Max</button>
+        <button className={'charitymaxButton'} onClick={(e)=>{handleMaxClick(d)}}>Max</button>
            </span>
       }
         <div className={st.charityBtnGrd}>
@@ -1051,11 +1051,11 @@ const ContributeNew = (props) => {
         <div className={st.lightbox} offset="0" opacity="0.4" onClick={handleModalClick}>
           <div className={st.container}>
             <div className={st.hitbox} ></div>
-              <div className={st.card}>
+              <div className={'charityCard'}>
                 <div className={st.wrapper}>
-                  <div className={st.providercontainer}>
+                  <div className={'providercontainer'}>
                   <div className={st.icon}></div>
-                  <div className={st.name}>{showDepositInterest ? `Donate Interest to ${charityInfo['Organization Name']}` : 
+                  <div className={'charityName'}>{showDepositInterest ? `Donate Interest to ${charityInfo['Organization Name']}` : 
                                             showWithdrawInterest ? `Withdraw Principal from ${charityInfo['Organization Name']}` : 
                                             showDepositDirect ? `Direct Donation to ${charityInfo['Organization Name']}` : ''}</div>
                   <div className={st.description}>{showDepositInterest ? `This donation will only contribute your currency and specifically donate the interest generated over time. You can return your contribution at any time.` : 

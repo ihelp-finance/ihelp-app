@@ -901,7 +901,7 @@ const ContributeNew = (props) => {
               
               <img src={helpers_light} alt="logo" className='quickInfoIcon'/>
               <div className={"quickInfoSub"}>{totalHelpers  == '' ? <Spin /> : totalHelpers}</div>
-              <p>Total Yield Donors</p>
+              <p>Total Donors</p>
             </div>
             <div className={"quickInfo"}>
               

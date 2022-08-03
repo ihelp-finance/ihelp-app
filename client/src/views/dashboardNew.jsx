@@ -435,7 +435,7 @@ const ContributeNew = (props) => {
       render: t => (<Address address={t} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />),
       sorter: (a, b) => a['address'].localeCompare(b['address']),
       sortDirections: ['ascend', 'descend'],
-      //  width: '15%',
+       width: '10%',
     },
     {
       title: 'Charity',
@@ -511,7 +511,7 @@ const ContributeNew = (props) => {
       render: (c) => {
         return (<Tooltip title={`Go to Charity ${c}`}>
         <div>
-          <button className="grd-btn" onClick={(e)=>{history.push('/charity/'+c)}}>Adjust Contributions</button>
+          <button className="grd-btn" onClick={(e)=>{history.push('/charity/'+c)}}>Adjust</button>
         </div>
         </Tooltip>)
       },
