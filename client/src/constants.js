@@ -27,6 +27,7 @@ export const NETWORKS = {
   kovan: {
     name: "kovan",
     color: "#7003DD",
+    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
     chainId: 42,
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://kovan.etherscan.io/",

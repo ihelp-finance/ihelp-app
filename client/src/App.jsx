@@ -242,49 +242,43 @@ function App(props) {
       networkDisplay = (
         <div className="wrongNetwork">
           <Alert
+          onClick={async () => {
+                  
+                    try {
+                      
+                      const data = [
+                        {
+                          chainId: '0x'+targetNetwork.chainId.toString(16),
+                          chainName: targetNetwork.name,
+                          nativeCurrency: targetNetwork.nativeCurrency,
+                          rpcUrls: [targetNetwork.rpcUrl],
+                          blockExplorerUrls: [targetNetwork.blockExplorer],
+                        },
+                      ];
+                      
+                      console.log(data)
+
+                      try {
+                        await window.ethereum.request({ 
+                          method: 'wallet_addEthereumChain', params: data
+                        })
+                      }catch(e){}
+                      
+                      try {
+                        await window.ethereum.request({
+                          method: 'wallet_switchEthereumChain',
+                          params: [{ chainId: '0x'+targetNetwork.chainId.toString(16) }]
+                        });
+                      }catch(e){}
+
+                    }catch(e){}
+                    
+                  }}
             //message="⚠️ Wrong Network"
             style={{backgroundColor:'#F35454', border:'0px',color:'white',textAlign:'center'}}
             description={
               <div style={{color:'white',fontSize:'18px'}}>
-                <b style={{color:'white'}}>{networkSelected && networkSelected.name.toUpperCase()}</b> is not supported. Please switch to{" "}
-                <Button
-                  style={{}}
-                  onClick={async () => {
-                  
-                  /*
-                    const ethereum = window.ethereum;
-                    const data = [
-                      {
-                        chainId: "0x" + targetNetwork.chainId.toString(16),
-                        chainName: targetNetwork.name,
-                        nativeCurrency: targetNetwork.nativeCurrency,
-                        rpcUrls: [targetNetwork.rpcUrl],
-                        blockExplorerUrls: [targetNetwork.blockExplorer],
-                      },
-                    ];
-                    console.log("data", data);
-                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
-                    if (tx) {
-                      console.log(tx);
-                    }
-                    */
-                    
-                    try {
-                      if (targetNetwork == NETWORKS.localhost) {
-                        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '31337', chainName: 'iHelp Local', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://dev.ihelp.finance/rpc'], blockExplorerUrls: [] }] })
-                      }
-                      else if (targetNetwork == NETWORKS.avalanche) {
-                        window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '43114', chainName: 'Avalanche Network', nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io/'] }] })
-                      }
-                    }catch(e){}
-                    
-                    
-                    
-                  }}
-                >
-                  <b>{networkLocal && networkLocal.name.toUpperCase()}</b>
-                </Button>
-                .
+                <b style={{color:'white',fontSize:'20px'}}>{networkSelected && networkSelected.name.toUpperCase()}</b> network is not currently supported. Please click here to switch to the <b style={{color:'white',fontSize:'20px'}}>{networkLocal && networkLocal.name.toUpperCase()}</b> network.
               </div>
             }
             type="error"
