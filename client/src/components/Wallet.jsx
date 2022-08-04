@@ -56,7 +56,13 @@ export default function Wallet(props) {
   const [open, setOpen] = useState();
   const [qr, setQr] = useState();
   const [amount, setAmount] = useState();
-  const [toAddress, setToAddress] = useState(ethereum ? ethereum.selectedAddress : '');
+  
+  let eth = '';
+  try {
+    eth = ethereum ? ethereum.selectedAddress : ''
+  } catch(e){}
+  
+  const [toAddress, setToAddress] = useState(eth);
   const [pk, setPK] = useState();
 
   const providerSend = props && props.targetNetwork && props.targetNetwork.name == 'localhost' && props.selectedAddress && props.selectedAddress != '0x0000000000000000000000000000000000000000' && props.provider ? (

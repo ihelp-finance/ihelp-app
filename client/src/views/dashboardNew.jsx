@@ -370,6 +370,40 @@ const ContributeNew = (props) => {
    </div>)
 
   }
+  
+  const handleWithdrawAll = async() => {
+    
+    const allCharities = [];
+    tableData.map((c)=>{
+      allCharities.push(c['address']);
+    })
+    
+    const result = props.tx(props.writeContracts.iHelp.withdrawBulk(allCharities), update => {
+
+      console.log("📡 Transaction Update:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    });
+    console.log("awaiting metamask/web3 confirm result...", result);
+    console.log(await result);
+
+    // setTimeout(() => {
+    //   setValue("iHelp", "balanceOf", [props.address], ihelpBalance, setihelpBalance);
+    //   setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
+    //   setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
+    // }, 0)
+    
+  }
 
   const handleClaimTokens = async() => {
 
@@ -641,7 +675,7 @@ const ContributeNew = (props) => {
                         </div>
                     </div>
                     <div className='leaderboardContent' style={{textAlign:'center'}}>
-                        <h4>Leaderboard</h4>
+                        <h4>Settings</h4>
                         <p>
                             Wallet Nickname
                         </p>
@@ -663,8 +697,11 @@ const ContributeNew = (props) => {
                   <MdClose onClick={() => setNickName(true)} />
                 </div>
               )}
-                            
-                     
+              
+              
+                <button  style={{width:'90%'}} onClick={handleWithdrawAll} disabled={contribTotal && contribTotal > 0 ? false : true}>WITHDRAW ALL</button>
+              
+              
                     </div>
                     
                     
