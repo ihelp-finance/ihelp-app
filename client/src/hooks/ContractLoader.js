@@ -82,7 +82,9 @@ export default function useContractLoader(providerOrSigner, config = {}) {
           contractList = await contractReq.json();
           console.log('contractList',contractList)
           
-          if (_chainId != 31337) {
+          console.log(process.env.REACT_APP_TEST_TOKENS);
+          
+          if (_chainId != 31337 || process.env.REACT_APP_TEST_TOKENS == 'false') {
             console.log('LOADING EXTERNAL CONTRACTS...');
             try {
               externalContractList = config.externalContracts || require("../contracts/external_contracts.js");

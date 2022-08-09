@@ -806,7 +806,6 @@ const DAIABI = [
     type: "function",
   },
 ];
-
 const cdai = [
     {
         "constant": true,
@@ -2080,32 +2079,36 @@ module.exports = {
       },
     }
   },
-  43114: {
-    contracts: {
+  31337: {
+    contracts:{
       DAI: {
         address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
         abi: DAIABI,
-      },
-      jDAI: {
-        address: "0xc988c170d0E38197DC634A45bF00169C7Aa7CA19",
-        abi: cdai,
-      },
-      aDAI: {
-        address: "0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a",
-        abi: cdai,
       },
       USDC: {
         address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
         abi: DAIABI,
       },
-      aUSDC: {
-        address: "0x46A51127C3ce23fb7AB1DE06226147F446e4a857",
-        abi: cdai,
+      WAVAX: {
+        address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+        abi: DAIABI,
       },
-      jUSDC: {
-        address: "0xEd6AaF91a2B084bd594DBd1245be3691F9f637aC",
-        abi: cdai,
+    }
+  },
+  43114: {
+    contracts:{
+      DAI: {
+        address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+        abi: DAIABI,
       },
-    },
+      USDC: {
+        address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+        abi: DAIABI,
+      },
+      WAVAX: {
+        address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+        abi: DAIABI,
+      },
+    }
   },
 };
