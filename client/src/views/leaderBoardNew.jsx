@@ -234,7 +234,7 @@ const ContributeNew = (props) => {
     //   width: '15%',
     //   onFilter: (value, c) => c['currency'].indexOf(value) > -1,
     //   render: c => (<Tooltip title={c}>
-    //                 <img src={`/assets/icons/${c}.svg`} style={{height:'20px',marginRight:'5px'}}/>
+    //                 <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{height:'20px',marginRight:'5px'}}/>
     //             </Tooltip>)
     // },
     {

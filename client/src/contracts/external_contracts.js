@@ -2081,12 +2081,16 @@ module.exports = {
   },
   31337: {
     contracts:{
-      DAI: {
+      "DAI.e": {
         address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
         abi: DAIABI,
       },
       USDC: {
-        address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+        address: "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+        abi: DAIABI,
+      },
+      USDT: {
+        address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
         abi: DAIABI,
       },
       WAVAX: {
@@ -2097,12 +2101,16 @@ module.exports = {
   },
   43114: {
     contracts:{
-      DAI: {
+      "DAI.e": {
         address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
         abi: DAIABI,
       },
       USDC: {
-        address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+        address: "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+        abi: DAIABI,
+      },
+      USDT: {
+        address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
         abi: DAIABI,
       },
       WAVAX: {

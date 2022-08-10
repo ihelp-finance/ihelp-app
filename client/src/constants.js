@@ -7,7 +7,7 @@ export const NETWORKS = {
     name: "localhost",
     color: "#666666",
     chainId: 31337,
-    blockExplorer: "",
+    blockExplorer: "https://snowtrace.io/",
     rpcUrl: process.env.REACT_APP_RPC_URL,
   },
   mainnet: {

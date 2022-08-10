@@ -77,7 +77,7 @@ const ContributeNew = (props) => {
   const [directDonations, setdirectDonations] = useState(null);
   
   const [chartData, setChartData] = useState([]);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState(null);
 
 
   const DashboardIcon = () => (
@@ -109,6 +109,8 @@ const ContributeNew = (props) => {
     const tokenSymbol = 'HELP';
     const tokenDecimals = 18;
     const tokenImage = 'https://ihelp.finance/assets/ihelp_icon.png';
+    
+    console.log(tokenAddress)
     
     try {
       // wasAdded is a boolean. Like any RPC method, an error may be thrown.
@@ -255,9 +257,62 @@ const ContributeNew = (props) => {
 
         })
      
+        let numberOfCharities = 0;
+        props.readContracts["iHelp"]["numberOfCharities"]().then((d) => {
+          
+          console.log('numberOfCharities',parseInt(d.toString()))
+          numberOfCharities = parseInt(d.toString());
+          
+          processCharityBatches();
+          
+        })
+        
+        const processCharityBatches = async () => {
+          
+          const charityData = []
+          
+          const BATCH_SIZE = 50;
+          let index=0;
+          for (let i=index;i<numberOfCharities;i=i+BATCH_SIZE) {
+            
+              // console.log(i,i+BATCH_SIZE)
+              
+              const d = await props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address,props.address,i,BATCH_SIZE)
+              
+              d.map((c)=>{
+                if (c['totalContributions'] > 0 || c['totalDonations'] > 0 || c['yieldGenerated'] > 0) {
+                  
+                  const curr = []
+                  
+                  c['tokenStatistics'].map((r)=>{
+                    if (r['totalContributions'] > 0) { 
+                      
+                      curr.push([r['currency'],r['totalContributions']])
+                      
+                    } 
+                  })
+                  
+                  charityData.push({
+                    address:c['charityAddress'],
+                    name:c['charityName'],
+                    contributed:c['totalContributions'],
+                    directdonations:c['totalDonations'],
+                    yieldgenerated:c['yieldGenerated'],
+                    currencies:curr,
+                  })
+                }
+              })
+              
+          }
+          
+          setTableData(charityData)
+          
+        }
+        
+        /*
         props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address, props.address, 0, 1000).then((d) => {
           
-          // console.log('userContributionsPerCharity',d)
+          console.log('userContributionsPerCharity',d)
           
           const charityData = []
           
@@ -288,9 +343,8 @@ const ContributeNew = (props) => {
           setTableData(charityData)
           
         });
+        */
 
-        
-        
       }, 10)
 
     }
@@ -522,7 +576,7 @@ const ContributeNew = (props) => {
           var cccd = cc[1];
 
           objs.push(<Tooltip title={ccci}>
-            <img src={`/assets/icons/${ccci}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'10px',display:'inline'}}/>
+            <img src={`/assets/icons/${ccci.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'10px',display:'inline'}}/>
             {charityDecimals ? commafy(parseFloat(utils.formatUnits(cccd,charityDecimals[ccci])).toFixed(2) ) : ''}<br/>
         </Tooltip>);
         })
@@ -724,7 +778,7 @@ const ContributeNew = (props) => {
               <div className={st.dashboardTable + " " + "table"} >
           
           <Table 
-          className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={tableData} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 
+          className={st.tableContribute + " " + "table"} loading={tableData == null ? true : false} columns={charityColumns} dataSource={tableData} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 
         
               </div>
             </div>

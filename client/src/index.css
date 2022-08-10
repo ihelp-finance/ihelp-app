@@ -504,6 +504,7 @@ background-color: rgba(173, 82, 242, 0.1) !important;
     background-color: rgb(255, 255, 255);
     border-radius: 12px;
     padding: 24px 16px;
+        padding-bottom: 7px;
 }
 
 .charityName {

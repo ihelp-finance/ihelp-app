@@ -224,7 +224,7 @@ const ContributeNew = (props) => {
         const objs = [];
         c.map((cc)=>{
           objs.push(<Tooltip title={cc}>
-            <img src={`/assets/icons/${cc}.svg`} style={{height:'20px',marginRight:'5px'}}/>
+            <img src={`/assets/icons/${cc.replace('.e','')}.svg`} style={{height:'20px',marginRight:'5px'}}/>
         </Tooltip>
   );
         })

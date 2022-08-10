@@ -820,6 +820,48 @@ const ContributeNew = (props) => {
     })
   }
   
+  const handleTokenAdd = async(currency) => {
+      
+    let nativeToken = false;
+    let mapToken = currency;
+    if (currency == 'ETH' || currency == 'AVAX') {
+      nativeToken = true;
+      mapToken = `W${currency}`
+    }
+
+    const tokenAddress = props.readContracts[mapToken].address;
+    const tokenSymbol = mapToken;
+    const tokenDecimals = await props.readContracts[mapToken].decimals();
+    //const tokenImage = `https://ihelp.finance/assets/${mapToken.replace('.e','')}.svg`;
+    
+    console.log(tokenAddress,tokenSymbol,tokenDecimals)
+    
+    try {
+      // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+      const wasAdded = await ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            //image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+    
+      if (wasAdded) {
+        console.log('Token Added');
+      } else {
+        console.log('Your loss!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+  
   const currencyTabs = currencies.map((d,i) => {
     
     let currencyApproved = false;
@@ -832,6 +874,12 @@ const ContributeNew = (props) => {
       nativeToken = true;
       mapToken = `W${d}`
     }
+    
+    let currencyAddress = null;
+    try {
+      currencyAddress = props.readContracts[mapToken].address;
+    } catch(e){}
+    // console.log('currencyAddress',currencyAddress);
     
     // ensure the contract action is enabled
     if ( nativeToken || ( currencyAllowances && Object.keys(currencyAllowances).indexOf(mapToken) > -1 && currencyAllowances[mapToken] >= 100000000) ) {
@@ -882,7 +930,7 @@ const ContributeNew = (props) => {
     return (
       <TabPane tab={
           <span>
-            <img src={`/assets/icons/${d.toUpperCase()}.svg`} style={{height:'20px',marginRight:'5px'}}/>
+            <img src={`/assets/icons/${d.replace('.e','').toUpperCase()}.svg`} style={{height:'20px',marginRight:'5px'}}/>
             {d}
           </span>
         } key={d}>
@@ -910,7 +958,7 @@ const ContributeNew = (props) => {
           <Dropdown overlay={menu}  trigger={['click']} >
             <a onClick={e => e.preventDefault()} style={{marginTop:'-10px',display:showDepositDirect ? 'none' : ''}} >
               <Space>
-                Lender{selectedLendingProvider ? (<span>- {selectedLendingProvider.provider} <Address address={selectedLendingProvider.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>) : ''}
+                Lender{selectedLendingProvider ? (<span>→ {selectedLendingProvider.provider} <Address style={{marginTop:'2px',position:'relative'}} address={selectedLendingProvider.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>) : ''}
                 <DownOutlined />
               </Space>
             </a>
@@ -925,15 +973,22 @@ const ContributeNew = (props) => {
              showDepositDirect ? `Donate ${d}` : ''}
           </button>
         
-          <span style={{marginTop:'8px'}}>Charity Contract - <Address address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>
-
+          
           </div>
-        
+
         </span>) : loading ? (<Spin style={{zoom:'3',marginTop:'7px'}} />) : 
         
         <button className="grd-btn" style={{width:'100%',height:'80px',fontSize:'20px',fontWeight:'600'}} onClick={(e)=>enableCurrency(d)}>ENABLE {d}</button>
           
         }
+
+          <div style={{marginTop:'20px'}}>
+          
+          <span style={{paddingLeft:'10px',textAlign:'left',float:'left',width:'50%',display:'inline-block'}}>Token → <Address style={{marginTop:'2px',position:'relative'}} address={currencyAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /><a style={{fontStyle:'italic',marginTop:'0px',position:'absolute'}} onClick={()=>handleTokenAdd(d)}>add</a></span>
+          <span style={{paddingRight:'10px',textAlign:'right',float:'right',width:'50%',display:'inline-block'}}>Charity → <Address style={{marginTop:'2px',position:'relative'}} address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>
+          
+          </div>
+        
 
       </TabPane>
       )
@@ -1131,124 +1186,6 @@ const ContributeNew = (props) => {
             <div style={{height:'50px'}}>
             </div>
             
-          {/*
-          <div className={st.charityOverviewGrid}>
-            <div className={st.charityImageText}>
-              <img src={`${charityInfo['Logo']}`} alt="" />
-              <main>
-                <h6>{charityInfo['Organization Name']}</h6>
-                <p>
-                  <span style={{fontStyle:'italic'}}>Brief Description:<br/><span style={{fontWeight:'bold'}}>{charityInfo['Short Description for Front of Card']}</span></span>
-                  <br /><a href={charityInfo['Organization Website']} target="_blank">{charityInfo['Organization Website']}</a>
-                  <br /> <br />
-                  Charity Category: {charityInfo['Charity GENERAL Category (One Cell)']}<br />
-                  Country of Incorporation: {charityInfo['Country of Incorporation']}<br />
-                  Organization Type: {charityInfo['Organization Type']}<br />
-                  Tax ID Number: {charityInfo['Tax ID Number']}<br />
-                  Year Incorporated: {charityInfo['Year Incorporated']}<br />
-                  Charity Wallet: {charityInfo['Charity Wallet Address'] == 'off-chain' ? <a href="https://institutions.binance.us/account/login" target="_blank">Binance</a> : <Address address={charityInfo['Charity Wallet Address']} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /> }
-                </p>
-              </main>
-            </div>
-            <div className={st.charityTextBoxes}>
-              <main>
-                <h6>Total Capital Pooled: <span className={st.darkText}><Tooltip title={'USD Fiat'} placement="right" >${commafy(totalBalanceUSD.toFixed(2))}</Tooltip></span></h6>
-                {currencies.indexOf('DAI') > -1 ?<div style={{marginLeft:'10px'}}>
-                  <Tooltip title={'DAI.e'} placement="right" >
-                    <img src={`/assets/icons/DAI.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                    {daiCharityTotalBalance ? commafy(parseFloat(utils.formatUnits(daiCharityTotalBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}
-                  </Tooltip>
-                </div> : ''}
-                {currencies.indexOf('USDC') > -1 ?<div style={{marginLeft:'10px'}}>
-                <Tooltip title={'USDC.e'} placement="right" >
-                  <img src={`/assets/icons/USDC.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                  {usdcCharityTotalBalance ? commafy(parseFloat(utils.formatUnits(usdcCharityTotalBalance,charityDecimals['USDC'])).toFixed(2)) : "..."}
-                  </Tooltip>
-                </div> : ''}
-                <h6 style={{marginTop:'10px'}}>Total Interest Generated: <span className={st.darkText}><Tooltip title={'USD Fiat'} placement="right" >${commafy(totalInterestUSD.toFixed(2))}</Tooltip></span></h6>
-                {currencies.indexOf('DAI') > -1 ?<div style={{marginLeft:'10px'}}>
-                <Tooltip title={'DAI.e'} placement="right" >
-                  <img src={`/assets/icons/DAI.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                  {daiTotalInterestEarned ? commafy(parseFloat(utils.formatUnits(daiTotalInterestEarned,charityDecimals['DAI'])).toFixed(2)) : "..."}
-                  </Tooltip>
-                </div> : ''}
-                {currencies.indexOf('USDC') > -1 ?<div style={{marginLeft:'10px'}}>
-                <Tooltip title={'USDC.e'} placement="right" >
-                  <img src={`/assets/icons/USDC.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                  {usdcTotalInterestEarned ? commafy(parseFloat(utils.formatUnits(usdcTotalInterestEarned,charityDecimals['USDC'])).toFixed(2)) : "..."}
-                </Tooltip>
-                </div> : ''}
-              </main>
-              <main>
-                <h6>Your Deposits: <span className={st.darkText}><Tooltip title={'USD Fiat'} placement="right" >${commafy(myBalanceUSD.toFixed(2))}</Tooltip></span></h6>
-                {currencies.indexOf('DAI') > -1 ? <div style={{marginLeft:'10px'}}>
-                <Tooltip title={'DAI.e'} placement="right" >
-                  <img src={`/assets/icons/DAI.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                  {daiCharityBalance ? commafy(parseFloat(utils.formatUnits(daiCharityBalance,charityDecimals['DAI'])).toFixed(2)) : "..."}
-                </Tooltip>
-                </div> : ''}
-                {currencies.indexOf('USDC') > -1 ?<div style={{marginLeft:'10px'}}>
-                <Tooltip title={'USDC.e'} placement="right" >
-                  <img src={`/assets/icons/USDC.svg`} style={{height:'20px',marginRight:'5px'}}/>
-                  {usdcCharityBalance ? commafy(parseFloat(utils.formatUnits(usdcCharityBalance,charityDecimals['USDC'])).toFixed(2)) : "..."}
-                </Tooltip>
-                </div> : ''}
-              </main>
-            </div>
-          </div>
-          */}
-          
-
-          {/*
-          <div className={st.videoMessagesGrid}>
-            <div className={st.charityVideos}>
-              <h1>Video Updates</h1>
-              
-              {charityInfo && charityInfo['Videos'] != '' ? charityInfo['Videos'].split('\n').map((d,i) => {
-              return (
-                <div className={st.charityVideoBox}>
-                  <iframe height={'180px'} src={d.indexOf('facebook') > -1 ? d : `https://www.youtube.com/embed/${d}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                 
-                </div>
-              )}) : 'no videos...'}
-            </div>
-        
-            <div className={st.charityMessages}>
-              <main>
-                <h2>Description & History</h2>
-                <h6>
-                  {charityInfo['Brief Description & History']}
-                </h6>
-              </main>
-              <main>
-                <h2>Main Areas of Operation</h2>
-                <h6>
-                  {charityInfo['Main Areas of Operation']}
-                </h6>
-              </main>
-              <main>
-                <h2>Message Updates</h2>
-                
-                {charityInfo && charityInfo['Messages'] != '' ? charityInfo['Messages'].split('\n').map((d,i) => {
-              return (
-                
-                <div className={st.charityMessageBox}>
-                  <div className={st.Charitymessage}>
-                    <MdChatBubbleOutline />
-                    <p>
-                      <span className="content" dangerouslySetInnerHTML={{__html: d}} />
-                    </p>
-                  </div>
-                </div>
-                
-                 )}) : 'no messages...'}
-                 
-              </main>
-             
-            </div>
-           
-            
-          </div> */}
         </div>
         </div>
       </div>) : <div className="mainLoader"><Spin /></div>}

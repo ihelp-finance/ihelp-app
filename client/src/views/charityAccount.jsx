@@ -169,7 +169,7 @@ const ContributeNew = (props) => {
               {charityInfo ? Object.keys(charityInfo['Stats']).map((c)=>{
               if (c !='Total') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     <Address address={charityInfo[`${c} CharityPool`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /><br/>
                 </Tooltip>
               }}) : ''}
@@ -178,7 +178,7 @@ const ContributeNew = (props) => {
               {charityInfo ? Object.keys(charityInfo['Stats']).map((c)=>{
               if (c !='Total') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     {commafy(charityInfo['Stats'][c]['contribution'])}<br/>
                 </Tooltip>
               }}) : ''}
@@ -187,7 +187,7 @@ const ContributeNew = (props) => {
               {charityInfo ? Object.keys(charityInfo['Stats']).map((c)=>{
               if (c !='Total') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     {commafy(charityInfo['Stats'][c]['interest'])}<br/>
                 </Tooltip>
               }}) : ''}
@@ -204,13 +204,13 @@ const ContributeNew = (props) => {
               {charityInfo ? Object.keys(charityInfo['Stats']).map((c)=>{
               if (c =='DAI') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     {daiClaimableInterest ? commafy(parseFloat(utils.formatUnits(daiClaimableInterest,charityDecimals['DAI']))) : ''}<br/>
                 </Tooltip>
               }
                 else if (c =='USDC') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     {usdcClaimableInterest ? commafy(parseFloat(utils.formatUnits(usdcClaimableInterest,charityDecimals['DAI']))) : ''}<br/>
                 </Tooltip>
               }
@@ -225,13 +225,13 @@ const ContributeNew = (props) => {
               {charityInfo ? Object.keys(charityInfo['Stats']).map((c)=>{
               if (c =='DAI') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     {daiDirectDonations ? commafy(parseFloat(utils.formatUnits(daiDirectDonations,charityDecimals['DAI']))) : ''}<br/>
                 </Tooltip>
               }
                 else if (c =='USDC') {
                 return <Tooltip title={c}>
-                    <img src={`/assets/icons/${c}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
+                    <img src={`/assets/icons/${c.replace('.e','')}.svg`} style={{marginTop:'0px',height:'20px',marginRight:'5px'}}/>
                     {usdcDirectDonations ? commafy(parseFloat(utils.formatUnits(usdcDirectDonations,charityDecimals['USDC']))) : ''}<br/>
                 </Tooltip>
               }
