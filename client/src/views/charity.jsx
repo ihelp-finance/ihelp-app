@@ -817,14 +817,19 @@ const ContributeNew = (props) => {
     console.log("awaiting metamask/web3 confirm result...", sponsorTx);
     console.log(await sponsorTx);
     
-    setTimeout((e)=>{
-        setLoading(false)
-         setInputAmount('')
-        // setShowDepositInterest(false);
-        // setShowDepositDirect(false);
-        // setShowWithdrawInterest(false);
-    },3000)
-       
+    props.readContracts["analytics"]["getDonationCurrencyAllowances"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
+     
+     const cHash = {}
+      d.map((c)=>{
+        cHash[c['currency']] = parseInt(c['allowance'])
+      })
+      
+      setcurrencyAllowances(cHash)
+      
+      setLoading(false)
+      setInputAmount('')
+      
+   });
     
   }
 
