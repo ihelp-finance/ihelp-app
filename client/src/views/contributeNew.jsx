@@ -281,8 +281,11 @@ const ContributeNew = (props) => {
         for (let i = index; i < numberOfCharities; i = i + BATCH_SIZE) {
 
           const d = await props.readContracts["analytics"]["generalStats"](props.readContracts['iHelp'].address, i, BATCH_SIZE)
-
-          totalHelpers += parseFloat(d['totalHelpers'])
+          
+          // make this non-additive due to calling outside limit paganation
+          totalHelpers = parseFloat(d['totalHelpers'])
+          
+          // increment these values from paganation
           totalCharities += parseFloat(d['totalCharities'])
           totalInterest += parseFloat(utils.formatUnits(d['totalInterestGenerated'], 18))
           totalTvl += parseFloat(utils.formatUnits(d['totalValueLocked'], 18))
