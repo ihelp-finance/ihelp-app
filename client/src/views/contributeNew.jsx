@@ -88,100 +88,100 @@ const PlaceholderLogo = () => (
 
 
 const BadgeLookup = {
-  "A": {
-    "Category": "Arts, Culture & Humanities (A)",
+  "Arts, Culture & Humanities": {
+    "Category": "Arts, Culture & Humanities",
     "File": "Arts, Culture & Humanities.png"
   },
-  "B": {
-    "Category": "Education (B)",
+  "Education": {
+    "Category": "Education",
     "File": "Education.png"
   },
-  "C": {
-    "Category": "Environment (C)",
+  "Environment": {
+    "Category": "Environment",
     "File": "Environment.png"
   },
-  "D": {
-    "Category": "Animal-Related (D)",
+  "Animal-Related": {
+    "Category": "Animal-Related",
     "File": "Animal-Related.png"
   },
-  "E": {
-    "Category": "Health Care (E)",
+  "Health Care": {
+    "Category": "Health Care",
     "File": "Health Care.png"
   },
-  "F": {
-    "Category": "Mental Health & Crisis Intervention (F)",
+  "Mental Health & Crisis Intervention": {
+    "Category": "Mental Health & Crisis Intervention",
     "File": "Mental Health & Crisis Intervention.png"
   },
-  "G": {
-    "Category": "Voluntary Health & Medical Disciplines (G)",
+  "Voluntary Health Associations & Medical Disciplines": {
+    "Category": "Voluntary Health & Medical Disciplines",
     "File": "Voluntary Health & Medical Disciplines.png"
   },
-  "H": {
-    "Category": "Medical Research (H)",
+  "Medical Research": {
+    "Category": "Medical Research",
     "File": "Medical Research.png"
   },
-  "I": {
-    "Category": "Crime & Legal-Related (I)",
+  "Crime & Legal-Related": {
+    "Category": "Crime & Legal-Related",
     "File": "Crime & Legal-Related.png"
   },
-  "J": {
-    "Category": "Employment (J)",
+  "Employment": {
+    "Category": "Employment",
     "File": "Employment.png"
   },
-  "K": {
-    "Category": "Food, Agriculture & Nutrition (K)",
+  "Food, Agriculture & Nutrition": {
+    "Category": "Food, Agriculture & Nutrition",
     "File": "Food, Agriculture & Nutrition.png"
   },
-  "L": {
-    "Category": "Housing & Shelter (L)",
+  "Housing & Shelter": {
+    "Category": "Housing & Shelter",
     "File": "Housing & Shelter.png"
   },
-  "M": {
-    "Category": "Public Safety, Disaster Preparedness & Relief (M)",
+  "Public Safety, Disaster Preparedness & Relief": {
+    "Category": "Public Safety, Disaster Preparedness & Relief",
     "File": "Public Safety, Disaster Preparedness & Relief.png"
   },
-  "N": {
-    "Category": "Recreation & Sports (N)",
+  "Recreation & Sports": {
+    "Category": "Recreation & Sports",
     "File": "Recreation & Sports.png"
   },
-  "O": {
-    "Category": "Youth Development (O)",
+  "Youth Development": {
+    "Category": "Youth Development",
     "File": "Youth Development.png"
   },
-  "P": {
-    "Category": "Human Services (P)",
+  "Human Services": {
+    "Category": "Human Services",
     "File": "Human Services.png"
   },
-  "Q": {
-    "Category": "International, Foreign Affairs & National Security (Q)",
+  "International, Foreign Affairs & National Security": {
+    "Category": "International, Foreign Affairs & National Security",
     "File": "International, Foreign Affairs & National Security.png"
   },
-  "R": {
-    "Category": "Civil Rights, Social Action & Advocacy (R)",
+  "Civil Rights, Social Action & Advocacy": {
+    "Category": "Civil Rights, Social Action & Advocacy",
     "File": "Civil Rights, Social Action & Advocacy.png"
   },
-  "S": {
-    "Category": "Community Improvement & Capacity Building (S)",
+  "Community Improvement & Capacity Building": {
+    "Category": "Community Improvement & Capacity Building",
     "File": "Community Improvement & Capacity Building.png"
   },
-  "T": {
-    "Category": "Philanthropy, Voluntarism & Grantmaking Foundations (T)",
+  "Philanthropy, Voluntarism & Grantmaking Foundations": {
+    "Category": "Philanthropy, Voluntarism & Grantmaking Foundations",
     "File": "Philanthropy, Voluntarism & Grantmaking Foundations.png"
   },
-  "U": {
-    "Category": "Science & Technology (U)",
+  "Science & Technology": {
+    "Category": "Science & Technology",
     "File": "Science & Technology.png"
   },
-  "V": {
-    "Category": "Social Science (V)",
+  "Social Science": {
+    "Category": "Social Science",
     "File": "Social Science.png"
   },
-  "W": {
-    "Category": "Public & Societal Benefit (W)",
+  "Public & Societal Benefit": {
+    "Category": "Public & Societal Benefit",
     "File": "Public & Societal Benefit.png"
   },
-  "X": {
-    "Category": "Religion-Related (X)",
+  "Religion-Related": {
+    "Category": "Religion-Related",
     "File": "Religion-Related.png"
   }
 }
@@ -1087,19 +1087,19 @@ const ContributeNew = (props) => {
 
                                     try {
                                         if (item['Charity GENERAL Category #1'] && item['Charity GENERAL Category #1'] != '') {
-                                            const catId = item['Charity GENERAL Category #1'].split('(')[1].split(')')[0];
+                                            const catId = item['Charity GENERAL Category #1'];
                                             cat1img = BadgeLookup[catId]['image']
                                         }
                                     }catch(e){console.log('MISSING FILE 1',item['Charity GENERAL Category #1'])}
                                     try {
                                         if (item['Charity GENERAL Category #2'] && item['Charity GENERAL Category #2'] != '') {
-                                            const catId = item['Charity GENERAL Category #2'].split('(')[1].split(')')[0];
+                                            const catId = item['Charity GENERAL Category #2'];
                                             cat2img = BadgeLookup[catId]['image']
                                         }
                                     }catch(e){console.log('MISSING FILE 2',item['Charity GENERAL Category #2'])}
                                     try {
                                         if (item['Charity GENERAL Category #3'] && item['Charity GENERAL Category #3'] != '') {
-                                            const catId = item['Charity GENERAL Category #3'].split('(')[1].split(')')[0];
+                                            const catId = item['Charity GENERAL Category #3'];
                                             cat3img = BadgeLookup[catId]['image']
                                         }
                                     }catch(e){console.log('MISSING FILE 3',item['Charity GENERAL Category #3'])}

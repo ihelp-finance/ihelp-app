@@ -53,6 +53,7 @@ const ContributeNew = (props) => {
   
   const [contractNameHash, setcontractNameHash] = useState(null);
   
+  const [withdrawEnabledLookup, setwithdrawEnabledLookup] = useState(null);
   const [charityBalances, setcharityBalances] = useState(null);
   const [charityBalancesUSD, setcharityBalancesUSD] = useState(null);
   
@@ -229,13 +230,25 @@ const ContributeNew = (props) => {
   props.readContracts["analytics"]["getUserTokenContributionsPerCharity"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
     console.log('getUserTokenContributionsPerCharity',d)
     const cHash = {}
+    const wHash = {}
     d.map((c)=>{
-      cHash[c['currency']] = c['totalContributions']
+      cHash[`${c['currency']}-${c['tokenAddress']}`] = c['totalContributions']
+      
+      if (c['totalContributions'] > 0) {
+        wHash[c['currency']] = true;
+      }
+      
       if (c['currency'][0] == 'W') { 
-        cHash[c['currency'].replace('W','')] = c['totalContributions']
+        cHash[`${c['currency'].replace('W','')}-${c['tokenAddress']}`] = c['totalContributions']
+        wHash[c['currency'].replace('W','')] = true;
       }
     })
+    
+    console.log('cHash',cHash)
+    
+    setwithdrawEnabledLookup(wHash)
     setcharityBalances(cHash)
+    
   })
 
    props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address).then((d) => {
@@ -756,8 +769,10 @@ const ContributeNew = (props) => {
       // }
     }
     else if (action == 'withdraw') {
-      
-      setInputAmount(parseFloat(utils.formatUnits(charityBalances[currency],charityDecimals[currency])).toFixed(6))
+      console.log(selectedLendingProvider)
+      console.log(charityBalances)
+      console.log(`${currency}-${selectedLendingProvider['lendingAddress']}`)
+      setInputAmount(parseFloat(utils.formatUnits(charityBalances[`${currency}-${selectedLendingProvider['lendingAddress']}`],charityDecimals[currency])).toFixed(6))
       
       // if (currency == 'DAI') {
       //   setInputAmount(parseFloat(utils.formatUnits(daiCharityBalance,charityDecimals['DAI'])).toFixed(6))
@@ -1051,7 +1066,7 @@ const ContributeNew = (props) => {
       }
     }catch(e){}
     try{
-      if (charityBalances[c] > 0) {
+      if (withdrawEnabledLookup[c] == true) {
         withdrawEnabled = true
       }
     }catch(e){}
