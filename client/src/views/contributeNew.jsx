@@ -255,7 +255,60 @@ const ContributeNew = (props) => {
 
       // console.log(props.readContracts['iHelp'].address)
       //     console.log('README',props.readContracts)
+      
+      let numberOfCharities = 0;
+      
+      props.readContracts["iHelp"]["numberOfCharities"]().then((d) => {
 
+        console.log('numberOfCharities', parseInt(d.toString()))
+        numberOfCharities = parseInt(d.toString());
+
+        processStatBatches();
+
+      })
+
+      const processStatBatches = async() => {
+
+        const charityData = []
+        
+        let totalHelpers=0;
+        let totalCharities=0;
+        let totalInterest=0;
+        let totalTvl=0;
+
+        const BATCH_SIZE = 50;
+        let index = 0;
+        for (let i = index; i < numberOfCharities; i = i + BATCH_SIZE) {
+
+          const d = await props.readContracts["analytics"]["generalStats"](props.readContracts['iHelp'].address, i, BATCH_SIZE)
+
+          totalHelpers += parseFloat(d['totalHelpers'])
+          totalCharities += parseFloat(d['totalCharities'])
+          totalInterest += parseFloat(utils.formatUnits(d['totalInterestGenerated'], 18))
+          totalTvl += parseFloat(utils.formatUnits(d['totalValueLocked'], 18))
+
+        }
+        
+        totalHelpers = commafy(totalHelpers.toFixed(0))
+        totalCharities = commafy(totalCharities.toFixed(0))
+        totalInterest = commafy(totalInterest.toFixed(0))
+        totalTvl = commafy(totalTvl.toFixed(0))
+
+        setTotalHelpers(totalHelpers)
+        setTotalCharities(totalCharities)
+        setTotalInterest(totalInterest)
+        setTvl(totalTvl)
+
+        localStorage.setItem("generalStats", JSON.stringify({
+          'totalHelpers': totalHelpers,
+          'totalCharities': totalCharities,
+          'totalInterest': totalInterest,
+          'totalTvl': totalTvl
+        }));
+
+      }
+      
+      /*
       props.readContracts["analytics"]["generalStats"](...[props.readContracts['iHelp'].address, 0, 1000]).then((d) => {
 
         console.log('generalStats', d)
@@ -278,16 +331,17 @@ const ContributeNew = (props) => {
         }));
 
       });
+      */
 
     }
   };
 
   const listener = (blockNumber, contract) => {
-      if (contract != undefined) {
-        console.log('UPDATING CONTRACTS');
-        //console.log(contract, blockNumber); // , fn, args, provider.listeners()
-        updateContracts(contract);
-      }
+    if (contract != undefined) {
+      console.log('UPDATING CONTRACTS');
+      //console.log(contract, blockNumber); // , fn, args, provider.listeners()
+      updateContracts(contract);
+    }
   };
 
   useEffect(async() => {
@@ -295,14 +349,14 @@ const ContributeNew = (props) => {
     if (loaded == false && props && props.readContracts) {
 
       setLoaded(true)
-      
+
       const contractsToListen = ['iHelp']
       contractsToListen.map(c => {
-         props.readContracts[c].provider.removeAllListeners("block");
+        props.readContracts[c].provider.removeAllListeners("block");
         props.readContracts[c].provider.on("block", (block) => { listener(block, c) });
       });
-      
-     updateContracts();
+
+      updateContracts();
 
     }
   }, [props.readContracts]);
@@ -322,7 +376,7 @@ const ContributeNew = (props) => {
     //   }catch(e){}
     // }
 
-  },[])
+  }, [])
 
   useEffect(async() => {
 
