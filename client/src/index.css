@@ -304,57 +304,6 @@ button {
   transform: rotate(-90deg);
 }
 
-/* Footer */
-.footer {
-  width: 100%;
-  z-index: 10;
-  position: relative;
-  /* background-color: rgba(255, 255, 255, 0.85); */
-}
-.footerContent {
-  width: 100%;
-  margin: 2.5rem 0 0 0;
-  padding: 2.5rem 0;
-  border-top: 1px solid var(--black);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.footerLeft {
-  width: 65%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.footerRight {
-  width: 35%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.footerLeft a {
-  font-size: 1.5rem;
-  color: var(--black);
-  margin: 0 1.5rem 0 0;
-}
-.footer a:hover {
-  color: var(--light-purple);
-}
-.footerRight a {
-  font-size: 1.75rem;
-  display: flex;
-  color: var(--black);
-  margin: 0 0 0 1.35rem;
-  color: var(--black);
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  border: 1px solid var(--black);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
 .table {
   max-width: 100%;
   overflow-y: hidden;
@@ -445,14 +394,6 @@ background-color: rgba(173, 82, 242, 0.1) !important;
     height: 45%;
   }
 
-  .footer {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-  .footerContent {
-    margin: 2.5rem 0 0 0;
-    padding: 1.5rem 0;
-    border-top: 0px solid var(--black);
-  }
 }
 
 .contribute .findMe {
@@ -723,34 +664,15 @@ background-color: rgba(173, 82, 242, 0.1) !important;
   .open-mob-header {
     display: flex;
   }
-  .footerContent {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-gap: 2.5rem;
-  }
-  .footerLeft {
-    width: 100%;
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  .footerRight {
-    width: 100%;
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  .footerLeft a {
-    margin: 0 0 1.5rem 0;
-  }
-  .footerRight a {
-    margin: 0 0 1.5rem 0;
-  }
+  
   .tab-btn {
     margin: 0 1rem 1rem 0;
     padding: 0.35rem 1.5rem;
     font-size: 1.35rem;
   }
+  
+
+  
 }
 
 
@@ -760,4 +682,128 @@ background-color: rgba(173, 82, 242, 0.1) !important;
 
 .ant-table-summary, .ant-table-tbody>tr.ant-table-placeholder:hover>td {
     background: transparent !important;
+}
+
+
+
+/* Footer */
+
+.footer {
+  width: 100%;
+  z-index: 10;
+  position: relative;
+  /* background-color: rgba(255, 255, 255, 0.85); */
+}
+
+.footerContent {
+  width: 100%;
+  border-top: 0px solid var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerLeft {
+  width: 65%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.footerRight {
+  width: 35%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+      margin-right: 120px;
+}
+
+.footerLeft a {
+  font-size: 1.5rem;
+  color: var(--black);
+  margin: 0 1.5rem 0 0;
+}
+
+.footer a:hover {
+  color: var(--light-purple);
+}
+
+.footerRight a {
+  font-size: 1.75rem;
+  display: flex;
+  color: var(--black);
+  margin: 0 0 0 1.35rem;
+
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 1px solid var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.charityButtonsGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 7.5rem;
+}
+.charityButtonsGrid h6 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--black);
+  text-align: center;
+}
+
+@media screen and (max-width: 1000px) {
+  .footerLeft{
+   width:160px; 
+   overflow:hidden;
+   left:5px;
+   position:absolute;
+  }
+  
+  .footer {
+    position: fixed;
+    bottom: 0px;
+    margin-left:-30px;
+    height:60px;
+  }
+  
+  .footerRight {
+    width: 200px;
+    left: -85px;
+    margin-left: 50%;
+    position: relative;
+    text-align: center;
+  }
+  
+  .charityButtonsGrid {
+    grid-gap: 2.5rem;
+    grid-template-columns: 1fr;
+    
+    margin-top: -39px !important;
+    margin-bottom: 48px !important;
+    position: fixed;
+    bottom: 0px;
+    display: block;
+    margin-left: -23px;
+    padding: 14px;
+    padding-bottom:20px;
+    
+  }
+  
+  .charityButtonsGrid h2 {
+    margin-top:5px;
+    position:relative;
+    
+  }
+  
+  .kseItem h2 {
+    font-size:2rem;
+  }
+  
 }

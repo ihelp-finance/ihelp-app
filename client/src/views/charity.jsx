@@ -1166,7 +1166,7 @@ const ContributeNew = (props) => {
 
             </div>
             
-             <div className={st.charityButtonsGrid} style={{marginTop:'-36px',marginBottom:'36px'}}>
+             <div className="charityButtonsGrid" style={{marginTop:'-36px',marginBottom:'36px'}}>
                 <main>
                   <h2 style={{textAlign:'center'}}>Donate Interest</h2>
                   <div className={st.charityBtnGrd} style={{gridTemplateColumns:'repeat(2,1fr)'}}>

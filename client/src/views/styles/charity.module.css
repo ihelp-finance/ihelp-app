@@ -222,7 +222,7 @@
   grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-gap: 1.5rem;
-  margin: 1.5rem 0 0 0;
+  margin: 1.5rem 0 1rem 0;
 }
 @media screen and (max-width: 1200px) {
   .charityVideoBox video {
@@ -240,8 +240,6 @@
   .charityTextBoxes main h6 {
     text-align: center;
   }
-}
-@media screen and (max-width: 1000px) {
   .videoMessagesGrid {
     grid-template-columns: 1fr;
     grid-gap: 2.5rem;
@@ -250,6 +248,7 @@
     height: unset;
   }
   .charityButtonsGrid {
+
     grid-gap: 2.5rem;
     grid-template-columns: 1fr;
     

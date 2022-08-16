@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import st from "./styles/leaderboardNew.module.css";
 import {
   MdSearch,
@@ -41,6 +42,8 @@ const ContributeNew = (props) => {
   const [loaded, setLoaded] = useState(false);
   const [mode, setMode] = useState('helpers');
   const [searchValue, setsearchValue] = useState('');
+  
+  const history = useHistory();
 
   useEffect(async() => {
     document.title = `iHelp | Leaderboard (${props.targetNetwork.name.replace('host','').charAt(0).toUpperCase() + props.targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
@@ -377,7 +380,7 @@ const ContributeNew = (props) => {
             (<Table 
                onRow={(record, rowIndex) => {
                 return {
-                  onClick: event => { console.log(record) }
+                  onClick: event => { console.log(record); history.push(`/charity/${record['address']}`) }
                 };
               }}
               className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={filteredCharities} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 

@@ -26,9 +26,9 @@ const Footer = (props) => {
   
     return (
       <footer>
-        <div className={st.footer}>
+        <div className="footer">
         <div className="box">
-          <div className={st.footerContent}>
+          <div className="footerContent">
             <div className={st.footerLeft}>
               <a href="https://turbinex.io" target="_blank" style={{fontWeight:'',fontSize:'14px'}}><h4 className="footerText">© 2022 Turbine X, LLC</h4></a> 
               | 
