@@ -36,12 +36,15 @@ export function General(props) {
                     </p>
                     <div className='psInfo'>
                         <div>
-                            <img src={location} alt="" title=''/>
-                            <p>{`${charityInfo['Headquarter Street Address']}, ${charityInfo['Headquarter City']}, ${charityInfo['Headquarter State/Province']} ${charityInfo['Headquarter Zip/Postal Code']} ${charityInfo['Headquarter Country']}`}</p>
+                        <a href={`https://google.com/maps/search/${charityInfo['Headquarter Street Address']}, ${charityInfo['Headquarter City']}, ${charityInfo['Headquarter State/Province']} ${charityInfo['Headquarter Zip/Postal Code']} ${charityInfo['Headquarter Country']}`} target="_blank">
+                            <img src={location} style={{display:'inline-block'}} alt="" title=''/>
+                            {`${charityInfo['Headquarter Street Address']}, ${charityInfo['Headquarter City']}, ${charityInfo['Headquarter State/Province']} ${charityInfo['Headquarter Zip/Postal Code']} ${charityInfo['Headquarter Country']}`}
+                        </a>
                         </div>
                         <div>
-                            <img src={web} alt="" title=''/>
-                            <a href={charityInfo['Organization Website']} target="_blank">{charityInfo['Organization Website']}</a>
+                        <a href={`https://${charityInfo['Organization Website'].replace('http://','').replace('https://','')}`} target="_blank">
+                            <img src={web} style={{display:'inline-block'}} alt="" title=''/>
+                            {`${charityInfo['Organization Website'].replace('http://','').replace('https://','')}`}</a>
                         </div>
                         <div>
                         

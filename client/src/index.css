@@ -819,6 +819,10 @@ background-color: rgba(173, 82, 242, 0.1) !important;
    margin-right:193px; 
   }
   
+  .web3modal-provider-name {
+font-size:2rem !important;
+}
+  
 }
 
 .switch-lang {

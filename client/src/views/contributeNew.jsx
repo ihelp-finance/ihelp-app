@@ -294,7 +294,7 @@ const ContributeNew = (props) => {
         
         totalHelpers = commafy(totalHelpers.toFixed(0))
         totalCharities = commafy(totalCharities.toFixed(0))
-        totalInterest = commafy(totalInterest.toFixed(0))
+        totalInterest = commafy(totalInterest.toFixed(2))
         totalTvl = commafy(totalTvl.toFixed(0))
 
         setTotalHelpers(totalHelpers)
