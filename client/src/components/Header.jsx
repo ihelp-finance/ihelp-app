@@ -33,9 +33,11 @@ const Header = (props) => {
     
     const [injectedProvider, setInjectedProvider] = useState();
     
-    const subdomain = window.location.hostname.split('.')[0];
-    
-    const [lang, setLang] = useState(subdomain != 'dev' ? subdomain : 'avax');
+    let subdomain = window.location.hostname.split('.')[0];
+    if (subdomain == 'app' || subdomain == 'dev') {
+      subdomain = 'avax';
+    }
+    const [lang, setLang] = useState(subdomain);
 
     /* Mobile Header */
     const openMobHeader = () => {
@@ -60,7 +62,7 @@ const Header = (props) => {
       if (openDomain == 'avax') {
         openDomain = 'app';
       }
-      if (subdomain != openDomain) {
+      if (subdomain != openDomain && window.location.hostname.split('.')[0] != openDomain) {
         window.open(`https://${selectedLang}.ihelp.finance`,'_self');
       }
     }

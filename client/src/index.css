@@ -891,10 +891,10 @@ font-size:14px;
     max-width: unset!important;
 }
 .web3modal-provider-name{
-font-weight:500 !important;
+font-weight:400 !important;
 text-align:left;
 margin-left:20px;
-font-size:20px;
+font-size:18px;
 color:#333;
     margin-bottom: 8px;
 }
@@ -911,7 +911,7 @@ color:#333;
 }
 
 .web3modal-provider-icon {
-  height:auto;
+  height:auto !important;
 }
 
 .web3modal-modal-lightbox {
