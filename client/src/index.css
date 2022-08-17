@@ -504,6 +504,15 @@ background-color: rgba(173, 82, 242, 0.1) !important;
 }
 
 @media screen and (max-width: 1000px) {
+  
+  .addressHeader {
+    position:absolute;
+    top:6px;
+    
+    width:95px;
+    right:80px;
+}
+  
   .table td,
   .table th {
     padding: 1rem;
@@ -541,7 +550,7 @@ background-color: rgba(173, 82, 242, 0.1) !important;
   }
   .headerRightButtonInner {
     position: absolute;
-    right: 90px;
+    right: 96px;
     top:15px;
   }
   .section {
@@ -806,4 +815,105 @@ background-color: rgba(173, 82, 242, 0.1) !important;
     font-size:2rem;
   }
   
+  .switch-lang {
+   margin-right:193px; 
+  }
+  
+}
+
+.switch-lang {
+  width: 55px;
+  text-align: left;
+  cursor: pointer;
+  z-index: 50;
+      margin-left: 25px;
+    margin-top: -5px;
+}
+.switch-lang:hover .lang-dropdown {
+  display: block;
+  max-width: max-content;
+}
+.switcher-link {
+  color: #fff;
+}
+.switcher-link:hover {
+  color: #fff;
+}
+.current-lang {
+  background: transparent;
+  padding: 3px 5px 0px 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+.switch-lang img {
+  width: 32px !important;
+}
+.lang-flag {
+  width: 25px;
+  display: inline-block;
+  margin: 0 0rem 0 0 !important;
+}
+.lang-text {
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: top;
+  margin-top: 15px;
+font-weight: normal;
+font-size:14px;
+}
+.lang-dropdown {
+  display: none;
+  border-radius:5px;
+  position:absolute;
+  box-shadow: 0 6px 12px rgb(38 38 38 / 10%);
+  background-color: #fff;
+  padding: 3px 5px 3px 5px;
+}
+.selecting-lang {
+  padding: 3px 5px 3px 5px;
+  border-radius:5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.selecting-lang:last-child {
+  margin-bottom: 0;
+}
+.selecting-lang:hover {
+  background: #ac52f244;
+}
+
+.web3modal-modal-card{
+    width: 400px!important;
+    min-width: unset!important;
+    max-width: unset!important;
+}
+.web3modal-provider-name{
+font-weight:500 !important;
+text-align:left;
+margin-left:20px;
+font-size:20px;
+color:#333;
+    margin-bottom: 8px;
+}
+.web3modal-provider-container:hover {
+  background-color:#eae6f9 !important;
+}
+.web3modal-provider-container{
+    flex-direction: row!important;
+    padding:12px 16px;
+}
+
+.web3modal-provider-description{
+    display:none;
+}
+
+.web3modal-provider-icon {
+  height:auto;
+}
+
+.web3modal-modal-lightbox {
+    backdrop-filter: blur(5px);
 }

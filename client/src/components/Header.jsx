@@ -32,6 +32,10 @@ const Header = (props) => {
     const router = useLocation();
     
     const [injectedProvider, setInjectedProvider] = useState();
+    
+    const subdomain = window.location.hostname.split('.')[0];
+    
+    const [lang, setLang] = useState(subdomain != 'dev' ? subdomain : 'avax');
 
     /* Mobile Header */
     const openMobHeader = () => {
@@ -51,6 +55,29 @@ const Header = (props) => {
         });
     };
     
+    const handleLangChange = (selectedLang) => {
+      let openDomain = selectedLang;
+      if (openDomain == 'avax') {
+        openDomain = 'app';
+      }
+      if (subdomain != openDomain) {
+        window.open(`https://${selectedLang}.ihelp.finance`,'_self');
+      }
+    }
+    
+    const languageFlag = {
+      "avax": "/assets/icons/avax.svg",
+      // "optimism": "/assets/icons/optimism.svg",
+    }
+    const languages = Object.keys(languageFlag);
+    
+    const additionalOptions = [];
+    for (let i=0;i<languages.length;i++) {
+      if (languages[i] != lang) {
+        additionalOptions.push(languages[i]);
+      }
+    }
+
     return (
         <div className="header">
         <div className="mob-header">
@@ -87,19 +114,9 @@ const Header = (props) => {
               </div>
               {/*<button className="white-btn">Ethereum Network</button>*/}
               
+              
               <div style={{width:'100%',textAlign:'center'}}>
-              <Account
-                      address={address}
-                      localProvider={localProvider}
-                      userSigner={userSigner}
-                      mainnetProvider={mainnetProvider}
-                      //price={price}
-                      web3Modal={web3Modal}
-                      loadWeb3Modal={loadWeb3Modal}
-                      logoutOfWeb3Modal={logoutOfWeb3Modal}
-                      blockExplorer={blockExplorer}
-                      burner={false}
-                    />
+           
               </div>
               
                   
@@ -132,7 +149,20 @@ const Header = (props) => {
                       LEADERBOARD
                     
                   </Link>
+                  
+                  <div className="switch-lang"> 
+                    <div className="current-lang"><img className="lang-flag" src={languageFlag[lang]}/>
+                      
+                    </div>
+                    <div className="lang-dropdown">
+                      {additionalOptions.map((l)=>{return <div key={l} onClick={()=>{handleLangChange(l)}}className="selecting-lang"><img className="lang-flag" src={languageFlag[l]} />
+                        <p className="lang-text">{l.toUpperCase()}</p>
+                      </div>})}
+                    </div>
+                  </div>
+                  
                  </div>
+                  
                   
                   
               {/*<button className="grd-btn">Ethereum Network</button>*/}
