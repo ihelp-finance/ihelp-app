@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
   res.json({
     charities: '/api/v1/data/charities',
     stats: '/api/v1/data/stats',
+    transactions: '/api/v1/data/transactions',
     //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
     nickname: '/api/v1/data/nickname',
     //allnicknames: '/api/v1/data/allnicknames',

@@ -12,14 +12,12 @@ cd nginx
 cd ../
 
 # change the postgres data permissions
-chown postgres /var/lib/postgresql/10/main -R
-chmod 0700 /var/lib/postgresql/10/main -R
 chown postgres /var/lib/postgresql/data -R
 chmod 0700 /var/lib/postgresql/data -R
 
 # start postgresql
 #service postgresql start
-echo "starting postgres-12..."
+echo "starting postgres-14..."
 docker-entrypoint.sh -c 'shared_buffers=256MB' -c 'max_connections=200' > /tmp/pg.log 2>&1 &
 
 echo "127.0.0.1 ihelp-db" >> /etc/hosts
@@ -30,7 +28,9 @@ echo "127.0.0.1 ihelp-db" >> /etc/hosts
 
 export NVM_DIR="$HOME/.nvm"
 . "$NVM_DIR/nvm.sh"
+nvm install v16
 nvm use v16
+npm install yarn -g
 
 # start the service
 if [[ "$MODE" == "prod" ]];then
