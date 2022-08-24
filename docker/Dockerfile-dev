@@ -1,7 +1,7 @@
 FROM postgres:14
 
 RUN apt-get update
-RUN apt-get install curl build-essential nginx -y
+RUN apt-get install curl build-essential nginx git -y
 
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
