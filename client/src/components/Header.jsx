@@ -14,7 +14,6 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-import Web3Modal from "web3modal";
 const { ethers } = require("ethers");
 import WalletLink from "walletlink";
 
