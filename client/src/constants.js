@@ -25,7 +25,7 @@ export const NETWORKS = {
     chainId: 43114,
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://snowtrace.io/",
-    blockTime: 3000
+    blockTime: 4000
   },
   kovan: {
     name: "kovan",
