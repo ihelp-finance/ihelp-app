@@ -5,7 +5,7 @@ import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom";
-import Web3Modal from "web3modal";
+import Web3Modal from "./modules/web3modal";
 import "./App.css";
 import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
 import { GOOGLEANALYTICS_ID, NETWORK, NETWORKS } from "./constants";
@@ -339,7 +339,7 @@ function App(props) {
     // if (force != true) {
     //   c = prompt(`iHelp is currently in limited beta. Please enter the passcode for connect your ${targetNetwork.name} wallet and interact with the app.`)
     // } 
-    // if (c == 'ihelpGO' || force == true) {
+    // if (c == '' || force == true) {
       
       const provider = await web3Modal.connect();
       
@@ -364,7 +364,7 @@ function App(props) {
     // }
     
   }, [setInjectedProvider]);
-
+  
   useEffect(() => {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal(true);
@@ -381,12 +381,7 @@ function App(props) {
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   
-  const charityDecimals = {
-    'DAI': 18,
-    'USDC': 6
-  }
-
-  const params = {faucetAvailable,updateValue,setValue,charityDecimals,readContracts,writeContracts,tx,targetNetwork,web3Modal,loadWeb3Modal,address,localProvider,userSigner,mainnetProvider,logoutOfWeb3Modal,blockExplorer}
+  const params = {faucetAvailable,updateValue,setValue,readContracts,writeContracts,tx,targetNetwork,web3Modal,loadWeb3Modal,address,localProvider,userSigner,mainnetProvider,logoutOfWeb3Modal,blockExplorer}
   
   return (
     <div className="App">

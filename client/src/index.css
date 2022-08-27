@@ -680,14 +680,8 @@ background-color: rgba(173, 82, 242, 0.1) !important;
     font-size: 1.35rem;
   }
   
-
-  
 }
 
-
-.web3modal-modal-lightbox {
-  z-index:1000 !important;
-}
 
 .ant-table-summary, .ant-table-tbody>tr.ant-table-placeholder:hover>td {
     background: transparent !important;
@@ -889,6 +883,9 @@ font-size:14px;
   background: #ac52f244;
 }
 
+
+
+/*
 .web3modal-modal-card{
     width: 400px!important;
     min-width: unset!important;
@@ -902,9 +899,7 @@ font-size:18px;
 color:#333;
     margin-bottom: 8px;
 }
-.web3modal-provider-container:hover {
-  background-color:#eae6f9 !important;
-}
+
 .web3modal-provider-container{
     flex-direction: row!important;
     padding:12px 16px;
@@ -920,4 +915,38 @@ color:#333;
 
 .web3modal-modal-lightbox {
     backdrop-filter: blur(5px);
+}
+*/
+
+.web3modal-provider-container:hover {
+  background-color:#eae6f9 !important;
+}
+
+.terms {
+  text-align:center;
+  font-size:1.2rem !important;
+  margin-top:15px;
+}
+
+.cardHeader {
+  width:100%;
+  text-align:center;
+  display:inline-block;
+  position:relative;
+}
+.cardHeader img {
+  width:70px;
+  text-align:center;
+  display:inline-block;
+  position:absolute;
+  margin-top:-120px;
+  margin-left:-35px;
+}
+.cardHeader div {
+  width:100%;
+  text-align:center;
+  position:absolute;
+  font-size:2rem;
+  font-weight:600;
+  margin-top:-45px;
 }

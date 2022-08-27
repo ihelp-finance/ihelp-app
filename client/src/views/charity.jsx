@@ -251,7 +251,7 @@ const ContributeNew = (props) => {
     
   })
 
-   props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address).then((d) => {
+   props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address,props.targetNetwork.blockTime).then((d) => {
      
     // console.log('pricefeeds:',d)
      
@@ -262,8 +262,10 @@ const ContributeNew = (props) => {
      const charityDecimalHash = {}
      
      for (let i=0;i<d.length;i++) {
-
+       
        charityDecimalHash[d[i]['currency']] = parseInt(d[i]['decimals'])
+       
+       // console.log(parseFloat(utils.formatUnits(d[i]['apr'],parseInt(d[i]['decimals']))))
        
        if (Object.keys(currencyHash).indexOf(d[i]['currency']) > -1) {
         currencyHash[d[i]['currency']].push(d[i])
@@ -284,6 +286,7 @@ const ContributeNew = (props) => {
         newD['priceFeed'] = d[i]['priceFeed']
         newD['provider'] = d[i]['provider']
         newD['underlyingToken'] = d[i]['underlyingToken']
+        newD['apr'] = d[i]['apr']
         
         if (Object.keys(currencyHash).indexOf(d[i]['currency'].replace('W','')) > -1) { 
           currencyHash[d[i]['currency'].replace('W','')].push(newD)
@@ -815,29 +818,79 @@ const ContributeNew = (props) => {
       }
     });
     console.log("awaiting metamask/web3 confirm result...", sponsorTx);
-    console.log(await sponsorTx);
+    const tx = await sponsorTx;
     
-    setTimeout(()=>{
+    if (tx != undefined) {
+      
+      const numberOfTries = 10;
+      let tryCounter = 0;
+      
+      const processEnableTries = () => {
+        
+        console.log('trying enable:',tryCounter,'/',numberOfTries);
+        
+        tryCounter += 1;
+        
         props.readContracts["analytics"]["getDonationCurrencyAllowances"](charityInfo[`CharityPool Contract`],props.address).then((d) => {
-         const cHash = {}
-          d.map((c)=>{
-            cHash[c['currency']] = parseInt(c['allowance'])
-          })
-          setcurrencyAllowances(cHash)
           
-          setTimeout(()=>{
-            setLoading(false)
-            setInputAmount('')
-          },1000)
-       });
-    },1500)
+          console.log(d);
+          
+          let allowComplete = false;
+          
+          d.map((c)=>{
+            if (c['currency'] == mapToken) {
+              if (parseInt(c['allowance']) >= 100000000) {
+                allowComplete = true;
+              }
+            }
+          });
+          
+          if (allowComplete == false && tryCounter > numberOfTries) {
+            
+           alert("ERROR - something went wrong with enabling. We are going to refresh the page and please try again...")
+           window.location.reload();
+           
+          } else {
+  
+            if (allowComplete == false) {
+              setTimeout(()=>{
+                processEnableTries();
+              },1200)
+            } else {
+              const cHash = {}
+              d.map((c)=>{
+                cHash[c['currency']] = parseInt(c['allowance'])
+              })
+              setcurrencyAllowances(cHash)
+              setTimeout(()=>{
+                setLoading(false)
+                setInputAmount('')
+              },100)
+            }
+          
+          }
+         
+        });
+      
+      }
+      
+      setTimeout(()=>{
+        processEnableTries()
+      },1500)
+    
+    } else {
+       setLoading(false)
+      setInputAmount('')
+    }
     
   }
 
   const handleSetLendingProvider = (value) => {
     setselectedLendingProvider({
       provider:value.key.split('---')[0],
-      lendingAddress:value.key.split('---')[1]
+      lendingAddress:value.key.split('---')[1],
+      apr: value.key.split('---')[2]/1e18,
+      apy:(1+( value.key.split('---')[2]/1e18 )/365)**365-1
     })
   }
   
@@ -912,8 +965,8 @@ const ContributeNew = (props) => {
     Object.keys(supportedCurrencyDetails).length > 0 ? supportedCurrencyDetails[d].map((c,i)=>{
     
     const details = c
-
-    items.push(<Menu.Item key={`${details.provider}---${details.lendingAddress}`}>
+    
+    items.push(<Menu.Item key={`${details.provider}---${details.lendingAddress}---${details.apr}`}>
         <div>
         {details.provider} <Address address={details.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} />
         </div>
@@ -946,7 +999,6 @@ const ContributeNew = (props) => {
         buttonDisabled = true
       }
     }
-    
     
     return (
       <TabPane tab={
@@ -1005,8 +1057,9 @@ const ContributeNew = (props) => {
 
           <div style={{marginTop:'20px'}}>
           
-          <span style={{paddingLeft:'10px',textAlign:'left',float:'left',width:'50%',display:'inline-block'}}>Token → <Address style={{marginTop:'2px',position:'relative'}} address={currencyAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /><a style={{fontStyle:'italic',marginTop:'0px',position:'absolute'}} onClick={()=>handleTokenAdd(d)}>add</a></span>
-          <span style={{paddingRight:'10px',textAlign:'right',float:'right',width:'50%',display:'inline-block'}}>Charity → <Address style={{marginTop:'2px',position:'relative'}} address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>
+          <span style={{paddingLeft:'10px',textAlign:'left',float:'left',width:'33%',display:'inline-block'}}>Token → <Address style={{marginTop:'2px',position:'relative'}} address={currencyAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /><a style={{fontStyle:'italic',marginTop:'0px',position:'absolute'}} onClick={()=>handleTokenAdd(d)}>add</a></span>
+          <span style={{visibility:action == 'deposit' ? 'visible' : 'hidden',marginTop:'2px',paddingLeft:'10px',textAlign:'center',width:'33%',display:'inline-block'}}>{selectedLendingProvider && selectedLendingProvider.apy ? 'Lender APY → '+(selectedLendingProvider.apy*100).toFixed(2)+'%' : ''}</span>
+          <span style={{paddingRight:'10px',textAlign:'right',float:'right',width:'33%',display:'inline-block'}}>Charity → <Address style={{marginTop:'2px',position:'relative'}} address={charityInfo[`CharityPool Contract`]} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>
           
           </div>
         
@@ -1018,7 +1071,9 @@ const ContributeNew = (props) => {
   if (Object.keys(supportedCurrencyDetails).length > 0 && selectedLendingProvider == null && currentCurrencyTab) {
      setselectedLendingProvider({
       provider:supportedCurrencyDetails[currentCurrencyTab][0].provider,
-      lendingAddress:supportedCurrencyDetails[currentCurrencyTab][0].lendingAddress
+      lendingAddress:supportedCurrencyDetails[currentCurrencyTab][0].lendingAddress,
+      apr: supportedCurrencyDetails[currentCurrencyTab][0].apr/1e18,
+      apy: (1+( supportedCurrencyDetails[currentCurrencyTab][0].apr/1e18 )/365)**365 -1
     });
   }
 
@@ -1026,7 +1081,7 @@ const ContributeNew = (props) => {
 
   useEffect(() => {
   
-  console.log('init',init)
+  // console.log('init',init)
   
   if (props && props.readContracts && charityInfo&& contractNameHash != null && init == false) {
       
@@ -1112,7 +1167,10 @@ const ContributeNew = (props) => {
             )
         }
     ];
-    
+
+  if (selectedLendingProvider) {
+    console.log('selectedLendingProvider',selectedLendingProvider)
+  }
 
   return (
     <div id="app" className="app">

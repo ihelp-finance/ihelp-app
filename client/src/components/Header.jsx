@@ -34,7 +34,7 @@ const Header = (props) => {
     const [injectedProvider, setInjectedProvider] = useState();
     
     let subdomain = window.location.hostname.split('.')[0];
-    if (subdomain == 'app' || subdomain == 'dev') {
+    if (subdomain == 'app' || subdomain.indexOf('dev') > -1) {
       subdomain = 'avax';
     }
     const [lang, setLang] = useState(subdomain);

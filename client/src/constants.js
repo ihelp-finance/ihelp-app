@@ -9,6 +9,7 @@ export const NETWORKS = {
     chainId: 31337,
     blockExplorer: "https://snowtrace.io/",
     rpcUrl: process.env.REACT_APP_RPC_URL,
+    blockTime: 4000
   },
   mainnet: {
     name: "mainnet",
@@ -16,6 +17,7 @@ export const NETWORKS = {
     chainId: 1,
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://etherscan.io/",
+    blockTime: 15000
   },
   avalanche: {
     name: "avalanche",
@@ -23,6 +25,7 @@ export const NETWORKS = {
     chainId: 43114,
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://snowtrace.io/",
+    blockTime: 3000
   },
   kovan: {
     name: "kovan",
@@ -32,6 +35,7 @@ export const NETWORKS = {
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorer: "https://kovan.etherscan.io/",
     faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
+    blockTime: 4000
   },
   rinkeby: {
     name: "rinkeby",
@@ -40,6 +44,7 @@ export const NETWORKS = {
     rpcUrl: process.env.REACT_APP_RPC_URL,
     faucet: "https://faucet.rinkeby.io/",
     blockExplorer: "https://rinkeby.etherscan.io/",
+    blockTime: 15000
   },
   ropsten: {
     name: "ropsten",

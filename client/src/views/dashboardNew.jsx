@@ -212,7 +212,7 @@ const ContributeNew = (props) => {
 
         });
         
-        props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address).then((d) => {
+        props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address,props.targetNetwork.blockTime).then((d) => {
 
           // console.log('pricefeeds:',d)
 
