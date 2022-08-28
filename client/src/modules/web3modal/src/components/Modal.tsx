@@ -215,7 +215,7 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             )}
             
             <div className="terms">
-              By connecting, I agree to IHELP's <a style={{fontSize:'1.2rem'}} href="https://ihelp.finance/terms" target="_blank">Terms of Service</a>
+              By connecting, I agree to IHELP's <a style={{fontSize:'1.2rem'}} href="https://docs.ihelp.finance/terms" target="_blank">Terms of Service</a>
             </div>
             
           </SModalCard>
