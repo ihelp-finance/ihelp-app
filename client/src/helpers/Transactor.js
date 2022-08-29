@@ -121,11 +121,17 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
 
         return result;
       } catch (e) {
-        if (DEBUG) console.log(e);
+        
         // Accounts for Metamask and default signer on all networks
         let message = e.data && e.data.message ? e.data.message : e.error && JSON.parse(JSON.stringify(e.error)).body ? JSON.parse(JSON.parse(JSON.stringify(e.error)).body).error.message : e.data ? e.data : JSON.stringify(e);
         if(!e.error && e.message){
           message = e.message
+        }
+        
+        if (DEBUG) console.log(e);
+        
+        if (message.indexOf('Cannot read properties of undefined') > -1) {
+          return null;
         }
 
         console.log("Attempt to clean up:", message);

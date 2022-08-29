@@ -538,7 +538,13 @@ const ContributeNew = (props) => {
       
       if (nativeToken == false) {
       
-        sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei), update => {
+        console.log(props.writeContracts[contractName]);
+
+        props.tx(props.writeContracts[contractName].version().then((d) => {
+              console.log('version',d)
+        }));
+
+        sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei,""), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -558,7 +564,7 @@ const ContributeNew = (props) => {
       }
       else {
         
-        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress,{ value:sponsorAmountWei }), update => {
+        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress,"",{ value:sponsorAmountWei }), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
