@@ -1067,7 +1067,7 @@ const ContributeNew = (props) => {
             </a>
           </Dropdown>
 
-          <div style={{right:'25px',position:'absolute',display:'inline-block',width:'50%',height:'40px',marginTop:'-15px'}}>
+          <div style={{right:'25px',position:'absolute',display: (action == 'donate' || action == 'deposit' ) ? 'inline-block' : 'none',width:'50%',height:'40px',marginTop:'-15px'}}>
             <input style={{fontStyle:'italic',border:'0px',textAlign:'right',width:'80%',height:'100%',marginLeft:'5%'}} onChange={handleContributionMemo} value={contributionMemo} placeholder="Donation memo (60 char max)"/>
             <span  style={{border:'0px',textAlign:'right',right:'0px',float:'right',width:'10%',marginTop:'7px'}}>
               <img src={edit} alt="" onClick={() => setNickName(false)}/>
