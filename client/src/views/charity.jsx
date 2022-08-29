@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import st from "./styles/charity.module.css";
-import {General, Details, Financials, Videos} from "./tabs";
+import {General, Details, Financials, Videos, Transactions} from "./tabs";
 import {
   MdSearch,
   MdMenu,
@@ -36,6 +36,7 @@ import { utils } from "ethers";
 
 import Address from "../components/Address";
 import { Header,Footer } from "../components";
+import edit from '../assets/images/icon/edit.png';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 
@@ -84,43 +85,60 @@ const ContributeNew = (props) => {
   
   const [charityDecimals,setCharityDecimals] = useState(null);
   const [currencyAllowances,setcurrencyAllowances] = useState(null);
+  const [contributionMemo,setContributionMemo] = useState('');
+  const [eventsByCharity,setEventsByCharity] = useState([]);
   
   useEffect(() => {
     
     if (props.readContracts != null) {
       
-    // create the charity name hash
-    const charityNames = {};
-    Object.keys(props.readContracts).map((c)=>{
-      if (c.indexOf('Proxy') == -1 && c.indexOf('Implementation') == -1) {
-        charityNames[props.readContracts[c]['address']] = c
-      }
-    })
-    console.log('charityNames',charityNames)
-    setcontractNameHash(charityNames);
+      // create the charity name hash
+      const charityNames = {};
+      Object.keys(props.readContracts).map((c)=>{
+        if (c.indexOf('Proxy') == -1 && c.indexOf('Implementation') == -1) {
+          charityNames[props.readContracts[c]['address']] = c
+        }
+      })
+      console.log('charityNames',charityNames)
+      setcontractNameHash(charityNames);
 
-    let url = `/api/v1/data/charities/${id}`;
-    fetch(url).then((d) => {
-      return d.json();
+      let url = `/api/v1/data/charities/${id}`;
+      fetch(url).then((d) => {
+        return d.json();
 
-    }).then((d) => {
-      try {
-        
-        setCharityInfo(d.data);
+      }).then((d) => {
+        try {
+          
+          setCharityInfo(d.data);
 
-        console.log('charityInfo', d.data);
-        
-        // setTimeout(()=>{
-        //   setCurrencies(d.data['Currencies'])
-        // },0)
-        
-      }
-      catch (e) {}
-    })
+          console.log('charityInfo', d.data);
+          
+          // setTimeout(()=>{
+          //   setCurrencies(d.data['Currencies'])
+          // },0)
+          
+        }
+        catch (e) {}
+
+      });
     
     }
 
   }, [props.readContracts]);
+
+  const [infoItems, setInfoItems] = useState(null)
+
+  useEffect(() => {
+
+    let url = `/api/v1/data/events_by_charity?address=${id}`;
+    fetch(url).then((d) => {
+      return d.json()
+    }).then((d) => {
+      console.log('events_by_charity',d)
+      setEventsByCharity(d);
+    });
+
+  }, [infoItems]);
 
   useEffect(async() => {
     document.title = `iHelp | Charity (${props.targetNetwork.name.replace('host','').charAt(0).toUpperCase() + props.targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
@@ -176,6 +194,7 @@ const ContributeNew = (props) => {
       setShowDepositDirect(false);
       setShowWithdrawInterest(false);
       setInputAmount('')
+      setContributionMemo('')
     }
     }catch(e){}
 
@@ -191,7 +210,6 @@ const ContributeNew = (props) => {
   
   const setValue = props.setValue;
   
-  const [infoItems, setInfoItems] = useState(null)
   const [supportedCurrencyDetails, setSupportedCurrencyDetails] = useState({})
   
   const updateContracts = async(contract) => {
@@ -544,7 +562,7 @@ const ContributeNew = (props) => {
               console.log('version',d)
         }));
 
-        sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei,""), update => {
+        sponsorTx = props.tx(props.writeContracts[contractName].depositTokens(selectedLendingProvider.lendingAddress,sponsorAmountWei,contributionMemo), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -564,7 +582,7 @@ const ContributeNew = (props) => {
       }
       else {
         
-        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress,"",{ value:sponsorAmountWei }), update => {
+        sponsorTx = props.tx(props.writeContracts[contractName].depositNative(selectedLendingProvider.lendingAddress,contributionMemo,{ value:sponsorAmountWei }), update => {
        
           console.log("Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -899,6 +917,12 @@ const ContributeNew = (props) => {
       apy:(1+( value.key.split('---')[2]/1e18 )/365)**365-1
     })
   }
+
+  const handleContributionMemo = (e) => {
+    if (e.target.value.length < 60) {
+      setContributionMemo(e.target.value);
+    }
+  }
   
   const handleTokenAdd = async(currency) => {
       
@@ -1034,14 +1058,22 @@ const ContributeNew = (props) => {
       }
         <div className={st.charityBtnGrd}>
         
-          <Dropdown overlay={menu}  trigger={['click']} >
-            <a onClick={e => e.preventDefault()} style={{marginTop:'-10px',display:showDepositDirect ? 'none' : ''}} >
+          <Dropdown overlay={menu}  trigger={['click']}>
+            <a onClick={e => e.preventDefault()} style={{width:'50%',marginTop:'-10px',display:showDepositDirect ? 'none' : ''}} >
               <Space>
                 Lender{selectedLendingProvider ? (<span>→ {selectedLendingProvider.provider} <Address style={{marginTop:'2px',position:'relative'}} address={selectedLendingProvider.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>) : ''}
                 <DownOutlined />
               </Space>
             </a>
           </Dropdown>
+
+          <div style={{right:'25px',position:'absolute',display:'inline-block',width:'50%',height:'40px',marginTop:'-15px'}}>
+            <input style={{fontStyle:'italic',border:'0px',textAlign:'right',width:'80%',height:'100%',marginLeft:'5%'}} onChange={handleContributionMemo} value={contributionMemo} placeholder="Donation memo (60 char max)"/>
+            <span  style={{border:'0px',textAlign:'right',right:'0px',float:'right',width:'10%',marginTop:'7px'}}>
+              <img src={edit} alt="" onClick={() => setNickName(false)}/>
+            </span>
+          </div>
+
           
           <button className="grd-btn" 
             onClick={(e)=>onAction(d)}
@@ -1166,6 +1198,13 @@ const ContributeNew = (props) => {
             )
         },
         {
+          name: 'tab5',
+          label: 'Transactions',
+          content: (
+              <Transactions charityInfo={charityInfo} eventsByCharity={eventsByCharity} mainnetProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} charityDecimals={charityDecimals} st={st} />
+          )
+      },
+        {
             name: 'tab4',
             label: 'Videos',
             content: (
@@ -1174,9 +1213,9 @@ const ContributeNew = (props) => {
         }
     ];
 
-  if (selectedLendingProvider) {
-    console.log('selectedLendingProvider',selectedLendingProvider)
-  }
+  // if (selectedLendingProvider) {
+  //   console.log('selectedLendingProvider',selectedLendingProvider)
+  // }
 
   return (
     <div id="app" className="app">

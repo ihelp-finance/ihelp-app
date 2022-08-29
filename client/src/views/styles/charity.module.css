@@ -277,3 +277,40 @@
 .darkText {
   color: var(--dark-purple);
 }
+
+.transactionTable td div {
+  display: flex;
+  width: 100%;
+}
+.transactionTable td div button {
+  width: 100%;
+}
+.tableGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 2.5rem;
+  margin: 2.5rem 0 0 0;
+  max-width:100%;
+  overflow-x:auto;
+  margin-bottom: 50px;
+}
+
+.tableGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.tableGrid .tableContainer:nth-child(1) {
+  grid-column: 1/-1;
+}
+@media screen and (max-width: 1000px) {
+  .tableGrid {
+    margin: 0px 0 0 0;
+  }
+}
+@media screen and (max-width: 800px) {
+  .tableGrid {
+    grid-template-columns: 1fr;
+  }
+}

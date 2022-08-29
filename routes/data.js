@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
   res.json({
     charities: '/api/v1/data/charities',
     stats: '/api/v1/data/stats',
-    transactions: '/api/v1/data/transactions',
+    events_by_charity: '/api/v1/data/events_by_charity',
     //totalinterestbycharities: '/api/v1/data/totalinterestbycharities',
     nickname: '/api/v1/data/nickname',
     //allnicknames: '/api/v1/data/allnicknames',
@@ -1137,6 +1137,63 @@ router.get('/events', (req, res) => {
 
       res.send(d)
 
+    })
+
+  }
+  else {
+    res.send({
+      error: true,
+      message: 'cannot find address'
+    })
+  }
+
+});
+
+router.get('/events_by_charity', (req, res) => {
+
+  const address = req.query.address;
+
+  if (address != undefined) {
+
+      let events = [];
+    req.app.db.Event.findAll({
+      where: { from: address },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      //limit: 100
+    }).then((d) => {
+
+      events = d;
+
+      const contributors = [];
+      d.map((c)=>{
+        if (contributors.indexOf(c['sender']) == -1) {
+          contributors.push(c['sender']);
+        }
+      })
+      return  req.app.db.AddressNickname.findAll({
+        where: { address: {
+          [Sequelize.Op.in]:  contributors 
+        }}
+      })
+
+    }).then((d) => {
+      
+      const nicknameHash = [];
+      d.map((c)=>{
+        nicknameHash[c.address] = c.nickname
+      })
+      
+      const eventsReturn = JSON.parse(JSON.stringify(events));
+      eventsReturn.map((c)=>{
+        try {
+          c['nickname'] = nicknameHash[c.sender]
+        } catch(e){}        
+      })
+
+      res.send(eventsReturn )
+        
     })
 
   }

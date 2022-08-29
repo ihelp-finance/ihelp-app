@@ -148,6 +148,12 @@ const Event = seq.define('events', {
   sender: {
     type: Sequelize.TEXT,
   },
+  from: {
+    type: Sequelize.TEXT,
+  },
+  memo: {
+    type: Sequelize.TEXT,
+  },
   lendingAddress: {
     type: Sequelize.TEXT,
   },
