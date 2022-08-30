@@ -1059,7 +1059,7 @@ const ContributeNew = (props) => {
         <div className={st.charityBtnGrd}>
         
           <Dropdown overlay={menu}  trigger={['click']}>
-            <a onClick={e => e.preventDefault()} style={{width:'50%',marginTop:'-10px',display:showDepositDirect ? 'none' : ''}} >
+            <a onClick={e => e.preventDefault()} style={{width:'50%',marginTop:'-10px',visibility:showDepositDirect ? 'hidden' : 'visible'}} >
               <Space>
                 Lender{selectedLendingProvider ? (<span>→ {selectedLendingProvider.provider} <Address style={{marginTop:'2px',position:'relative'}} address={selectedLendingProvider.lendingAddress} ensProvider={props.mainnetProvider} blockExplorer={props.blockExplorer} /></span>) : ''}
                 <DownOutlined />
