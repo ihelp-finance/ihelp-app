@@ -608,6 +608,7 @@ const ContributeNew = (props) => {
          
        setLoading(false)
        setInputAmount('')
+       setContributionMemo('')
        setShowDepositInterest(false);
        setShowDepositDirect(false);
        setShowWithdrawInterest(false);
@@ -682,6 +683,7 @@ const ContributeNew = (props) => {
            
        setLoading(false)
        setInputAmount('')
+       setContributionMemo('')
        setShowDepositInterest(false);
        setShowDepositDirect(false);
        setShowWithdrawInterest(false);
@@ -757,6 +759,7 @@ const ContributeNew = (props) => {
          
          setLoading(false)
          setInputAmount('')
+         setContributionMemo('')
          setShowDepositInterest(false);
          setShowDepositDirect(false);
          setShowWithdrawInterest(false);
