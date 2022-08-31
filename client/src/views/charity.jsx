@@ -1023,14 +1023,21 @@ const ContributeNew = (props) => {
     
     let buttonDisabled = false
     if (action == 'deposit' || action == 'donate') {
+
       if (currencyBalances && Object.keys(currencyBalances).indexOf(d) > -1  && (currencyBalances[d] == 0 || inputAmount > parseFloat(utils.formatUnits(currencyBalances[d],charityDecimals[d])))){
         buttonDisabled = true
       }
     }
     else if (action == 'withdraw') {
-      if (charityBalances && Object.keys(charityBalances).indexOf(d) > -1  && (charityBalances[d] == 0 || inputAmount > parseFloat(utils.formatUnits(charityBalances[d],charityDecimals[d])))){
-        buttonDisabled = true
-      }
+
+      console.log(selectedLendingProvider);
+      try{
+        const key = `${d}-${selectedLendingProvider.lendingAddress}`;
+
+        if (charityBalances && Object.keys(charityBalances).indexOf(key) > -1  && (charityBalances[key] == 0 || inputAmount > parseFloat(utils.formatUnits(charityBalances[key],charityDecimals[d])))){
+          buttonDisabled = true
+        }
+      }catch(e){console.log(e)}
     }
     
     return (

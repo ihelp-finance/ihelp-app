@@ -271,11 +271,11 @@ const ContributeNew = (props) => {
           
           const charityData = []
           
-          const BATCH_SIZE = 50;
+          const BATCH_SIZE = 5;
           let index=0;
           for (let i=index;i<numberOfCharities;i=i+BATCH_SIZE) {
             
-              // console.log(i,i+BATCH_SIZE)
+              console.log(i,i+BATCH_SIZE)
               
               const d = await props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address,props.address,i,BATCH_SIZE)
               
@@ -431,6 +431,8 @@ const ContributeNew = (props) => {
     tableData.map((c)=>{
       allCharities.push(c['address']);
     })
+
+    console.log('allCharities',allCharities);
     
     const result = props.tx(props.writeContracts.iHelp.withdrawBulk(allCharities), update => {
 
