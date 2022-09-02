@@ -107,6 +107,15 @@ const StakingStat = seq.define('staking_stats', {
   total_reward:{
     type: Sequelize.FLOAT,
   },
+  help_circulating:{
+    type: Sequelize.FLOAT,
+  },
+  help_supply:{
+    type: Sequelize.FLOAT,
+  },
+  xhelp_supply:{
+    type: Sequelize.FLOAT,
+  },
 },{
   freezeTableName: true
 });
