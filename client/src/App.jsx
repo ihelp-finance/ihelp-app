@@ -5,9 +5,7 @@ import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom";
-
 import {SafeAppWeb3Modal} from "@gnosis.pm/safe-apps-web3modal";
-
 import "./App.css";
 import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
 import { GOOGLEANALYTICS_ID, NETWORK, NETWORKS } from "./constants";
