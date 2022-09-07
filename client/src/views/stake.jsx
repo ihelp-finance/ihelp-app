@@ -530,7 +530,7 @@ const ContributeNew = (props) => {
                           <p>{claimableReward ? commafy(parseFloat(utils.formatUnits(claimableReward,18)).toFixed(2)) : <Spin />}</p>
                       </div>
                       <div>
-                          <button disabled={claimableReward && props.web3Modal && props.web3Modal.cachedProvider && parseFloat(utils.formatUnits(claimableReward,18)) > 0 ? false : true} onClick={handleClaim}>CLAIM</button>
+                          <button disabled={claimableReward && props.web3Modal && ( props.web3Modal.cachedProvider || props.web3Modal.safe ) && parseFloat(utils.formatUnits(claimableReward,18)) > 0 ? false : true} onClick={handleClaim}>CLAIM</button>
                       </div>
                   </div>
             
@@ -556,38 +556,7 @@ const ContributeNew = (props) => {
                                 }
                             })
                         }
-                        
-                        
-              {/*
-        <span>
-        
-       
-        
-                  <div className={st.buttonGroup} style={{marginTop:'20px'}}>
-                <button className={mode == 'stake' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('stake');setAmount('');setInputFocus()}}>Stake</button>
-                <button className={mode == 'unstake' ? "grd-btn" : 'white-btn'} onClick={(e)=>{setMode('unstake');setAmount('');setInputFocus()}}>Unstake</button>
-              </div>
-              
-                <div className={st.maxInput}>
-                  <input autoFocus type="number" value={amount} ref={inputRef} placeholder={`0  ${mode == 'stake' ? 'HELP' : 'xHELP'}`} onChange={(e)=>{setAmount(e.target.value)}}/>
-                  <button className="grd-btn" onClick={(e)=>{mode == 'stake' ? setAmount((Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000).toFixed(6)) : setAmount((Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000).toFixed(6)) }}>MAX</button>
-                </div>
-         
-              <div className={st.charityBtnGrd} style={{marginTop:'-10px',gridTemplateColumns:'repeat(1,1fr)'}}>
-                    <button style={{display:mode == 'stake' ? '' : 'none'}} disabled={props.web3Modal && props.web3Modal.cachedProvider && stakeEnabled ? false : true} className="grd-btn" onClick={handleStake}>Stake</button>
-                    <button style={{display:mode == 'unstake' ? '' : 'none'}} disabled={props.web3Modal && props.web3Modal.cachedProvider && unstakeEnabled ? false : true} className="grd-btn" onClick={handleUnstake}>Unstake</button>
-                  </div>
-                  
-                  <h6 style={{marginTop:'30px'}}>My Claimable DAI Staking Reward: {claimableReward ? commafy(parseFloat(utils.formatUnits(claimableReward,18)).toFixed(2)) : <Spin />}</h6>
-                  <div className={st.charityBtnGrd} style={{marginTop:'10px',gridTemplateColumns:'repeat(1,1fr)'}}>
-                    <button disabled={claimableReward && props.web3Modal && props.web3Modal.cachedProvider && parseFloat(utils.formatUnits(claimableReward,18)) > 0 ? false : true} className="grd-btn" onClick={handleClaim}>Claim Reward</button>
-                  </div>
-                  
-                  
-                  </span>
-                  */}
-               
-                        
+                          
                   </span>
                   
                   )}

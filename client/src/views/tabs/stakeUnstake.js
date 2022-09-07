@@ -63,7 +63,7 @@ export function StakeUnstake(propsraw) {
             <div className='approve'>
                 <input  autoFocus type="number" value={amount} ref={inputRef} placeholder={`0 xHELP`} onChange={(e)=>{setAmount(e.target.value)}}/>
                 <button  className="max-button" onClick={(e)=>{setAmount((Math.floor(parseFloat(utils.formatUnits(xhelpBalance,18)) * 1000000) / 1000000).toFixed(6))}}>MAX</button>
-                <button disabled={props.web3Modal && props.web3Modal.cachedProvider && unstakeEnabled ? false : true} onClick={handleUnstake}>UNSTAKE</button>
+                <button disabled={props.web3Modal && ( props.web3Modal.cachedProvider || props.web3Modal.safe ) && unstakeEnabled ? false : true} onClick={handleUnstake}>UNSTAKE</button>
             </div>
         </div>
     )

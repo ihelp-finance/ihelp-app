@@ -63,8 +63,8 @@ export default function Account({
 
   if (web3Modal) {
 
-    console.log('web3Modal',web3Modal)
-    console.log('cachedProvider',web3Modal.cachedProvider)
+    // console.log('web3Modal',web3Modal)
+    // console.log('cachedProvider',web3Modal.cachedProvider)
 
     if (web3Modal.cachedProvider || web3Modal.safe) {
 

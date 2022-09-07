@@ -333,7 +333,7 @@ const ContributeNew = (props) => {
     
     const totalHelpers = commafy(parseFloat(d['numerOfContributors']).toFixed(0))
     const totalDirectDonations = commafy(parseFloat(utils.formatUnits(d['totalDirectDonations'],18)).toFixed(0)) 
-    const totalYield = commafy(parseFloat(utils.formatUnits(d['totalYieldGenerated'],18)).toFixed(0)) 
+    const totalYield = commafy(parseFloat(utils.formatUnits(d['totalYieldGenerated'],18)).toFixed(2)) 
     const tvl = commafy(parseFloat(utils.formatUnits(d['totalValueLocked'],18)).toFixed(0))
     
     setInfoItems([
@@ -1283,14 +1283,14 @@ const ContributeNew = (props) => {
                 <main>
                   <h2 style={{textAlign:'center'}}>Donate Interest</h2>
                   <div className={st.charityBtnGrd} style={{gridTemplateColumns:'repeat(2,1fr)'}}>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositInterest(true)}>Deposit</button>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && withdrawEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowWithdrawInterest(true)}>Withdraw</button>
+                    <button disabled={props.web3Modal && ( props.web3Modal.cachedProvider || props.web3Modal.safe ) && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositInterest(true)}>Deposit</button>
+                    <button disabled={props.web3Modal && ( props.web3Modal.cachedProvider || props.web3Modal.safe ) && withdrawEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowWithdrawInterest(true)}>Withdraw</button>
                   </div>
                 </main>
                 <main>
                   <h2 style={{textAlign:'center'}}>Donate Principal</h2>
                   <div className={st.charityBtnGrd}>
-                    <button disabled={props.web3Modal && props.web3Modal.cachedProvider && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositDirect(true)}>Direct Donate</button>
+                    <button disabled={props.web3Modal && ( props.web3Modal.cachedProvider || props.web3Modal.safe ) && depositEnabled ? false : true} className="grd-btn" onClick={(e)=>setShowDepositDirect(true)}>Direct Donate</button>
                   </div>
                 </main>
               </div>

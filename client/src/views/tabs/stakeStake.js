@@ -65,7 +65,7 @@ export function StakeStake(propsraw) {
             <div className='approve'>
                 <input  autoFocus type="number" value={amount} ref={inputRef} placeholder={`0 HELP`} onChange={(e)=>{setAmount(e.target.value)}}/>
                 <button className="max-button" onClick={(e)=>{setAmount((Math.floor(parseFloat(utils.formatUnits(ihelpBalance,18)) * 1000000) / 1000000).toFixed(6))}}>MAX</button>
-                <button disabled={props.web3Modal && props.web3Modal.cachedProvider && stakeEnabled ? false : true} onClick={handleStake}>STAKE</button>
+                <button disabled={props.web3Modal && ( props.web3Modal.cachedProvider || props.web3Modal.safe ) && stakeEnabled ? false : true} onClick={handleStake}>STAKE</button>
             </div>
         </div>
     )
