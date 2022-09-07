@@ -5,7 +5,9 @@ import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link  } from "react-router-dom";
-import Web3Modal from "./modules/web3modal";
+
+import {SafeAppWeb3Modal} from "@gnosis.pm/safe-apps-web3modal";
+
 import "./App.css";
 import { Account, Contract, GasGauge, Header, ThemeSwitch } from "./components";
 import { GOOGLEANALYTICS_ID, NETWORK, NETWORKS } from "./constants";
@@ -80,11 +82,11 @@ const walletLinkProvider = walletLink.makeWeb3Provider(
 /*
   Web3 modal helps us "connect" external wallets:
 */
-const web3Modal = new Web3Modal({
+const web3Modal = new SafeAppWeb3Modal({
   // network: 'avalanche', // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
   theme:"light", // optional. Change to "dark" for a dark theme.
-  providerOptions: {
+  providerOptions: { 
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
@@ -331,7 +333,7 @@ function App(props) {
     }
     }
     // });
-  }
+  } 
 
   const loadWeb3Modal = useCallback(async (force) => {
     
@@ -341,7 +343,8 @@ function App(props) {
     // } 
     // if (c == '' || force == true) {
       
-      const provider = await web3Modal.connect();
+      const provider = await web3Modal.requestProvider();
+      // const provider = await web3Modal.connect();
       
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
       
@@ -366,9 +369,18 @@ function App(props) {
   }, [setInjectedProvider]);
   
   useEffect(() => {
-    if (web3Modal.cachedProvider) {
-      loadWeb3Modal(true);
+
+    let isInIframe = false;
+    if (window?.parent === window) {
+      isInIframe = false;
+    } else {
+      isInIframe = true;
     }
+
+    if (web3Modal.cachedProvider || isInIframe) {
+      loadWeb3Modal(true); 
+    }
+    
   }, [loadWeb3Modal]);
 
   const [route, setRoute] = useState();

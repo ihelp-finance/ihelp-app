@@ -1,7 +1,9 @@
 {
-  "short_name": "iHelp",
+  "name": "IHELP Protocol",
+  "description": "Charitable giving powered by Web3. Donate yield or direct tokens to any charity in the ecosystem.",
+  "iconPath": "assets/ihelp_icon.svg",
+  "short_name": "IHELP",
   "start_url": ".",
-  "name": "iHelp",
   "icons": [
     {
       "src": "favicon.ico",
@@ -19,7 +21,6 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
   "display": "standalone",
   "theme_color": "#fff",
   "background_color": "#000"

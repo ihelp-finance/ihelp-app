@@ -271,7 +271,7 @@ const ContributeNew = (props) => {
           
           const charityData = []
           
-          const BATCH_SIZE = 5;
+          const BATCH_SIZE = 50;
           let index=0;
           for (let i=index;i<numberOfCharities;i=i+BATCH_SIZE) {
             

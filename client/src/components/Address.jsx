@@ -56,15 +56,16 @@ export default function Address(props) {
     );
   }
 
-  let displayAddress = address.substr(0, 6);
+  let displayAddress = address.substr(0,6);
 
   if (ens && ens.indexOf("0x") < 0) {
     displayAddress = ens;
   } else if (props.size === "short") {
-    displayAddress += "..." + address.substr(-4);
+    displayAddress += ''; // "..." + address.substr(-4);
   } else if (props.size === "long") {
-    displayAddress = address;
+    displayAddress += "..." + address.substr(-4);
   }
+
 
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
   // if (props.minimized) {

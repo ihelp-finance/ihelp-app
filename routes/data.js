@@ -663,6 +663,9 @@ router.get('/stakingstats', (req, res) => {
       attributes: [
         [Sequelize.fn('DISTINCT', Sequelize.col('time')), 'time'],
         [Sequelize.col('total_reward'), 'total_reward'],
+        [Sequelize.col('help_circulating'), 'help_circulating'],
+        [Sequelize.col('help_supply'), 'help_supply'],
+        [Sequelize.col('xhelp_supply'), 'xhelp_supply'],
       ],
       raw: true,
       limit: 24 * 7
@@ -671,10 +674,23 @@ router.get('/stakingstats', (req, res) => {
       const r = _.map(data, function(data) {
 
         let reward = 0
+        let help_circulating = 0
+        let help_supply = 0
+        let xhelp_supply = 0
+
         if (data.total_reward != null) {
           reward = parseFloat(data.total_reward.toFixed(6));
         }
-        return { 'time': data.time, 'total_reward': reward }
+        if (data.help_circulating != null) {
+          help_circulating = parseFloat(data.help_circulating.toFixed(6));
+        }
+        if (data.help_supply != null) {
+          help_supply = parseFloat(data.help_supply.toFixed(6));
+        }
+        if (data.xhelp_supply != null) {
+          xhelp_supply = parseFloat(data.xhelp_supply.toFixed(6));
+        }
+        return { 'time': data.time, 'total_reward': reward, 'help_circulating': help_circulating, 'help_supply':help_supply, 'xhelp_supply':xhelp_supply  }
       });
 
       response['rewardovertime'] = r;

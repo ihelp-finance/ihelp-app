@@ -58,20 +58,40 @@ export default function Account({
   burner,
 }) {
   const modalButtons = [];
+
+  let isInIframe = false;
+
   if (web3Modal) {
-    if (web3Modal.cachedProvider) {
-      modalButtons.push(
-        <button
-          key="logoutbutton"
-          //style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          className="grd-btn"
-          // shape="round"
-          // size="large"
-          onClick={logoutOfWeb3Modal}
-        >
-          LOGOUT
-        </button>,
-      );
+
+    console.log('web3Modal',web3Modal)
+    console.log('cachedProvider',web3Modal.cachedProvider)
+
+    if (web3Modal.cachedProvider || web3Modal.safe) {
+
+      // web3Modal.isSafeApp().then((d)=>{console.log(d)})
+     
+      if (window?.parent === window) {
+        isInIframe = false;
+      } else {
+        isInIframe = true;
+      }
+
+      if (isInIframe == false) {
+        modalButtons.push(
+          <button
+            key="logoutbutton"
+            //style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
+            className="grd-btn"
+            // shape="round"
+            // size="large"
+            onClick={logoutOfWeb3Modal}
+          >
+            LOGOUT
+          </button>,
+        );
+      } else {
+        modalButtons.push('');
+      }
     } else {
       modalButtons.push(
         <button
@@ -99,15 +119,15 @@ export default function Account({
 
   const display = minimized ? (
       <span className={'addressHeader'}>
-        {web3Modal && web3Modal.cachedProvider ? (
-              <Address address={address} ensProvider={mainnetProvider} minimized={true} blockExplorer={blockExplorer} />
+        {web3Modal && ( web3Modal.cachedProvider || web3Modal.safe ) ? (
+              <Address address={address} size={isInIframe == false ? 'short' : 'long'} ensProvider={mainnetProvider} minimized={true} blockExplorer={blockExplorer} />
             ) : ''}
       </span>
   ) : (
     <span>
-      {web3Modal && web3Modal.cachedProvider ? (
+      {web3Modal && ( web3Modal.cachedProvider || web3Modal.safe ) ? (
         <span className={'addressHeader'}>
-          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Address address={address} size={isInIframe == false ? 'short' : 'long'} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
          {/* <Balance address={address} provider={localProvider} price={price} />
           <Wallet
             address={address}

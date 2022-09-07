@@ -1,0 +1,4 @@
+[submodule "client/src/modules/safe-apps"]
+	path = client/src/modules/safe-apps
+	url = https://github.com/safe-global/safe-apps-sdk.git
+	branch = @gnosis.pm/safe-apps-web3modal@17.0.0
