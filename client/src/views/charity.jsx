@@ -656,7 +656,7 @@ const ContributeNew = (props) => {
         }
         else {
           
-          sponsorTx = props.tx(props.writeContracts[contractName].withdrawTokens(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
+          sponsorTx = props.tx(props.writeContracts[contractName].withdrawNative(selectedLendingProvider.lendingAddress,withdrawAmountWei), update => {
          
             console.log("Transaction Update:", update);
             if (update && (update.status === "confirmed" || update.status === 1)) {
