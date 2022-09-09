@@ -116,6 +116,21 @@ const StakingStat = seq.define('staking_stats', {
   xhelp_supply:{
     type: Sequelize.FLOAT,
   },
+  tvl:{
+    type: Sequelize.FLOAT,
+  },
+  interest_generated:{
+    type: Sequelize.FLOAT,
+  },
+  direct_donations:{
+    type: Sequelize.FLOAT,
+  },
+  num_charities:{
+    type: Sequelize.INTEGER,
+  },
+  num_donors:{
+    type: Sequelize.INTEGER,
+  }
 },{
   freezeTableName: true
 });
