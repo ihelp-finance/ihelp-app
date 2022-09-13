@@ -23,6 +23,7 @@ router.get('/', (req, res) => {
     stakingstats: '/api/v1/data/stakingstats',
     //contribovertime: '/api/v1/data/contribovertime',
     events: '/api/v1/data/events',
+    all_events: '/api/v1/data/all_events',
     contracts: '/api/v1/data/contracts',
   });
 });
@@ -1221,6 +1222,52 @@ router.get('/events_by_charity', (req, res) => {
   }
 
 });
+
+
+router.get('/all_events', (req, res) => {
+
+  let events = [];
+  req.app.db.Event.findAll({
+    order: [
+      ['createdAt', 'DESC']
+    ],
+    //limit: 100
+  }).then((d) => {
+
+    events = d;
+
+    const contributors = [];
+    d.map((c)=>{
+      if (contributors.indexOf(c['sender']) == -1) {
+        contributors.push(c['sender']);
+      }
+    })
+    return  req.app.db.AddressNickname.findAll({
+      where: { address: {
+        [Sequelize.Op.in]:  contributors 
+      }}
+    })
+
+  }).then((d) => {
+    
+    const nicknameHash = [];
+    d.map((c)=>{
+      nicknameHash[c.address] = c.nickname
+    })
+    
+    const eventsReturn = JSON.parse(JSON.stringify(events));
+    eventsReturn.map((c)=>{
+      try {
+        c['nickname'] = nicknameHash[c.sender]
+      } catch(e){}        
+    })
+
+    res.send(eventsReturn )
+      
+  })
+
+});
+
 
 router.get('/userstats', (req, res) => {
 
