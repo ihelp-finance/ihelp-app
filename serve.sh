@@ -32,6 +32,15 @@ nvm install v16
 nvm use v16
 npm install yarn -g
 
+# link the web3modal project
+BACK="$PWD"
+cd client/src/modules/web3modal
+yarn link
+cd $BACK
+cd client 
+yarn link web3modal
+cd $BACK
+
 # start the service
 if [[ "$MODE" == "prod" ]];then
     npm run production

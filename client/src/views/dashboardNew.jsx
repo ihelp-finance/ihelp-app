@@ -271,7 +271,11 @@ const ContributeNew = (props) => {
           
           const charityData = []
           
-          const BATCH_SIZE = 50;
+          
+          let BATCH_SIZE = 50;
+          if (process.env.NODE_ENV === 'development') {
+            BATCH_SIZE = 30;
+          }
           let index=0;
           for (let i=index;i<numberOfCharities;i=i+BATCH_SIZE) {
             
