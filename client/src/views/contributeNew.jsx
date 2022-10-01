@@ -226,13 +226,13 @@ const ContributeNew = (props) => {
       }, {
         backgroundColor: "rgba(255, 255, 255, 0.85)",
         backdropFilter: "blur(5px)",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "0% 0",
-          end: "50% 0",
-          scrub: 0.5,
-          toggleActions: "start pause resume none",
-        },
+        // scrollTrigger: {
+        //   trigger: ".hero",
+        //   start: "0% 0",
+        //   end: "50% 0",
+        //   scrub: 0.5,
+        //   toggleActions: "start pause resume none",
+        // },
       }
     );
   }, []);
@@ -283,7 +283,7 @@ const ContributeNew = (props) => {
         let index = 0;
         for (let i = index; i < numberOfCharities; i = i + BATCH_SIZE) {
 
-          // console.log(i,'/',numberOfCharities);
+          console.log(i,'/',numberOfCharities);
 
           const d = await props.readContracts["analytics"]["generalStats"](props.readContracts['iHelp'].address, i, BATCH_SIZE)
           

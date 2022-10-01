@@ -149,13 +149,13 @@ const ContributeNew = (props) => {
       }, {
         backgroundColor: "rgba(255, 255, 255, 0.85)",
         backdropFilter: "blur(5px)",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "0% 0",
-          end: "50% 0",
-          scrub: 0.5,
-          toggleActions: "start pause resume none",
-        },
+        // scrollTrigger: {
+        //   trigger: ".hero",
+        //   start: "0% 0",
+        //   end: "50% 0",
+        //   scrub: 0.5,
+        //   toggleActions: "start pause resume none",
+        // },
       }
     );
   }, []);
@@ -200,21 +200,9 @@ const ContributeNew = (props) => {
         setValue("xHelp", "balanceOf", [props.address], xhelpBalance, setxhelpBalance);
         setValue("iHelp", "getClaimableTokens", [props.address], claimableHelpTokens, setclaimableHelpTokens);
 
-        props.readContracts["analytics"]["userStats"](props.readContracts['iHelp'].address, props.address, 0, 1000).then((d) => {
-
-          console.log('userStats', d)
-          
-          //console.log(charityDecimals)
-
-          setcontribTotal(d['totalContributions']);
-          setdirectDonations(d['totalDirectDonations']);
-          settotalInterestGenerated(d['totalInterestGenerated']);
-
-        });
-        
         props.readContracts["analytics"]["getSupportedCurrencies"](props.readContracts['iHelp'].address,props.targetNetwork.blockTime).then((d) => {
 
-          // console.log('pricefeeds:',d)
+          console.log('pricefeeds:',d)
 
           // get hash of currencies and their lending protocols
 
@@ -264,25 +252,57 @@ const ContributeNew = (props) => {
           numberOfCharities = parseInt(d.toString());
           
           processCharityBatches();
+          processUserStats();
           
         })
+
+        let BATCH_SIZE = 50;
+        if (process.env.NODE_ENV === 'development') {
+          BATCH_SIZE = 15;
+        }
+
+        const processUserStats = async () => {
+          
+          const charityData = []
+          
+          let contribtotal = 0;
+          let directdonations = 0;
+          let totalinterest = 0;
+
+          let index=0;
+          for (let i=index;i<numberOfCharities;i=i+BATCH_SIZE) {
+
+            console.log('userBatch',i,i+BATCH_SIZE)
+
+            const d = await props.readContracts["analytics"]["userStats"](props.readContracts['iHelp'].address, props.address, i,BATCH_SIZE)
+
+            console.log('userStats',i, d)
+
+            contribtotal += parseFloat(utils.formatUnits(d['totalContributions'],18))
+            directdonations += parseFloat(utils.formatUnits(d['totalDirectDonations'],18))
+            totalinterest += parseFloat(utils.formatUnits(d['totalInterestGenerated'],18))
+            
+          }
+
+          setcontribTotal(contribtotal);
+          setdirectDonations(directdonations);
+          settotalInterestGenerated(totalinterest);
+
+        }
         
         const processCharityBatches = async () => {
           
           const charityData = []
           
-          
-          let BATCH_SIZE = 50;
-          if (process.env.NODE_ENV === 'development') {
-            BATCH_SIZE = 30;
-          }
           let index=0;
           for (let i=index;i<numberOfCharities;i=i+BATCH_SIZE) {
             
-              console.log(i,i+BATCH_SIZE)
+              console.log('charityBatch',i,i+BATCH_SIZE)
               
               const d = await props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address,props.address,i,BATCH_SIZE)
               
+              console.log('charityStats',i, d)
+
               d.map((c)=>{
                 if (c['totalContributions'] > 0 || c['totalDonations'] > 0 || c['yieldGenerated'] > 0) {
                   
@@ -313,42 +333,6 @@ const ContributeNew = (props) => {
           
         }
         
-        /*
-        props.readContracts["analytics"]["getUserContributionsPerCharity"](props.readContracts['iHelp'].address, props.address, 0, 1000).then((d) => {
-          
-          console.log('userContributionsPerCharity',d)
-          
-          const charityData = []
-          
-          d.map((c)=>{
-            if (c['totalContributions'] > 0 || c['totalDonations'] > 0 || c['yieldGenerated'] > 0) {
-              
-              const curr = []
-              
-              c['tokenStatistics'].map((r)=>{
-                if (r['totalContributions'] > 0) { 
-                  
-                  curr.push([r['currency'],r['totalContributions']])
-                  
-                } 
-              })
-              
-              charityData.push({
-                address:c['charityAddress'],
-                name:c['charityName'],
-                contributed:c['totalContributions'],
-                directdonations:c['totalDonations'],
-                yieldgenerated:c['yieldGenerated'],
-                currencies:curr,
-              })
-            }
-          })
-          
-          setTableData(charityData)
-          
-        });
-        */
-
       }, 10)
 
     }
@@ -662,15 +646,15 @@ const ContributeNew = (props) => {
                         
                         <div style={{padding: '2.4rem',width:'34%',display:'inline-block',textAlign:'center'}}>
                             <p>Active Contributions</p>
-                            <h5>{contribTotal ? `$${commafy(parseFloat(utils.formatUnits(contribTotal,18)).toFixed(2))}` : <Spin />}</h5>
+                            <h5>{contribTotal || contribTotal == 0 ? `$${commafy(contribTotal.toFixed(2))}` : <Spin />}</h5>
                         </div>
                         <div style={{padding: '2.4rem',width:'33%',display:'inline-block',textAlign:'center'}}>
                             <p>Yield Generated</p>
-                            <h5>{totalInterestGenerated ? `$${commafy(parseFloat(utils.formatUnits(totalInterestGenerated,18)).toFixed(2))}` : <Spin />}</h5>
+                            <h5>{totalInterestGenerated || totalInterestGenerated == 0 ? `$${commafy(totalInterestGenerated.toFixed(2))}` : <Spin />}</h5>
                         </div>
                         <div style={{padding: '2.4rem',width:'33%',display:'inline-block',textAlign:'center'}}>
                             <p>Direct Donations</p>
-                            <h5>{directDonations ? `$${commafy(parseFloat(utils.formatUnits(directDonations,18)).toFixed(2))}` : <Spin />}</h5>
+                            <h5>{directDonations || directDonations == 0 ? `$${commafy(directDonations.toFixed(2))}` : <Spin />}</h5>
                         </div>
                         
                         {/*<h6>Total Interest Donated: $1,321,312</h6>
