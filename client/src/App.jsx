@@ -21,7 +21,7 @@ import {
 } from "./hooks";
 // import Hints from "./Hints";
 import ReactGA from "react-ga4";
-import { Contribute,Dashboard,Leaderboard,Stake,Charity,Login,CharityAccount } from "./views";
+import { Contribute,Dashboard,Leaderboard,Stake,Charity,Login,CharityAccount,Stats } from "./views";
 
 const { ethers } = require("ethers");
 
@@ -425,6 +425,11 @@ function App(props) {
           </Route>
           <Route exact path="/login">
             <Login
+              {...params}
+            />  
+          </Route>
+          <Route exact path="/stats">
+            <Stats
               {...params}
             />  
           </Route>

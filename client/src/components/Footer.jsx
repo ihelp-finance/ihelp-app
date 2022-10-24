@@ -47,6 +47,10 @@ const Footer = (props) => {
               <a href="https://docs.ihelp.finance/terms" target="_blank">
                    <h4 className="footerText">Terms</h4>
               </a>
+              |
+              <Link to="/stats">
+                   <h4 className="footerText">Stats</h4>
+              </Link>
               {
               /*  if the local provider has a signer, let's show the faucet:  */
               props.faucetAvailable ? (
