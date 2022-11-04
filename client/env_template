@@ -2,7 +2,7 @@ REACT_APP_NETWORK=avalanche
 REACT_APP_RPC_URL=https://api.avax.network/ext/bc/C/rpc
 WEBSOCKET_RPC_URL=https://api.avax.network/ext/bc/C/rpc
 
-REACT_CLIENT_PROXY=https://api.ihelp.finance
+REACT_CLIENT_PROXY=https://app.ihelp.finance
 
 NETWORK_ADDRESSES=Avalanche
 SWAPPER_ADDRESSES=traderjoe
