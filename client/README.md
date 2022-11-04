@@ -18,10 +18,10 @@ npm install yarn -g
 
 ```
 # clone the repo
-git clone git@github.com:ihelp-finance/ihelp-app.git
+git clone git@github.com:ihelp-finance/ihelp-app.git ihelp-app
 
 # install the client dependencies with yarn
-cd client
+cd ihelp-app/client
 yarn install
 ```
 
