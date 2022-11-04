@@ -18,6 +18,9 @@ NOTE - please adjust the file "client/src/constants.js" accordingly specifically
 # sh get-docker.sh
 # on mac or windows, you can also use Docker Desktop
 
+# build the docker container
+./build.sh
+
 # create the starter db so there is some data in the database for dev purposes
 cd modules/postgresql
 tar xzvf starter_db.tgz
