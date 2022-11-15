@@ -401,7 +401,7 @@ function App(props) {
           <Route exact path>
             <Contribute {...params} />
           </Route>
-          <Route exact path="/ ">
+          <Route exact path="/dashboard">
             <Dashboard {...params} />
           </Route>
           <Route exact path="/stake">
