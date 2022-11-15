@@ -23,10 +23,10 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 // import Head from "next/head";
 // import Link from "next/link";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Navigation, Pagination } from "swiper";
-import "swiper/swiper.min.css";
-import "swiper/components/pagination/pagination.min.css";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import SwiperCore, { Navigation, Pagination } from "swiper";
+// import "swiper/swiper.min.css";
+// import "swiper/components/pagination/pagination.min.css";
 import { useParams } from 'react-router-dom';
 import { Menu,Space,Dropdown,Input,Tabs,Spin,Tooltip } from 'antd';
 import { LoadingOutlined,DownOutlined } from '@ant-design/icons';
@@ -144,7 +144,7 @@ const ContributeNew = (props) => {
     document.title = `iHelp | Charity (${props.targetNetwork.name.replace('host','').charAt(0).toUpperCase() + props.targetNetwork.name.replace('host','').substr(1).toLowerCase()})`;
   }, []);
 
-  SwiperCore.use([Navigation, Pagination]);
+  // SwiperCore.use([Navigation, Pagination]);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     /* Header on-scroll Animation */

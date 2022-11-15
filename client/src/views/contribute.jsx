@@ -1,18 +1,7 @@
 import React, { useEffect } from "react";
 import st from "./styles/contribute.module.css";
-import {
-  MdSearch,
-  MdMenu,
-  MdClose,
-  MdKeyboardArrowLeft,
-  MdKeyboardArrowRight,
-} from "react-icons/md";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaLinkedinIn,
-  FaInstagram,
-} from "react-icons/fa";
+import { MdSearch, MdMenu, MdClose, MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import $ from "jquery";
 import { Power4 } from "gsap/dist/gsap";
 import { gsap } from "gsap/dist/gsap";
@@ -46,7 +35,7 @@ const Home = () => {
           scrub: 0.5,
           toggleActions: "start pause resume none",
         },
-      }
+      },
     );
   }, []);
 
@@ -113,10 +102,9 @@ const Home = () => {
           <main>
             <h5>Mission</h5>
             <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus,
-              quisquam. Iste veniam, libero illum nisi similique accusantium
-              consequatur perferendis sint at voluptatum culpa distinctio modi
-              ea inventore nostrum. Facilis, necessitatibus.
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus, quisquam. Iste veniam, libero illum
+              nisi similique accusantium consequatur perferendis sint at voluptatum culpa distinctio modi ea inventore
+              nostrum. Facilis, necessitatibus.
             </p>
           </main>
         </div>

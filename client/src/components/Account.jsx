@@ -1,9 +1,11 @@
 import { Button } from "antd";
 import React from "react";
+import { useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
+import { FaWallet } from "react-icons/fa";
 
 /*
   ~ What it does? ~
@@ -56,20 +58,20 @@ export default function Account({
   blockExplorer,
   isContract,
   burner,
+  setButton,
+  button,
 }) {
   const modalButtons = [];
 
   let isInIframe = false;
 
   if (web3Modal) {
-
     // console.log('web3Modal',web3Modal)
     // console.log('cachedProvider',web3Modal.cachedProvider)
 
     if (web3Modal.cachedProvider || web3Modal.safe) {
-
       // web3Modal.isSafeApp().then((d)=>{console.log(d)})
-     
+
       if (window?.parent === window) {
         isInIframe = false;
       } else {
@@ -90,20 +92,28 @@ export default function Account({
           </button>,
         );
       } else {
-        modalButtons.push('');
+        modalButtons.push("");
       }
     } else {
       modalButtons.push(
         <button
           key="loginbutton"
           //style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          className="grd-btn"
+          className={button === "wallet" ? "grd-btn-focus" : "grd-btn"}
           // shape="round"
           // size="large"
           /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
-          onClick={loadWeb3Modal}
+          onClick={() => {
+            loadWeb3Modal();
+            setButton("wallet");
+          }}
         >
           CONNECT WALLET
+          {button === "wallet" ? (
+            <img src="/assets/icons/wallet 0.2.svg" alt="wallet" />
+          ) : (
+            <FaWallet size="16px" style={{ marginLeft: "17px" }} />
+          )}
         </button>,
       );
     }
@@ -114,21 +124,34 @@ export default function Account({
   function isValidAddress(address) {
     return address && address !== "0x0000000000000000000000000000000000000000";
   }
-  
+
   //console.log('address',address)
 
   const display = minimized ? (
-      <span className={'addressHeader'}>
-        {web3Modal && ( web3Modal.cachedProvider || web3Modal.safe ) ? (
-              <Address address={address} size={isInIframe == false ? 'short' : 'long'} ensProvider={mainnetProvider} minimized={true} blockExplorer={blockExplorer} />
-            ) : ''}
-      </span>
+    <span className={"addressHeader"}>
+      {web3Modal && (web3Modal.cachedProvider || web3Modal.safe) ? (
+        <Address
+          address={address}
+          size={isInIframe == false ? "short" : "long"}
+          ensProvider={mainnetProvider}
+          minimized={true}
+          blockExplorer={blockExplorer}
+        />
+      ) : (
+        ""
+      )}
+    </span>
   ) : (
     <span>
-      {web3Modal && ( web3Modal.cachedProvider || web3Modal.safe ) ? (
-        <span className={'addressHeader'}>
-          <Address address={address} size={isInIframe == false ? 'short' : 'long'} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-         {/* <Balance address={address} provider={localProvider} price={price} />
+      {web3Modal && (web3Modal.cachedProvider || web3Modal.safe) ? (
+        <span className={"addressHeader"}>
+          <Address
+            address={address}
+            size={isInIframe == false ? "short" : "long"}
+            ensProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+          />
+          {/* <Balance address={address} provider={localProvider} price={price} />
           <Wallet
             address={address}
             provider={localProvider}

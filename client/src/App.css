@@ -132,10 +132,10 @@ html {
   color: #fff; }
 
 footer {
-  background-color: rgba(49, 0, 182, 0.1);
+  background-color: linear-gradient(180deg, #FFFFFF 0%, #F6F6F6 100%, #FCFCFC 100%);;
   padding: 1.2rem 3rem;
-  bottom: 0px;
-    position: absolute;
+  /* bottom: 0px; */
+    /* position: absolute; */
     width: 100%;
   color: #262626; }
   footer div {
@@ -1078,7 +1078,7 @@ color: #262626;
 
 .ant-input-affix-wrapper {
   border: 1px solid #D6C2F2 !important;
-    border-radius: 24px !important;
+    /* border-radius: 24px !important; */
     line-height: 2.5715 !important;
 }
 

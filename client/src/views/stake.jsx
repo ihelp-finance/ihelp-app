@@ -21,10 +21,10 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 // import Head from "next/head";
 // import Link from "next/link";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Navigation, Pagination } from "swiper";
-import "swiper/swiper.min.css";
-import "swiper/components/pagination/pagination.min.css";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import SwiperCore, { Navigation, Pagination } from "swiper";
+// import "swiper/swiper.min.css";
+// import "swiper/components/pagination/pagination.min.css";
 import {
   LineChart,
   Scatter,
@@ -221,7 +221,7 @@ const ContributeNew = (props) => {
   
   }
   
-  SwiperCore.use([Navigation, Pagination]);
+  // SwiperCore.use([Navigation, Pagination]);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     /* Header on-scroll Animation */

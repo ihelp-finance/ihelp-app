@@ -12,9 +12,8 @@ const themes = {
 const prevTheme = window.localStorage.getItem("theme");
 
 ReactDOM.render(
-    <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <App />
-    </ThemeSwitcherProvider>
-  ,
+  <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+    <App />
+  </ThemeSwitcherProvider>,
   document.getElementById("root"),
 );
