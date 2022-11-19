@@ -2,7 +2,7 @@
 import { BrowserRouter, Route, NavLink, Link, useLocation } from "react-router-dom";
 //import { useRouter } from "next/router";
 import React, { useEffect, useState, useCallback, useContext } from "react";
-import { MdMenu, MdClose } from "react-icons/md";
+import { MdMenu, MdClose, MdArrowDropDown } from "react-icons/md";
 import { gsap } from "gsap/dist/gsap";
 import { Power4 } from "gsap/dist/gsap";
 import $ from "jquery";
@@ -163,7 +163,11 @@ const Header = props => {
             <div className={button === "avax" ? "avax-logo-focus" : "avax-logo"} onClick={() => setButton("avax")}>
               <img src="/assets/icons/avax.svg" alt="avax" width="24px" />
               <p className="">AVAX</p>
-              <img src="/assets/icons/chevron-square-down.svg" alt="down" width="12px" />
+              {button === "avax" ? (
+                <MdArrowDropDown size="25px" fill="white" style={{paddingLeft: '-10px'}} />
+              ) : (
+                <img src="/assets/icons/chevron-square-down.svg" alt="down" width="12px" />
+              )}
             </div>
             <div className={"headerRightButtonInner"}>
               <Account
@@ -183,12 +187,11 @@ const Header = props => {
               />
               {/* <button></button> */}
             </div>
-
           </div>
-            <span style={{ top: "5px" }}>
-              <MdMenu onClick={openMobHeader} style={{ fontSize: "36px" }} className="open-mob-header" />
-              <MdClose onClick={closeMobHeader} style={{ fontSize: "36px" }} className="close-mob-header" />
-            </span>
+          <span style={{ top: "5px" }}>
+            <MdMenu onClick={openMobHeader} style={{ fontSize: "36px" }} className="open-mob-header" />
+            <MdClose onClick={closeMobHeader} style={{ fontSize: "36px" }} className="close-mob-header" />
+          </span>
         </div>
       </div>
     </div>

@@ -560,15 +560,15 @@
 
 //     /*
 //     allCharities.map((c)=>{
-      
+
 //       const key = [c['Organization Name'],c['Charity GENERAL Category (One Cell)'],c['Brief Description & History']].join(',');
-      
+
 //       if (key.toLowerCase().indexOf(searchvalue.toLowerCase()) > -1 && c['Status'] == 'LIVE') {
 //         filtered.push(c);
 //       }
-      
+
 //     })
-    
+
 //     setFilteredCharities(filtered);
 //     */
 //   };
@@ -970,8 +970,8 @@
 
 //   return (
 //     <div id="app" className="app">
-//       {/*   <title>iHelp | Contribute</title> 
-    
+//       {/*   <title>iHelp | Contribute</title>
+
 //       <img src="./assets/bgc.svg" alt="Bgc" className="body-bgc" />
 //       */}
 //       <Header {...props} />
@@ -1003,34 +1003,33 @@
 //           </div>
 
 //           {/*<div className={st.searchFilter}>
-          
-          
+
 //              <main className={st.filterBox}>
-            
+
 //               <h6 className={st.topText}>
 //                   Welcome to the <a href='https://docs.ihelp.finance' target="_blank"> iHelp Protocol</a>. Click on any charity to learn more and contribute.
 //                 </h6>
-            
-//             </main> 
-          
+
+//             </main>
+
 //             <main>
 //               <div className={st.searchBar} style={{float:'right',marginTop: '16px'}}>
 //                 <MdSearch />
 //                 <input type="text" placeholder="Search" onChange={handleSearch} />
 //               </div>
 //             </main>
-         
+
 //           </div>
 
-//            <Table 
-           
+//            <Table
+
 //            onRow={(record, rowIndex) => {
 //             return {
 //               onClick: event => { history.push(`/charity/${record['Id']}`) }
 //             };
 //           }}
-//           className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={filteredCharities} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} /> 
-          
+//           className={st.tableContribute + " " + "table"} columns={charityColumns} dataSource={filteredCharities} pagination={{ defaultPageSize: 6,showSizeChanger:true,pageSizeOptions:[6,10,20,50] }} />
+
 //           */}
 
 //           <div className="banner">
@@ -1063,7 +1062,7 @@
 //               })}
 
 //               {/* <CheckboxContainer data={ {category:charityGeneralCategory, geography:[], other}} seeMore={true}/>
-                     
+
 //                    <CheckboxContainer data={mainAreasOperation} seeMore={true}/>
 //                     <CheckboxContainer data={countryIncorporation} seeMore={true}/>*/}
 
@@ -1085,7 +1084,7 @@
 //                                 <img src={sortByArrow} alt=""/>
 //                             </div>
 //                             <div className='sortByBody'>
-                                
+
 //                             </div>
 //                         </button>*/}
 //                 <div className="searchFilter">

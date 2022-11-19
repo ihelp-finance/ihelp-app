@@ -21,9 +21,10 @@ import {
 } from "./hooks";
 // import Hints from "./Hints";
 import ReactGA from "react-ga4";
-import { Dashboard, Leaderboard, Stake, Charity, Login, CharityAccount, Stats } from "./views";
+import { Dashboard, Leaderboard, Stake, Login, CharityAccount, Stats } from "./views";
 
 import Contribute from "./pages/contribute";
+import Charity from "./pages/charity";
 
 const { ethers } = require("ethers");
 

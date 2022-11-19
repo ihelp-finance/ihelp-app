@@ -117,6 +117,13 @@
   width: 100%;
 }
 
+.companyLogo {
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  border: 1px solid #cba4f8;
+}
+
 .yearFounded {
   font-weight: 400;
   font-size: 13px;
@@ -423,13 +430,21 @@
   border-radius: 12px;
   overflow: hidden;
   margin: 20px;
+  background-color: white;
+}
+
+.charityCompanyCard:hover {
+  border: 1px solid #cba4f8;
+  box-shadow: 0px 4px 50px rgba(203, 164, 248, 0.5);
+  background: #f7f0ff;
+  background: #f7f0ff;
 }
 
 .companyInfo {
-  height: 195px;
+  min-height: 250px;
   width: 100%;
   padding: 20px;
-  background: #ffffff;
+  background: transparent;
   border: 1px solid #eaeaea;
   border-top: 0px;
   border-radius: 0px 0px 12px 12px;

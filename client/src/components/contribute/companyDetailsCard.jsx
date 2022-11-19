@@ -24,12 +24,12 @@ const CompanyDetailsCard = ({ hover, name, info, className }) => {
       ) : (
         <div className={className || classes.alternateIframe}>
           <div className={classes.companyDetails}>
-            <img src={info.logo || "/assets/kidney-fund.png"} />
+            <img src={info.logo || "/assets/kidney-fund.png"} className={classes.companyLogo} />
             <div>
               <p className={classes.yearFounded}>
                 Year Founded: <span className={classes.BoldOne}>{info.foundedIn || "1971"}</span>
               </p>
-              <h6 className={classes.revenueFig}>US${info.revenue || "29.31M"}</h6>
+              <h6 className={classes.revenueFig}>US {info.revenue || "29.31M"}</h6>
               <p className={classes.revenueHead}>Total Revenue</p>
             </div>
           </div>

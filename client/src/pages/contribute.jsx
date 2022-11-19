@@ -1,15 +1,41 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Footer, Header } from "../components";
 import { categories, companyCard, statsData } from "../constants";
 import classes from "../views/styles/contribute.module.css";
 import { Input, Select } from "antd";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import CompanyDetailsCard from "../components/contribute/companyDetailsCard";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const Contribute = props => {
   const [hover, setHover] = useState("");
+  const [charities, setCharities] = useState([]);
+  const [limitedCharities, setLimitedCharities] = useState([]);
+  const [limit, setLimit] = useState(6);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const { Option } = Select;
+  const history = useHistory();
+
+  useEffect(() => {
+    setLoading(true);
+    setLimitedCharities(charities?.filter(element => element["Organization Name"].includes(search)).slice(0, limit));
+    setLoading(false);
+  }, [limit, search]);
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("https://app.ihelp.finance/api/v1/data/charities")
+      .then(res => {
+        setCharities(res.data);
+        setLimitedCharities(res.data.slice(0, limit));
+        setLoading(false);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   return (
     <div className={classes.contributeMain}>
@@ -49,7 +75,7 @@ const Contribute = props => {
                   <img src="/assets/icons/animals.svg" />
                   <img src="/assets/icons/enviroment-friendly.svg" />
                 </div>
-                {hover && <button className={classes.detailView}>VIEW DETAILS</button>}
+                {hover === "banner" && <button className={classes.detailView}>VIEW DETAILS</button>}
               </div>
             </div>
           </div>
@@ -62,7 +88,7 @@ const Contribute = props => {
             <p>Total Direct Donations</p>
           </div>
           <div className={classes.charity}>
-            <h1>165</h1>
+            <h1>{charities.length}</h1>
             <p>Total Charities</p>
           </div>
         </div>
@@ -81,11 +107,14 @@ const Contribute = props => {
       <div className={classes.exploreHeader}>
         <div>
           <h1 className={classes.exploreHead}>Explore</h1>
-          <p className={classes.explorePara}>Showing 6 of 165 total charities.</p>
+          <p className={classes.explorePara}>
+            Showing {limitedCharities.length} of {charities.length} total charities.
+          </p>
         </div>
         <div className={classes.searchFilter}>
           <Input
-            placeholder="Xihu District, Hangzhou"
+            placeholder="Enter keyword to search charities ... "
+            onChange={e => setSearch(e.target.value)}
             prefix={<FaSearch size="18px" fill="#BF52F2" className={classes.searchIco} />}
             classNam={classes.searchInput}
             suffix={
@@ -115,29 +144,56 @@ const Contribute = props => {
         </div>
       </div>
       <div className={classes.companies}>
-        {companyCard.map((item, ind) => (
-          <div
-            className={classes.charityCompanyCard}
-            onMouseEnter={() => setHover(item.name)}
-            onMouseLeave={() => setHover("")}
-            key={ind}
-          >
-            <CompanyDetailsCard hover={hover} name={item.name} info={item.cardInfo} />
-            <div className={classes.companyInfo}>
-              <div>
-                <h1 className={classes.charityCompanyName}>{item.companyName}</h1>
-                <p className={classes.charityCompanyInfo}>{item.description}</p>
+        {loading ? (
+          <p>Loading...</p>
+        ) : limitedCharities.length === 0 ? (
+          <p>No result found</p>
+        ) : (
+          limitedCharities?.map((item, ind) => {
+            let video = item["Video for Charity Card"];
+            let cardInfo = {
+              frame: video.replace("/watch?v=", "/embed/"),
+              logo: item.Logo,
+              foundedIn: item["Year Incorporated"],
+              revenue: item["Total Revenue"],
+              country: item["Country of Incorporation"],
+            };
+            return (
+              <div
+                className={classes.charityCompanyCard}
+                onMouseEnter={() => setHover(item.Id)}
+                onMouseLeave={() => setHover("")}
+                key={ind}
+              >
+                <CompanyDetailsCard hover={hover} name={item.Id} info={cardInfo} />
+                <div className={classes.companyInfo}>
+                  <div>
+                    <h1 className={classes.charityCompanyName}>{item["Organization Name"]}</h1>
+                    <p className={classes.charityCompanyInfo}>{item["Shorted Description"]}</p>
+                  </div>
+                  <div className={classes.carouselBottom}>
+                    <div className={classes.companySupportingIcons}>
+                      <img src="/assets/icons/animal-paw.svg" />
+                      <img src="/assets/icons/eco-friendly.svg" />
+                      <img src="/assets/icons/network.svg" />
+                    </div>
+                    {hover === item.Id && (
+                      <button className={classes.detailView} onClick={() => history.push(`/charity/${item.Id}`)}>
+                        VIEW DETAILS
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className={classes.companySupportingIcons}>
-                {item.icons.map((item, ind) => (
-                  <img src={item} key={ind} />
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
+            );
+          })
+        )}
       </div>
-      <p className={classes.moreCards}>SHOW MORE</p>
+      {limitedCharities.length === charities.length || limitedCharities.length < 6 || loading ? null : (
+        <p className={classes.moreCards} onClick={() => setLimit(limit + 6)}>
+          SHOW MORE
+        </p>
+      )}
       <Footer {...props} />
     </div>
   );

@@ -1,4 +1,4 @@
-.lightbox {
+/* .lightbox {
     transition: opacity 0.1s ease-in-out 0s;
     text-align: center;
     position: fixed;
@@ -311,4 +311,492 @@
   .tableGrid {
     grid-template-columns: 1fr;
   }
+} */
+
+.charityMain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.waveBg {
+  background-image: url("../../assets/images/other/waves.png");
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  width: 100%;
+  padding: 70px 20px 20px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 440px;
+  width: 100%;
+}
+
+.logo {
+  border: 1px solid #cba4f8;
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+}
+
+.CompanyInfo {
+  max-width: 1330px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.companyName {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 42px;
+  color: #6e1ecf;
+}
+
+.socialInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.website {
+  display: flex;
+  align-items: center;
+}
+
+.website p {
+  margin: 0;
+  margin-left: 10px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 60px;
+  width: 100%;
+}
+
+.tags {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.tags p {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  background: #f7f0ff;
+  border: 1px solid #cba4f8;
+  border-radius: 20px;
+  margin: 7px;
+  padding: 2px 10px;
+}
+
+.stats {
+  max-width: 1300px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  margin-top: 40px;
+}
+
+.donations {
+  background: #6e1ecf;
+  border-radius: 12px;
+  max-width: 200px;
+  width: 100%;
+  height: 96px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.donations h1 {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 42px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.donations p {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 14px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.donors {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #cba4f8;
+  border-right: 0px;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 753px;
+  width: 100%;
+}
+
+.totalValue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 95px;
+  max-width: 251px;
+  width: 100%;
+  padding: 18px;
+  background-color: #f7f0ff;
+  border-right: 1px solid #cba4f8;
+}
+
+.totalValue div {
+  margin-left: 10px;
+}
+
+.totalValue div h6 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
+}
+
+.totalValue div p {
+  margin: 0;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #6e1ecf;
+}
+
+.moneyTransaction {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 41px;
+}
+
+.money {
+  display: flex;
+  align-items: center;
+  background: #f7f7f7;
+  border: 1px solid #eaeaea;
+  border-radius: 60px;
+  overflow: hidden;
+}
+
+.interest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 146px;
+  height: 46px;
+  margin: 0;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: #333333;
+}
+
+.deposit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bf52f2;
+  margin: 0;
+  width: 146px;
+  height: 46px;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.withdraw {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6e1ecf;
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+  margin: 0;
+  width: 146px;
+  height: 46px;
+}
+
+.donationMethod {
+  display: flex;
+  align-items: center;
+  background: #f7f7f7;
+  border: 1px solid #eaeaea;
+  border-radius: 60px;
+  overflow: hidden;
+  margin-left: 41px;
+}
+
+.principle {
+  background: transparent;
+  width: 200px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 20px;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #333333;
+  margin: 0;
+}
+
+.direct {
+  background: linear-gradient(90deg, #bf52f2 0%, #6e1ecf 100%);
+  width: 200px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  max-width: 1300px;
+  width: 100%;
+  padding: 20px;
+  gap: 40px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.profileHead {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
+  color: #333333;
+  margin: 0;
+  margin-bottom: 0px;
+}
+
+.profileSubPara {
+  font-weight: 400;
+  font-size: 16px;
+  color: #666666;
+}
+
+.description {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #333333;
+}
+
+.detailsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigate {
+  display: flex;
+  align-items: center;
+}
+
+.navigate img {
+  margin: 10px;
+}
+
+.financialDetailsMain {
+  margin-top: 40px;
+}
+
+.financialDetails {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.detailsHead {
+  font-weight: 400;
+  font-size: 24px;
+  color: #bf52f2;
+}
+
+.detailsSubHead {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #bf52f2;
+  margin: 0;
+}
+
+.detailsSubPara {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
+}
+
+.financialsHead {
+  font-weight: 400;
+  font-size: 24px;
+  color: #6e1ecf;
+}
+
+.financialsSubHead {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #6e1ecf;
+  margin: 0;
+}
+
+.financialsSubPara {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
+}
+
+.charityCategory {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  padding: 20px 20px 50px 20px;
+  margin-top: 40px;
+}
+
+.charityHead {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  color: #333333;
+}
+
+.categoryItem {
+  font-weight: 400;
+  font-size: 16px;
+  color: #6e1ecf;
+  border-top: 1px solid #eaeaea;
+  padding: 10px 0px;
+  margin: 0px;
+}
+
+.transaction {
+  margin-top: 40px;
+}
+
+table {
+  margin-top: 20px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+tr {
+  border: 1px solid #eaeaea;
+  border-radius: 20px !important;
+}
+
+th {
+  padding: 15px;
+  text-align: start;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1f1f1f;
+  margin: 0px;
+}
+
+td {
+  text-align: start;
+  padding: 15px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1f1f1f;
+  margin: 0px;
+}
+
+tr:nth-child(odd) {
+  background-color: #fcf9ff;
+}
+
+.date {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #6e1ecf;
+  margin: 0px;
+}
+
+.time {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  margin: 0px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.prev,
+.next {
+  display: flex;
+  align-items: center;
+  margin: 0px 10px;
+}
+
+.prev p,
+.next p {
+  font-weight: 500;
+  font-size: 16px;
+  color: #999999;
+  margin: 0px 5px;
+}
+
+.number {
+  background: #f7f0ff;
+  border: 1px solid #6e1ecf;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #6e1ecf;
+  padding: 2px 8px;
+  width: max-content;
+  margin: 0px 10px;
 }
