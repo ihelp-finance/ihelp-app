@@ -169,7 +169,7 @@ const Contribute = props => {
                 <div className={classes.companyInfo}>
                   <div>
                     <h1 className={classes.charityCompanyName}>{item["Organization Name"]}</h1>
-                    <p className={classes.charityCompanyInfo}>{item["Shorted Description"]}</p>
+                    <p className={classes.charityCompanyInfo}>{item["Short Description for Front of Card"]}...</p>
                   </div>
                   <div className={classes.carouselBottom}>
                     <div className={classes.companySupportingIcons}>
@@ -178,7 +178,10 @@ const Contribute = props => {
                       <img src="/assets/icons/network.svg" />
                     </div>
                     {hover === item.Id && (
-                      <button className={classes.detailView} onClick={() => history.push(`/charity/${item.Id}`)}>
+                      <button
+                        className={classes.detailView}
+                        onClick={() => history.push(`/charity/${item["CharityPool Contract"]}`)}
+                      >
                         VIEW DETAILS
                       </button>
                     )}

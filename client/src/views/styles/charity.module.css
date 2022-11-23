@@ -597,6 +597,10 @@
   margin-bottom: 40px;
 }
 
+.profile {
+  width: 100%;
+}
+
 .profileHead {
   font-weight: 700;
   font-size: 24px;
@@ -617,6 +621,10 @@
   font-size: 16px;
   line-height: 24px;
   color: #333333;
+}
+
+.companyDetails {
+  width: 100%;
 }
 
 .detailsHeader {
@@ -722,6 +730,7 @@ table {
   margin-top: 20px;
   width: 100%;
   border-radius: 12px;
+  overflow-x: scroll !important;
 }
 
 tr {
@@ -799,4 +808,192 @@ tr:nth-child(odd) {
   padding: 2px 8px;
   width: max-content;
   margin: 0px 10px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 15px;
+}
+
+.modalLogo {
+  margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #cba4f8;
+  border-radius: 100%;
+}
+
+.modalHead {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  color: #333333;
+  margin-right: 25px;
+}
+
+.modalSubPara {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 19px;
+  color: #333333;
+  margin: 0;
+}
+
+.lenderMain {
+  max-width: 386px;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #bf52f2;
+  border-radius: 12px 12px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.lender {
+  padding: 12px 10px 0px 15px;
+  border-bottom: 2px solid #bf52f2;
+}
+
+.lender p,
+.lenderApy p {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #bf52f2;
+  margin: 0px;
+}
+
+.lenderApy {
+  padding: 12px 15px 12px 15px;
+}
+
+.lenderApy input {
+  border: none;
+  width: 100%;
+}
+
+.wallet {
+  max-width: 386px;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #bf52f2;
+  border-radius: 12px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 0px 15px 0px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.wallet input {
+  border: none;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
+  color: #6e1ecf;
+  width: 130px;
+}
+
+.breaker {
+  width: 2px;
+  height: 60px;
+  background-color: #bf52f2;
+}
+
+.memo {
+  border: none !important;
+  border-bottom: 1px solid #6e1ecf !important;
+  color: #6e1ecf !important;
+  padding-bottom: 0px !important;
+  box-shadow: none !important;
+  margin-top: 40px;
+  max-width: 386px;
+  width: 100%;
+  border-radius: 0px !important;
+}
+
+.tokens {
+  max-width: 386px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.token {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 14px;
+  color: #999999;
+  margin: 0px;
+}
+
+.answer {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
+  margin: 0px;
+}
+
+.avaxBtn {
+  background: linear-gradient(90deg, #bf52f2 0%, #6e1ecf 100%);
+  border-radius: 60px;
+  width: 256px;
+  height: 48px;
+  text-align: center;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  margin-top: 40px;
+}
+
+@media (max-width: 1000px) {
+  .details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
+  }
+  .financialDetails {
+    justify-content: space-evenly;
+  }
+  .moneyTransaction,
+  .stats,
+  .donors,
+  .tags {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .money,
+  .donationMethod,
+  .donations,
+  .website,
+  .socialInfo {
+    margin: 5px;
+  }
+  .totalValue {
+    border: 1px solid #cba4f8;
+    border-radius: 12px;
+    margin: 5px;
+  }
+  .donors {
+    border: none;
+    max-width: 100%;
+  }
+  .donations {
+    max-width: 251px;
+    width: 100%;
+  }
+  .socialInfo {
+    justify-content: center;
+    flex-direction: column;
+  }
+  .transactionTable {
+    overflow-x: scroll;
+  }
 }

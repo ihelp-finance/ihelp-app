@@ -104,7 +104,7 @@ const Header = props => {
           </div>
           {/*<button className="white-btn">Ethereum Network</button>*/}
 
-          <div style={{ width: "100%", textAlign: "center" }}></div>
+          {/* <div style={{ width: "100%", textAlign: "center" }}></div> */}
         </div>
       </div>
       <div className="box">
