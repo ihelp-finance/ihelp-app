@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
 import { useParams } from "react-router-dom";
 import { Modal, Tooltip, Select, Input } from "antd";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
@@ -13,6 +15,8 @@ const CompanyDetailView = ({ props }) => {
   const [charity, setCharity] = useState({});
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [swiperRef, setSwiperRef] = useState();
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     axios
@@ -30,14 +34,40 @@ const CompanyDetailView = ({ props }) => {
     console.log(`selected ${value}`);
   };
 
+  const handleLeftClick = useCallback(() => {
+    if (!swiperRef) return;
+    swiperRef.slidePrev();
+  }, [swiperRef]);
+
+  const handleRightClick = useCallback(() => {
+    if (!swiperRef) return;
+    swiperRef.slideNext();
+  }, [swiperRef]);
+
   return (
     <div className={classes.charityMain}>
       <Header {...props} />
       <div className={classes.waveBg}>
         <div className={classes.navigation}>
-          <img src="/assets/arrow-left.png" alt="" />
-          <img src={charity.Logo} alt="" className={classes.logo} />
-          <img src="/assets/arrow-right.png" alt="" />
+          <img src="/assets/arrow-left.png" alt="" onClick={handleLeftClick} />
+          <Swiper
+            // spaceBetween={30}
+            slidesPerView={1}
+            onSlideChange={swiper => setActiveSlide(swiper.activeIndex)}
+            onSwiper={setSwiperRef}
+            // _containerClasses={classes.swipercont}
+          >
+            <SwiperSlide className={classes.swiperSLide}>
+              <img src={charity.Logo} alt="" className={classes.logo} />
+            </SwiperSlide>
+            <SwiperSlide className={classes.swiperSLide}>
+              <img src={charity.Logo} alt="" className={classes.logo} />
+            </SwiperSlide>
+            <SwiperSlide className={classes.swiperSLide}>
+              <img src={charity.Logo} alt="" className={classes.logo} />
+            </SwiperSlide>
+          </Swiper>
+          <img src="/assets/arrow-right.png" alt="" onClick={handleRightClick} />
         </div>
       </div>
       <div className={classes.CompanyInfo}>

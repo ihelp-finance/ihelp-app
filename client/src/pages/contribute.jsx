@@ -1,12 +1,14 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { Footer, Header } from "../components";
-import { categories, companyCard, statsData } from "../constants";
-import classes from "../views/styles/contribute.module.css";
-import { Input, Select } from "antd";
-import { FaSearch, FaFilter } from "react-icons/fa";
-import CompanyDetailsCard from "../components/contribute/companyDetailsCard";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { Input, Select } from "antd";
 import { useHistory } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
+import { FaSearch, FaFilter } from "react-icons/fa";
+import { Footer, Header } from "../components";
+import { categories, statsData } from "../constants";
+import classes from "../views/styles/contribute.module.css";
+import CompanyDetailsCard from "../components/contribute/companyDetailsCard";
 
 const Contribute = props => {
   const [hover, setHover] = useState("");
@@ -15,6 +17,8 @@ const Contribute = props => {
   const [limit, setLimit] = useState(6);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [swiperRef, setSwiperRef] = useState();
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const { Option } = Select;
   const history = useHistory();
@@ -37,6 +41,16 @@ const Contribute = props => {
       .catch(err => console.log(err));
   }, []);
 
+  const handleLeftClick = useCallback(() => {
+    if (!swiperRef) return;
+    swiperRef.slidePrev();
+  }, [swiperRef]);
+
+  const handleRightClick = useCallback(() => {
+    if (!swiperRef) return;
+    swiperRef.slideNext();
+  }, [swiperRef]);
+
   return (
     <div className={classes.contributeMain}>
       <Header {...props} />
@@ -46,39 +60,128 @@ const Contribute = props => {
             <h1>Spotlight</h1>
             <p>Health & Medical</p>
             <div className={classes.arrows}>
-              <img src="/assets/arrow-left.png" />
+              <img src="/assets/icons/arrow-left.svg" onClick={handleLeftClick} />
               <div className={classes.dots}>
-                <img src="/assets/icons/filled-circle.svg" />
-                <img src="/assets/icons/unfilled-circle.svg" />
-                <img src="/assets/icons/unfilled-circle.svg" />
-                <img src="/assets/icons/unfilled-circle.svg" />
+                <img src={`/assets/icons/${activeSlide === 0 ? "filled" : "unfilled"}-circle.svg`} />
+                <img src={`/assets/icons/${activeSlide === 1 ? "filled" : "unfilled"}-circle.svg`} />
+                <img src={`/assets/icons/${activeSlide === 2 ? "filled" : "unfilled"}-circle.svg`} />
+                <img src={`/assets/icons/${activeSlide === 3 ? "filled" : "unfilled"}-circle.svg`} />
               </div>
-              <img src="/assets/arrow-right.png" />
+              <img src="/assets/icons/arrow-right.svg" onClick={handleRightClick} />
             </div>
           </div>
-          <div
-            className={classes.carouselItem}
-            onMouseEnter={() => setHover("banner")}
-            onMouseLeave={() => setHover("")}
+          <Swiper
+            spaceBetween={10}
+            slidesPerView={1}
+            onSlideChange={swiper => setActiveSlide(swiper.activeIndex)}
+            onSwiper={setSwiperRef}
+            pagination={{ clickable: true }}
           >
-            <CompanyDetailsCard hover={hover} name="banner" info={[]} />
-            <div className={classes.carouselDetails}>
-              <div>
-                <h3>American Kidney Fund, Inc.</h3>
-                <p>
-                  AKF works on behalf of the 37 million Americans living with kidney disease, and the millions more at
-                  risk ...
-                </p>
-              </div>
-              <div className={classes.carouselBottom}>
-                <div className={classes.supportingIcons}>
-                  <img src="/assets/icons/animals.svg" />
-                  <img src="/assets/icons/enviroment-friendly.svg" />
+            <SwiperSlide>
+              <div
+                className={classes.carouselItem}
+                onMouseEnter={() => setHover("banner")}
+                onMouseLeave={() => setHover("")}
+              >
+                <CompanyDetailsCard hover={hover} name="banner" info={[]} />
+                <div className={classes.carouselDetails}>
+                  <div>
+                    <h3>American Kidney Fund, Inc.</h3>
+                    <p>
+                      AKF works on behalf of the 37 million Americans living with kidney disease, and the millions more
+                      at risk ...
+                    </p>
+                  </div>
+                  <div className={classes.carouselBottom}>
+                    <div className={classes.supportingIcons}>
+                      <img src="/assets/icons/animals.svg" />
+                      <img src="/assets/icons/enviroment-friendly.svg" />
+                    </div>
+
+                    {hover === "banner" && <button className={classes.detailView}>VIEW DETAILS</button>}
+                  </div>
                 </div>
-                {hover === "banner" && <button className={classes.detailView}>VIEW DETAILS</button>}
               </div>
-            </div>
-          </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div
+                className={classes.carouselItem}
+                onMouseEnter={() => setHover("banner")}
+                onMouseLeave={() => setHover("")}
+              >
+                <CompanyDetailsCard hover={hover} name="banner" info={[]} />
+                <div className={classes.carouselDetails}>
+                  <div>
+                    <h3>American Kidney Fund, Inc.</h3>
+                    <p>
+                      AKF works on behalf of the 37 million Americans living with kidney disease, and the millions more
+                      at risk ...
+                    </p>
+                  </div>
+                  <div className={classes.carouselBottom}>
+                    <div className={classes.supportingIcons}>
+                      <img src="/assets/icons/animals.svg" />
+                      <img src="/assets/icons/enviroment-friendly.svg" />
+                    </div>
+
+                    {hover === "banner" && <button className={classes.detailView}>VIEW DETAILS</button>}
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div
+                className={classes.carouselItem}
+                onMouseEnter={() => setHover("banner")}
+                onMouseLeave={() => setHover("")}
+              >
+                <CompanyDetailsCard hover={hover} name="banner" info={[]} />
+                <div className={classes.carouselDetails}>
+                  <div>
+                    <h3>American Kidney Fund, Inc.</h3>
+                    <p>
+                      AKF works on behalf of the 37 million Americans living with kidney disease, and the millions more
+                      at risk ...
+                    </p>
+                  </div>
+                  <div className={classes.carouselBottom}>
+                    <div className={classes.supportingIcons}>
+                      <img src="/assets/icons/animals.svg" />
+                      <img src="/assets/icons/enviroment-friendly.svg" />
+                    </div>
+
+                    {hover === "banner" && <button className={classes.detailView}>VIEW DETAILS</button>}
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div
+                className={classes.carouselItem}
+                onMouseEnter={() => setHover("banner")}
+                onMouseLeave={() => setHover("")}
+              >
+                <CompanyDetailsCard hover={hover} name="banner" info={[]} />
+                <div className={classes.carouselDetails}>
+                  <div>
+                    <h3>American Kidney Fund, Inc.</h3>
+                    <p>
+                      AKF works on behalf of the 37 million Americans living with kidney disease, and the millions more
+                      at risk ...
+                    </p>
+                  </div>
+                  <div className={classes.carouselBottom}>
+                    <div className={classes.supportingIcons}>
+                      <img src="/assets/icons/animals.svg" />
+                      <img src="/assets/icons/enviroment-friendly.svg" />
+                    </div>
+
+                    {hover === "banner" && <button className={classes.detailView}>VIEW DETAILS</button>}
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          </Swiper>
         </div>
       </div>
       <div className={classes.stats}>

@@ -952,6 +952,12 @@ tr:nth-child(odd) {
   margin-top: 40px;
 }
 
+.swiperSLide {
+  display: flex;
+  justify-content: center;
+  width: 276px !important;
+}
+
 @media (max-width: 1000px) {
   .details {
     display: flex;
