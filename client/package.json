@@ -90,6 +90,7 @@
     "react-qr-reader": "^2.2.1",
     "react-refresh": "^0.8.3",
     "react-router-dom": "^5.2.0",
+    "react-youtube": "^10.1.0",
     "recharts": "^2.1.8",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",

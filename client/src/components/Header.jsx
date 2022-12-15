@@ -98,6 +98,9 @@ const Header = props => {
             <Link to="/stake" passHref={true}>
               <a className={router.pathname == "/stake" ? "activeLink" : ""}>STAKE</a>
             </Link>
+            <Link to="/stats" passHref={true}>
+              <a className={router.pathname == "/stats" ? "activeLink" : ""}>ANALYTICS</a>
+            </Link>
             <Link to="/leaderboard" passHref={true}>
               <a className={router.pathname == "/leaderboard" ? "activeLink" : ""}>LEADERBOARD</a>
             </Link>
@@ -126,6 +129,9 @@ const Header = props => {
             </Link>
             <Link to="/stake" passHref={true} className={router.pathname == "/stake" ? "link activeLink" : "link"}>
               STAKE
+            </Link>
+            <Link to="/stats" passHref={true} className={router.pathname == "/stats" ? "link activeLink" : "link"}>
+              ANALYTICS
             </Link>
             <Link
               to="/leaderboard"

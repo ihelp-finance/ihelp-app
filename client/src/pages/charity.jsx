@@ -9,14 +9,20 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { statsData } from "../constants";
 import { Footer, Header } from "../components";
 import classes from "../views/styles/charity.module.css";
+import { useHistory } from "react-router-dom";
+import { getCharityPrevNextIds } from "../helpers/charity";
 
 const CompanyDetailView = ({ props }) => {
   const { id } = useParams();
+  const history = useHistory();
+
   const [charity, setCharity] = useState({});
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [swiperRef, setSwiperRef] = useState();
   const [activeSlide, setActiveSlide] = useState(0);
+
+  const charityIds = JSON.parse(localStorage.getItem("prev-next-charity"));
 
   useEffect(() => {
     axios
@@ -28,28 +34,46 @@ const CompanyDetailView = ({ props }) => {
       .get(`https://app.ihelp.finance/api/v1/data/events_by_charity?address=${id}`)
       .then(res => setEvents(res.data))
       .catch(err => console.log("event by charity", err));
-  }, []);
+  }, [id]);
+
+  useEffect(() => {
+    axios
+      .get("https://app.ihelp.finance/api/v1/data/charities")
+      .then(res => {
+        getCharityPrevNextIds(
+          res.data,
+          res.data.findIndex(el => el["CharityPool Contract"] === id),
+        );
+      })
+      .catch(err => console.log(err));
+  }, [id]);
 
   const handleChange = value => {
     console.log(`selected ${value}`);
   };
 
   const handleLeftClick = useCallback(() => {
-    if (!swiperRef) return;
-    swiperRef.slidePrev();
-  }, [swiperRef]);
+    if (charityIds.prevCharityId) {
+      history.replace(`/charity/${charityIds.prevCharityId}`);
+    }
+  }, [charityIds]);
 
   const handleRightClick = useCallback(() => {
-    if (!swiperRef) return;
-    swiperRef.slideNext();
-  }, [swiperRef]);
+    if (charityIds.nextCharityId) {
+      history.replace(`/charity/${charityIds.nextCharityId}`);
+    }
+  }, [charityIds]);
 
   return (
     <div className={classes.charityMain}>
       <Header {...props} />
       <div className={classes.waveBg}>
         <div className={classes.navigation}>
-          <img src="/assets/arrow-left.png" alt="" onClick={handleLeftClick} />
+          <img
+            src={`${charityIds.prevCharityId ? "/assets/icons/arrow-left-purple.svg" : "/assets/arrow-left.png"}`}
+            alt=""
+            onClick={handleLeftClick}
+          />
           <Swiper
             // spaceBetween={30}
             slidesPerView={1}
@@ -67,7 +91,11 @@ const CompanyDetailView = ({ props }) => {
               <img src={charity.Logo} alt="" className={classes.logo} />
             </SwiperSlide>
           </Swiper>
-          <img src="/assets/arrow-right.png" alt="" onClick={handleRightClick} />
+          <img
+            src={`${charityIds.nextCharityId ? "/assets/icons/arrow-right-purple.svg" : "/assets/arrow-right.png"}`}
+            alt=""
+            onClick={handleRightClick}
+          />
         </div>
       </div>
       <div className={classes.CompanyInfo}>
@@ -209,7 +237,6 @@ const CompanyDetailView = ({ props }) => {
         <div className={classes.profile}>
           <div>
             <h4 className={classes.profileHead}>Profile</h4>
-            <p className={classes.profileSubPara}>Learn about us.</p>
             <p className={classes.description}>{charity["Brief Description & History"]}</p>
           </div>
           <div className={classes.transaction}>

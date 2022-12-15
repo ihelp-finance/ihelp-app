@@ -1029,9 +1029,13 @@ color:#333;
   padding: 0px !important;
 }
 
-.ant-modal-body{
+.ant-modal-body {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.ant-select .ant-select-selector {
+  width: 155px !important;
 }

@@ -22,11 +22,6 @@ const Footer = props => {
               <a href="https://turbinex.io" target="_blank" style={{ fontWeight: "", fontSize: "14px" }}>
                 <h4 className="footerText">© 2022 Turbine X, LLC</h4>
               </a>
-              |
-              <Link to="/login">
-                <h4 className="footerText">Charity Login</h4>
-              </Link>
-              |
               <a href="https://status.ihelp.finance" target="_blank">
                 <h4 className="footerText">Status</h4>
               </a>
@@ -37,11 +32,7 @@ const Footer = props => {
               |
               <a href="https://docs.ihelp.finance/terms" target="_blank">
                 <h4 className="footerText">Terms</h4>
-              </a>
-              |
-              <Link to="/stats">
-                <h4 className="footerText">Stats</h4>
-              </Link>
+              </a>            
               {
                 /*  if the local provider has a signer, let's show the faucet:  */
                 props.faucetAvailable ? (

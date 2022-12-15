@@ -94,7 +94,7 @@
 .alternateIframe {
   max-width: 440px;
   width: 100%;
-  height: 248px;
+  height: 220px;
   background: #f7f0ff;
   /* border-radius: 12px 0px 0px 12px; */
   padding: 20px;
@@ -120,6 +120,7 @@
 .companyLogo {
   width: 120px;
   height: 120px;
+  margin-bottom: 10px;
   border-radius: 100%;
   border: 1px solid #cba4f8;
 }
@@ -155,7 +156,12 @@
   font-size: 12px;
   line-height: 14px;
   color: #333333;
+  margin-bottom: -5px;
   width: 100%;
+}
+
+.sinceYearWarper {
+  margin-bottom: 20px;
 }
 
 .BoldOne {
@@ -318,7 +324,6 @@
   margin-top: 60px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   max-width: 1300px;
   width: 100%;
   padding: 0px 20px;
@@ -352,7 +357,14 @@
   align-items: center;
   justify-content: center;
 }
-
+.countries label,
+span,
+input {
+  cursor: pointer;
+}
+.check {
+  margin-right: 5px;
+}
 .filterIco {
   margin-left: 10px;
   background: #f7f7f7;
@@ -368,12 +380,13 @@
 }
 
 .categoriesSection {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
+  margin-top: 15px;
   max-width: 1300px;
   width: 100%;
-  padding: 0px 20px;
+  /* padding: 0px 20px; */
 }
 
 .categoryHead {
@@ -412,6 +425,17 @@
   padding: 0px 10px;
   margin: 5px;
   border: 1px solid #bf52f2;
+  cursor: pointer;
+}
+.selected {
+  background: #6e1ecf;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+  color: white;
+  padding: 0px 10px;
+  margin: 5px;
+  border: 1px solid #6e1ecf;
   cursor: pointer;
 }
 
@@ -504,7 +528,7 @@
     justify-content: center;
   }
   .figures {
-  margin-right: 0px;
+    margin-right: 0px;
     margin-bottom: 20px;
   }
   .exploreHeader {
